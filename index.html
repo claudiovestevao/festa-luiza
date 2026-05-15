@@ -536,6 +536,183 @@ body{
 }
 .qz-body{background:linear-gradient(180deg,#fffaf4,#fff);}
 .qz-opt{box-shadow:none;}
+
+/* ══════════════════════════════
+   MAGIC PARK TOUCH
+   Minnie/Mickey inspired details without official marks
+══════════════════════════════ */
+:root{
+  --magic-blue:#7fc8ff;
+  --magic-red:#e83f5f;
+  --magic-night:#07050b;
+}
+.nav-tab{position:relative;overflow:hidden;}
+.nav-tab.active::after{
+  content:'';
+  position:absolute;
+  top:.42rem;left:50%;
+  width:7px;height:7px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:-12px 0 0 rgba(255,255,255,.78),12px 0 0 rgba(255,255,255,.78);
+  transform:translateX(-50%);
+  opacity:.55;
+}
+#pg-home{
+  background:
+    linear-gradient(180deg,rgba(7,5,11,.12),rgba(7,5,11,.94) 74%),
+    radial-gradient(circle at 20% 18%,rgba(255,228,122,.28),transparent 12rem),
+    url('https://claudiovestevao.github.io/festa-luiza/fotos/foto01.jpg') center 18%/cover no-repeat,
+    var(--magic-night);
+}
+#pg-home::after{
+  content:'✦   ✧       ✦     ✧   ✦';
+  position:absolute;
+  top:1.2rem;left:50%;
+  transform:translateX(-50%);
+  width:min(460px,92vw);
+  color:rgba(255,228,122,.78);
+  font-size:1.55rem;
+  letter-spacing:.5rem;
+  text-align:center;
+  text-shadow:0 0 18px rgba(245,200,66,.55);
+  pointer-events:none;
+  animation:twinkle 2.8s ease-in-out infinite;
+}
+@keyframes twinkle{0%,100%{opacity:.55;transform:translateX(-50%) translateY(0);}50%{opacity:1;transform:translateX(-50%) translateY(4px);}}
+.magic-kicker{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.5rem;
+  width:max-content;
+  max-width:100%;
+  margin:0 auto .75rem;
+  padding:.38rem .85rem;
+  border-radius:999px;
+  background:rgba(255,255,255,.92);
+  color:#201421;
+  border:2px solid rgba(245,200,66,.9);
+  font-family:'Fredoka One',cursive;
+  font-size:.78rem;
+  box-shadow:0 10px 30px rgba(0,0,0,.22),0 0 24px rgba(245,200,66,.22);
+}
+.magic-kicker::before,.magic-kicker::after{content:'✦';color:#caa018;font-size:.82rem;}
+.home-hero{
+  position:relative;
+  isolation:isolate;
+}
+.home-hero::before{
+  content:'';
+  position:absolute;
+  top:-20px;left:14px;
+  width:42px;height:42px;
+  border-radius:50%;
+  background:#19121e;
+  box-shadow:66px 0 0 #19121e,0 4px 0 rgba(255,255,255,.22),66px 4px 0 rgba(255,255,255,.22);
+  z-index:-1;
+}
+.home-hero::after{
+  content:'🎀';
+  position:absolute;
+  top:-33px;left:50%;
+  transform:translateX(-50%) rotate(-5deg);
+  font-size:2.15rem;
+  filter:drop-shadow(0 8px 10px rgba(0,0,0,.28));
+}
+.home-title{
+  position:relative;
+}
+.home-title::after{
+  content:'';
+  display:block;
+  width:128px;height:8px;
+  margin:.55rem auto 0;
+  border-radius:999px;
+  background:repeating-linear-gradient(90deg,#fff 0 9px,var(--magic-red) 9px 18px);
+  box-shadow:0 5px 18px rgba(232,63,95,.22);
+}
+.event-pill,.tp,.jtb{
+  position:relative;
+  overflow:hidden;
+}
+.event-pill::after,.tp::after,.jtb::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg,transparent 0 35%,rgba(255,255,255,.42) 48%,transparent 62%);
+  transform:translateX(-130%);
+  transition:transform .55s ease;
+  pointer-events:none;
+}
+.event-pill:hover::after,.tp:hover::after,.jtb:hover::after{transform:translateX(130%);}
+.ep-bday,.tp-pink{
+  background:
+    radial-gradient(circle at 18% 22%,rgba(255,255,255,.95) 0 4px,transparent 4.5px),
+    radial-gradient(circle at 72% 68%,rgba(255,255,255,.8) 0 4px,transparent 4.5px),
+    linear-gradient(135deg,#fff0f5,#ffc6dc);
+}
+.ep-menu{
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.45),transparent 42%),
+    linear-gradient(135deg,#fff8d9,#ffe47a);
+}
+.ep-album{
+  background:
+    radial-gradient(circle at 24% 28%,rgba(255,255,255,.8) 0 4px,transparent 4.5px),
+    linear-gradient(135deg,#eafaf4,#b7eed5);
+}
+.tp-blue{
+  background:
+    radial-gradient(circle at 22% 25%,rgba(255,255,255,.85) 0 4px,transparent 4.5px),
+    linear-gradient(135deg,#f5eeff,#d5c0ff);
+}
+.menu-hero{
+  position:relative;
+  overflow:hidden;
+}
+.menu-hero::before{
+  content:'';
+  position:absolute;
+  left:50%;bottom:-1px;
+  width:min(360px,86vw);height:54px;
+  transform:translateX(-50%);
+  opacity:.34;
+  background:
+    linear-gradient(to top,#ffe47a 0 9px,transparent 9px),
+    radial-gradient(circle at 50% 7px,#ffe47a 0 18px,transparent 19px),
+    radial-gradient(circle at 24% 26px,#ffe47a 0 12px,transparent 13px),
+    radial-gradient(circle at 76% 26px,#ffe47a 0 12px,transparent 13px),
+    linear-gradient(to top,#ffe47a 0 34px,transparent 34px);
+  clip-path:polygon(0 100%,0 64%,12% 64%,12% 34%,20% 34%,20% 62%,32% 62%,32% 22%,41% 22%,50% 0,59% 22%,68% 22%,68% 62%,80% 62%,80% 34%,88% 34%,88% 64%,100% 64%,100% 100%);
+}
+.menu-brand,.dash-title{
+  text-shadow:0 0 24px rgba(245,200,66,.16);
+}
+.album-thumb,#album-grid-all > div{
+  background-color:#100c16!important;
+  position:relative;
+}
+#album-grid-all > div::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),inset 0 -40px 50px rgba(0,0,0,.08);
+  pointer-events:none;
+}
+.join-avatar{
+  position:relative;
+}
+.join-avatar::before{
+  content:'';
+  position:absolute;
+  top:-14px;left:7px;
+  width:27px;height:27px;
+  border-radius:50%;
+  background:#19121e;
+  box-shadow:31px 0 0 #19121e;
+  z-index:-1;
+}
 @media (min-width:760px){
   .page{padding-bottom:96px;}
   .home-inner{padding-top:7rem;}
@@ -580,6 +757,7 @@ body{
 <div class="page active" id="pg-home">
   <div class="home-inner">
     <div class="home-hero">👧</div>
+    <div class="magic-kicker">Mundo mágico da Luiza</div>
     <div class="home-title"><span class="pink">Luiza</span> faz 3!</div>
     <div class="home-date">🎀 Festa de aniversário da Luiza - Maio/26</div>
 
