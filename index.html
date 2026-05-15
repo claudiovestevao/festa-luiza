@@ -323,6 +323,51 @@ body{font-family:'Nunito',sans-serif;background:var(--dark);color:var(--black);m
 }
 .sync-status.on{color:var(--mint-light);}
 .sync-status.off{color:#f8a4c0;}
+.magic-progress{
+  position:fixed;
+  top:0;left:0;
+  z-index:800;
+  width:0;
+  height:4px;
+  background:linear-gradient(90deg,#f5c842,#f06292,#d4a8f7);
+  box-shadow:0 0 18px rgba(245,200,66,.55);
+  pointer-events:none;
+}
+.magic-toast{
+  position:fixed;
+  left:50%;
+  bottom:6.2rem;
+  z-index:860;
+  transform:translate(-50%,18px);
+  opacity:0;
+  width:min(92vw,390px);
+  padding:.9rem 1rem;
+  border-radius:18px;
+  background:rgba(255,249,242,.96);
+  border:1px solid rgba(245,200,66,.42);
+  box-shadow:0 18px 48px rgba(0,0,0,.28),0 0 28px rgba(245,200,66,.22);
+  color:#2a182f;
+  font-family:'Fredoka One',cursive;
+  font-size:.88rem;
+  text-align:center;
+  transition:opacity .25s ease,transform .25s ease;
+  pointer-events:none;
+}
+.magic-toast.show{opacity:1;transform:translate(-50%,0);}
+.sparkle-pop{
+  position:fixed;
+  z-index:900;
+  pointer-events:none;
+  color:#ffe47a;
+  font-size:1rem;
+  text-shadow:0 0 14px rgba(245,200,66,.75);
+  animation:sparklePop .75s ease-out forwards;
+}
+@keyframes sparklePop{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.4) rotate(0);}
+  20%{opacity:1;}
+  100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.6) rotate(40deg);}
+}
 
 /* reveal */
 .reveal-outer{align-items:center;justify-content:center;padding:2rem;text-align:center;overflow:hidden;position:relative;}
@@ -1001,6 +1046,40 @@ body{
   display:none;
 }
 .top-button.show{display:block;}
+.floating-wish{
+  position:fixed;
+  left:.9rem;
+  bottom:5.25rem;
+  z-index:520;
+  display:none;
+  align-items:center;
+  gap:.42rem;
+  border:0;
+  border-radius:999px;
+  padding:.7rem .92rem;
+  background:linear-gradient(135deg,#fff6d8,#f5c842,#f8a4c0);
+  color:#24131d;
+  font-family:'Fredoka One',cursive;
+  font-size:.78rem;
+  box-shadow:0 12px 32px rgba(0,0,0,.25);
+  cursor:pointer;
+}
+.floating-wish.show{display:inline-flex;}
+.magic-counts{
+  display:flex;
+  gap:.55rem;
+  flex-wrap:wrap;
+  margin:.35rem 0 1rem;
+}
+.magic-count{
+  border-radius:999px;
+  padding:.4rem .72rem;
+  background:rgba(255,255,255,.7);
+  border:1px solid rgba(240,98,146,.15);
+  color:#7a45c6;
+  font-size:.78rem;
+  font-weight:900;
+}
 .menu-tagline{font-size:.86rem;color:#d9cdeb;text-transform:none;letter-spacing:0;max-width:28rem;margin:.3rem auto 0;line-height:1.5;}
 .join-card h2{font-size:1.35rem;}
 .join-sub{font-size:.86rem;}
@@ -1031,7 +1110,10 @@ body{
 </head>
 <body>
 <div class="polka"></div>
+<div class="magic-progress" id="magic-progress"></div>
+<div class="magic-toast" id="magic-toast" role="status" aria-live="polite"></div>
 <button class="top-button" id="top-button" type="button" onclick="scrollToTop()" aria-label="Voltar ao topo">↑</button>
+<button class="floating-wish" id="floating-wish" type="button" onclick="openAdventure('sec-recados')">⭐ deixar recado</button>
 
 <!-- ════════ NAV ════════ -->
 <nav class="nav-bar">
@@ -1155,6 +1237,10 @@ body{
       <span class="story-eyebrow">⭐ memória afetiva</span>
       <h2 class="story-title">Deixe uma estrelinha para a Luiza</h2>
       <p class="story-copy">Um dia, quando a Luiza crescer, ela vai poder ler todas as mensagens deixadas nesse momento tão especial.</p>
+      <div class="magic-counts">
+        <span class="magic-count" id="wish-count">0 estrelinhas</span>
+        <span class="magic-count" id="capsule-count-inline">0 cápsulas</span>
+      </div>
       <div class="wish-form">
         <input id="wish-name" type="text" maxlength="40" placeholder="Seu nome">
         <input id="wish-future" type="text" maxlength="90" placeholder="Um desejo para o futuro dela">
@@ -1171,6 +1257,9 @@ body{
       <span class="story-eyebrow">💌 para o futuro</span>
       <h2 class="story-title">Cápsula do Tempo da Luiza</h2>
       <p class="story-copy">Escreva algo que a Luiza possa ler quando crescer.</p>
+      <div class="magic-counts">
+        <span class="magic-count" id="capsule-count">0 cápsulas guardadas</span>
+      </div>
       <div class="capsule-form">
         <textarea id="cap-know" maxlength="360" placeholder="Luiza, quando você ler isso, quero que saiba que..."></textarea>
         <textarea id="cap-beauty" maxlength="360" placeholder="Uma coisa linda sobre você hoje é..."></textarea>
@@ -2087,13 +2176,17 @@ function saveWish(){
   document.getElementById('wish-future').value='';
   document.getElementById('wish-message').value='';
   if(firebaseReady && db){
-    db.ref(WISHES_PATH).push(payload).catch(err=>{
+    db.ref(WISHES_PATH).push(payload).then(()=>{
+      showMagicToast('Estrelinha guardada para a Luiza ✨');
+      sparkleAt(window.innerWidth/2,window.innerHeight-150,10);
+    }).catch(err=>{
       console.warn('Could not save global wish', err);
       const wishes=readList(WISH_KEY); wishes.unshift(payload); writeList(WISH_KEY,wishes.slice(0,120)); renderWishes();
       alert('Salvei neste aparelho, mas não consegui enviar ao banco agora.');
     });
   } else {
     const wishes=readList(WISH_KEY); wishes.unshift(payload); writeList(WISH_KEY,wishes.slice(0,120)); renderWishes();
+    showMagicToast('Estrelinha guardada neste aparelho ✨');
   }
 }
 
@@ -2101,6 +2194,7 @@ function renderWishes(){
   const box=document.getElementById('wish-list');
   if(!box) return;
   const wishes=listForKey(WISH_KEY,globalWishes);
+  updateMagicCounts();
   box.innerHTML=wishes.length?wishes.map((w,i)=>{
     const itemId=w.id||w.createdAt||i;
     return `
@@ -2162,13 +2256,17 @@ function saveCapsule(){
   document.getElementById('cap-beauty').value='';
   document.getElementById('cap-wish').value='';
   if(firebaseReady && db){
-    db.ref(CAPSULES_PATH).push(payload).catch(err=>{
+    db.ref(CAPSULES_PATH).push(payload).then(()=>{
+      showMagicToast('Cápsula guardada para o futuro 💌');
+      sparkleAt(window.innerWidth/2,window.innerHeight-150,10);
+    }).catch(err=>{
       console.warn('Could not save global capsule', err);
       const capsules=readList(CAPSULE_KEY); capsules.unshift(payload); writeList(CAPSULE_KEY,capsules.slice(0,120)); renderCapsules();
       alert('Guardei neste aparelho, mas não consegui enviar ao banco agora.');
     });
   } else {
     const capsules=readList(CAPSULE_KEY); capsules.unshift(payload); writeList(CAPSULE_KEY,capsules.slice(0,120)); renderCapsules();
+    showMagicToast('Cápsula guardada neste aparelho 💌');
   }
 }
 
@@ -2176,6 +2274,7 @@ function renderCapsules(){
   const box=document.getElementById('capsule-list');
   if(!box) return;
   const capsules=listForKey(CAPSULE_KEY,globalCapsules);
+  updateMagicCounts();
   box.innerHTML=capsules.length?capsules.map((c,i)=>{
     const itemId=c.id||c.createdAt||i;
     return `
@@ -2230,10 +2329,44 @@ function deleteCapsule(id){
 
 function copyText(text, okMsg){
   if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(text).then(()=>alert(okMsg)).catch(()=>alert(text));
+    navigator.clipboard.writeText(text).then(()=>showMagicToast(okMsg)).catch(()=>alert(text));
   } else {
     alert(text);
   }
+}
+
+function showMagicToast(text){
+  const toast=document.getElementById('magic-toast');
+  if(!toast) return;
+  toast.textContent=text;
+  toast.classList.add('show');
+  clearTimeout(showMagicToast._t);
+  showMagicToast._t=setTimeout(()=>toast.classList.remove('show'),2600);
+}
+
+function sparkleAt(x,y,count=8){
+  for(let i=0;i<count;i++){
+    const s=document.createElement('span');
+    s.className='sparkle-pop';
+    s.textContent=i%3===0?'✦':'✧';
+    s.style.left=x+'px';
+    s.style.top=y+'px';
+    s.style.setProperty('--dx',`${(Math.random()*90-45).toFixed(1)}px`);
+    s.style.setProperty('--dy',`${(Math.random()*-80-18).toFixed(1)}px`);
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),850);
+  }
+}
+
+function updateMagicCounts(){
+  const wishes=listForKey(WISH_KEY,globalWishes).length;
+  const capsules=listForKey(CAPSULE_KEY,globalCapsules).length;
+  const wishEl=document.getElementById('wish-count');
+  const capInline=document.getElementById('capsule-count-inline');
+  const capEl=document.getElementById('capsule-count');
+  if(wishEl) wishEl.textContent=`${wishes} ${wishes===1?'estrelinha':'estrelinhas'}`;
+  if(capInline) capInline.textContent=`${capsules} ${capsules===1?'cápsula':'cápsulas'}`;
+  if(capEl) capEl.textContent=`${capsules} ${capsules===1?'cápsula guardada':'cápsulas guardadas'}`;
 }
 
 function renderMissions(){
@@ -2252,6 +2385,10 @@ function toggleMission(i){
   const next=done.includes(i)?done.filter(x=>x!==i):[...done,i];
   writeList(MISSIONS_KEY,next);
   renderMissions();
+  if(!done.includes(i)){
+    showMagicToast('Missão mágica concluída ✨');
+    sparkleAt(window.innerWidth/2,window.innerHeight-130,8);
+  }
 }
 
 function setupPortalMagic(){
@@ -2259,8 +2396,18 @@ function setupPortalMagic(){
   renderCapsules();
   renderMissions();
   const topBtn=document.getElementById('top-button');
+  const wishBtn=document.getElementById('floating-wish');
+  const progress=document.getElementById('magic-progress');
   window.addEventListener('scroll',()=>{
+    const max=document.documentElement.scrollHeight-window.innerHeight;
+    const pct=max>0?Math.min(100,Math.max(0,window.scrollY/max*100)):0;
+    if(progress) progress.style.width=pct+'%';
     topBtn?.classList.toggle('show',window.scrollY>520);
+    wishBtn?.classList.toggle('show',window.scrollY>760);
+  },{passive:true});
+  document.addEventListener('pointerdown', e=>{
+    const interactive=e.target.closest('button,.story-card,.event-pill,.tp,.jtb,.mini-btn,a');
+    if(interactive) sparkleAt(e.clientX,e.clientY,5);
   },{passive:true});
   if('IntersectionObserver' in window){
     const io=new IntersectionObserver(entries=>{
