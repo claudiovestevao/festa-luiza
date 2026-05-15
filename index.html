@@ -307,6 +307,22 @@ body{font-family:'Nunito',sans-serif;background:var(--dark);color:var(--black);m
 .dash-total strong{color:#4a3f62;}
 .dash-actions{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;padding-bottom:1rem;}
 .dash-actions .btn{width:auto;padding:.8rem 1.6rem;font-size:.9rem;}
+.sync-status{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.38rem;
+  margin:.65rem auto 0;
+  padding:.32rem .72rem;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  color:#9a8ab8;
+  font-size:.72rem;
+  font-weight:900;
+}
+.sync-status.on{color:var(--mint-light);}
+.sync-status.off{color:#f8a4c0;}
 
 /* reveal */
 .reveal-outer{align-items:center;justify-content:center;padding:2rem;text-align:center;overflow:hidden;position:relative;}
@@ -1417,8 +1433,10 @@ body{
           <div class="ps-list" id="ps-list"><span style="color:#2a2a2a;font-size:.75rem;">ninguém ainda...</span></div>
         </div>
         <div class="dash-total">Participantes: <strong id="dash-total">0</strong></div>
+        <div class="sync-status off" id="sync-status">● conectando placar global</div>
         <div class="dash-actions">
           <button class="btn btn-gold" id="reveal-btn" onclick="triggerReveal()" style="display:none;">🎉 Momento admin</button>
+          <button class="btn-ghost" id="reset-score-btn" onclick="resetGlobalScore()" style="display:none;">🧹 Zerar placar</button>
           <button class="btn-ghost" onclick="updateDash()">🔄 Atualizar</button>
           <button class="btn-ghost" onclick="showQScreen('qs-join')">← Voltar</button>
         </div>
@@ -1471,11 +1489,26 @@ body{
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
 <script>
 // ══════════════════════════════
 // STATE
 // ══════════════════════════════
 const S = { gender:null, babyName:'', players:[], adminGender:null };
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyC2jXyleBzxgIhDW6Q1IgpEyrZ1121_Ogg",
+  authDomain: "festa-luiza.firebaseapp.com",
+  databaseURL: "https://festa-luiza-default-rtdb.firebaseio.com/",
+  projectId: "festa-luiza",
+  storageBucket: "festa-luiza.firebasestorage.app",
+  messagingSenderId: "611573097100",
+  appId: "1:611573097100:web:46149d9f909360305c91a9"
+};
+const SCOREBOARD_PATH = 'festaLuiza2026/players';
+let db = null;
+let firebaseReady = false;
+let firebaseListening = false;
 
 function _enc(s){ return btoa(s.split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)^(73+i))).join('')); }
 function _dec(s){ try{ return atob(s).split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)^(73+i))).join(''); }catch(e){ return null; } }
@@ -1494,6 +1527,82 @@ function saveS(){
   sessionStorage.setItem('luizaFesta',JSON.stringify(p));
 }
 function isAdmin(){ return sessionStorage.getItem('luizaAdmin')==='ok'; }
+
+function setSyncStatus(kind, text){
+  const el=document.getElementById('sync-status');
+  if(!el) return;
+  el.className=`sync-status ${kind}`;
+  el.textContent=text;
+}
+
+function playersFromFirebase(value){
+  if(!value) return [];
+  const list=Array.isArray(value)?value:Object.keys(value).map(k=>({id:k,...value[k]}));
+  return list
+    .filter(p=>p && p.name && p.team)
+    .sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+}
+
+function refreshScoreViews(){
+  updateScoreBar();
+  updateDash();
+}
+
+function initGlobalScore(){
+  try{
+    if(!window.firebase || !firebase.database){
+      setSyncStatus('off','● placar local');
+      return;
+    }
+    if(!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    db=firebase.database();
+    firebaseReady=true;
+    const ref=db.ref(SCOREBOARD_PATH);
+    ref.on('value', snap=>{
+      S.players=playersFromFirebase(snap.val());
+      saveS();
+      firebaseListening=true;
+      setSyncStatus('on','● placar global ativo');
+      refreshScoreViews();
+    }, err=>{
+      console.warn('Firebase scoreboard listener failed', err);
+      setSyncStatus('off','● placar local');
+    });
+  }catch(err){
+    console.warn('Firebase unavailable', err);
+    setSyncStatus('off','● placar local');
+  }
+}
+
+function savePlayerScore(player){
+  const payload={...player,createdAt:Date.now()};
+  if(firebaseReady && db){
+    return db.ref(SCOREBOARD_PATH).push(payload).then(()=>{
+      setSyncStatus('on','● placar global ativo');
+    }).catch(err=>{
+      console.warn('Could not save global score', err);
+      S.players.push(payload); saveS(); refreshScoreViews();
+      setSyncStatus('off','● salvo só neste aparelho');
+    });
+  }
+  S.players.push(payload); saveS(); refreshScoreViews();
+  return Promise.resolve();
+}
+
+function resetGlobalScore(){
+  if(!isAdmin()){ alert('Acesso restrito ao admin.'); return; }
+  const ok=confirm('Zerar o placar global do quiz? Isso apaga os participantes de todos os celulares.');
+  if(!ok) return;
+  S.players=[]; saveS(); refreshScoreViews();
+  if(firebaseReady && db){
+    db.ref(SCOREBOARD_PATH).remove()
+      .then(()=>{ sessionStorage.removeItem('luizaJogou'); alert('Placar global zerado.'); })
+      .catch(()=>alert('Não consegui zerar no Firebase agora. Tente novamente com internet.'));
+  } else {
+    sessionStorage.removeItem('luizaJogou');
+    alert('Placar local zerado neste aparelho. O Firebase não está conectado.');
+  }
+}
 
 // ══════════════════════════════
 // NAVIGATION
@@ -1558,6 +1667,7 @@ function saveAdmin(){
   saveS();
   document.getElementById('a-err').textContent='';
   document.getElementById('reveal-btn').style.display='';
+  document.getElementById('reset-score-btn').style.display='';
   closeAdmin();
 }
 
@@ -1703,7 +1813,7 @@ function startQuiz(){
   if(!name){ err.textContent='Coloca seu nome! 😄'; return; }
   if(!selTeam){ err.textContent='Escolha seu time!'; return; }
   if(S.players.find(p=>p.name.toLowerCase()===name.toLowerCase())){ err.textContent='Esse nome já participou! 🧐'; return; }
-  if(sessionStorage.getItem('luizaJogou')){ err.textContent='Você já participou neste dispositivo! 😄'; return; }
+  if(sessionStorage.getItem('luizaJogou')){ err.textContent='Você já participou neste dispositivo! Chame o admin se precisar jogar de novo. 😄'; return; }
   qState={player:{name,team:selTeam,score:0,luizaScore:0,bebeScore:0,done:false},qIndex:0,score:0,luizaScore:0,bebeScore:0,answered:false};
   setupQuizUI();
   showQScreen('qs-playing');
@@ -1774,7 +1884,7 @@ function updateScoreBar(){
 function finishQuiz(){
   const p=qState.player;
   p.done=true; p.score=qState.score; p.luizaScore=qState.luizaScore; p.bebeScore=qState.bebeScore;
-  S.players.push(p); saveS();
+  savePlayerScore(p);
   sessionStorage.setItem('luizaJogou','sim');
   const isP=p.team==='pink';
   const pct=Math.round((p.score/TQS)*100);
@@ -2011,7 +2121,11 @@ function setupPortalMagic(){
 loadS();
 buildFixedAlbum();
 setupPortalMagic();
-if(isAdmin()) document.getElementById('reveal-btn').style.display='';
+initGlobalScore();
+if(isAdmin()){
+  document.getElementById('reveal-btn').style.display='';
+  document.getElementById('reset-score-btn').style.display='';
+}
 if(sessionStorage.getItem('luizaJogou')){
   // already played - show dashboard directly when entering quiz tab
   document.getElementById('pg-quiz').addEventListener('click',()=>{},{ once:false });
