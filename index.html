@@ -408,7 +408,7 @@ body{
   overflow:hidden;
   background:
     linear-gradient(180deg,rgba(15,13,20,.22),rgba(15,13,20,.95) 72%),
-    url('https://claudiovestevao.github.io/festa-luiza/fotos/foto01.jpg') center 18%/cover no-repeat,
+    url('fotos/foto01.jpg') center 18%/cover no-repeat,
     var(--dark);
 }
 #pg-home::before{
@@ -432,7 +432,7 @@ body{
   width:118px;height:118px;
   background:
     linear-gradient(rgba(255,255,255,.02),rgba(255,255,255,.02)),
-    url('https://claudiovestevao.github.io/festa-luiza/fotos/foto02.jpg') center/cover no-repeat;
+    url('fotos/foto02.jpg') center/cover no-repeat;
   color:transparent;
   border:4px solid rgba(255,255,255,.88);
   box-shadow:0 0 0 7px rgba(240,98,146,.82),0 16px 46px rgba(0,0,0,.45);
@@ -562,7 +562,7 @@ body{
   background:
     linear-gradient(180deg,rgba(7,5,11,.12),rgba(7,5,11,.94) 74%),
     radial-gradient(circle at 20% 18%,rgba(255,228,122,.28),transparent 12rem),
-    url('https://claudiovestevao.github.io/festa-luiza/fotos/foto01.jpg') center 18%/cover no-repeat,
+    url('fotos/foto01.jpg') center 18%/cover no-repeat,
     var(--magic-night);
 }
 #pg-home::after{
@@ -1565,7 +1565,7 @@ function saveAdmin(){
 // ALBUM — grid unificado + lightbox profissional
 // ══════════════════════════════
 const TOTAL_FOTOS = 95;
-const BASE_URL = 'https://claudiovestevao.github.io/festa-luiza/';
+const BASE_URL = './';
 let FOTOS = Array.from({length: TOTAL_FOTOS}, (_,i) =>
   `${BASE_URL}fotos/foto${String(i+1).padStart(2,'0')}.jpg`
 );
