@@ -1437,6 +1437,7 @@ body{
         <div class="dash-actions">
           <button class="btn btn-gold" id="reveal-btn" onclick="triggerReveal()" style="display:none;">🎉 Momento admin</button>
           <button class="btn-ghost" id="reset-score-btn" onclick="resetGlobalScore()" style="display:none;">🧹 Zerar placar</button>
+          <button class="btn-ghost" id="reset-all-btn" onclick="resetAllGlobalData()" style="display:none;">🗑️ Zerar testes</button>
           <button class="btn-ghost" onclick="updateDash()">🔄 Atualizar</button>
           <button class="btn-ghost" onclick="showQScreen('qs-join')">← Voltar</button>
         </div>
@@ -1506,9 +1507,13 @@ const FIREBASE_CONFIG = {
   appId: "1:611573097100:web:46149d9f909360305c91a9"
 };
 const SCOREBOARD_PATH = 'festaLuiza2026/players';
+const WISHES_PATH = 'festaLuiza2026/wishes';
+const CAPSULES_PATH = 'festaLuiza2026/capsules';
 let db = null;
 let firebaseReady = false;
 let firebaseListening = false;
+let globalWishes = [];
+let globalCapsules = [];
 
 function _enc(s){ return btoa(s.split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)^(73+i))).join('')); }
 function _dec(s){ try{ return atob(s).split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)^(73+i))).join(''); }catch(e){ return null; } }
@@ -1543,6 +1548,14 @@ function playersFromFirebase(value){
     .sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
 }
 
+function listFromFirebase(value){
+  if(!value) return [];
+  const list=Array.isArray(value)?value:Object.keys(value).map(k=>({id:k,...value[k]}));
+  return list
+    .filter(item=>item && (item.name || item.know || item.message || item.wish || item.beauty))
+    .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+}
+
 function refreshScoreViews(){
   updateScoreBar();
   updateDash();
@@ -1568,6 +1581,16 @@ function initGlobalScore(){
       console.warn('Firebase scoreboard listener failed', err);
       setSyncStatus('off','● placar local');
     });
+    db.ref(WISHES_PATH).on('value', snap=>{
+      globalWishes=listFromFirebase(snap.val());
+      writeList(WISH_KEY,globalWishes);
+      renderWishes();
+    }, err=>console.warn('Firebase wishes listener failed', err));
+    db.ref(CAPSULES_PATH).on('value', snap=>{
+      globalCapsules=listFromFirebase(snap.val());
+      writeList(CAPSULE_KEY,globalCapsules);
+      renderCapsules();
+    }, err=>console.warn('Firebase capsules listener failed', err));
   }catch(err){
     console.warn('Firebase unavailable', err);
     setSyncStatus('off','● placar local');
@@ -1591,7 +1614,7 @@ function savePlayerScore(player){
 
 function resetGlobalScore(){
   if(!isAdmin()){ alert('Acesso restrito ao admin.'); return; }
-  const ok=confirm('Zerar o placar global do quiz? Isso apaga os participantes de todos os celulares.');
+  const ok=confirm('Zerar o placar global do quiz? Isso apaga os participantes de todos os celulares. Recados e cápsulas serão mantidos.');
   if(!ok) return;
   S.players=[]; saveS(); refreshScoreViews();
   if(firebaseReady && db){
@@ -1601,6 +1624,20 @@ function resetGlobalScore(){
   } else {
     sessionStorage.removeItem('luizaJogou');
     alert('Placar local zerado neste aparelho. O Firebase não está conectado.');
+  }
+}
+
+function resetAllGlobalData(){
+  if(!isAdmin()){ alert('Acesso restrito ao admin.'); return; }
+  const ok=confirm('Apagar placar, recados e cápsulas do banco? Use só se estiver testando antes da festa.');
+  if(!ok) return;
+  S.players=[]; globalWishes=[]; globalCapsules=[];
+  saveS(); writeList(WISH_KEY,[]); writeList(CAPSULE_KEY,[]);
+  refreshScoreViews(); renderWishes(); renderCapsules();
+  if(firebaseReady && db){
+    db.ref('festaLuiza2026').remove()
+      .then(()=>{ sessionStorage.removeItem('luizaJogou'); alert('Banco da festa zerado.'); })
+      .catch(()=>alert('Não consegui zerar o Firebase agora. Tente novamente com internet.'));
   }
 }
 
@@ -1668,6 +1705,7 @@ function saveAdmin(){
   document.getElementById('a-err').textContent='';
   document.getElementById('reveal-btn').style.display='';
   document.getElementById('reset-score-btn').style.display='';
+  document.getElementById('reset-all-btn').style.display='';
   closeAdmin();
 }
 
@@ -2011,19 +2049,25 @@ function saveWish(){
   const future=document.getElementById('wish-future').value.trim();
   const message=document.getElementById('wish-message').value.trim();
   if(!name || !message){ alert('Escreva seu nome e uma mensagem para a Luiza.'); return; }
-  const wishes=readList(WISH_KEY);
-  wishes.unshift({name,future,message,date:new Date().toLocaleDateString('pt-BR')});
-  writeList(WISH_KEY,wishes.slice(0,80));
+  const payload={name,future,message,date:new Date().toLocaleDateString('pt-BR'),createdAt:Date.now()};
   document.getElementById('wish-name').value='';
   document.getElementById('wish-future').value='';
   document.getElementById('wish-message').value='';
-  renderWishes();
+  if(firebaseReady && db){
+    db.ref(WISHES_PATH).push(payload).catch(err=>{
+      console.warn('Could not save global wish', err);
+      const wishes=readList(WISH_KEY); wishes.unshift(payload); writeList(WISH_KEY,wishes.slice(0,120)); renderWishes();
+      alert('Salvei neste aparelho, mas não consegui enviar ao banco agora.');
+    });
+  } else {
+    const wishes=readList(WISH_KEY); wishes.unshift(payload); writeList(WISH_KEY,wishes.slice(0,120)); renderWishes();
+  }
 }
 
 function renderWishes(){
   const box=document.getElementById('wish-list');
   if(!box) return;
-  const wishes=readList(WISH_KEY);
+  const wishes=globalWishes.length?globalWishes:readList(WISH_KEY);
   box.innerHTML=wishes.length?wishes.map(w=>`
     <div class="wish-item">
       <strong>⭐ ${escapeHtml(w.name)}</strong>
@@ -2033,7 +2077,7 @@ function renderWishes(){
 }
 
 function exportWishes(){
-  const wishes=readList(WISH_KEY);
+  const wishes=globalWishes.length?globalWishes:readList(WISH_KEY);
   const text=wishes.map(w=>`${w.name}\nMensagem: ${w.message}\nDesejo: ${w.future||'-'}\n`).join('\n---\n') || 'Ainda não há mensagens.';
   copyText(text,'Mensagens copiadas.');
 }
@@ -2043,19 +2087,25 @@ function saveCapsule(){
   const beauty=document.getElementById('cap-beauty').value.trim();
   const wish=document.getElementById('cap-wish').value.trim();
   if(!know && !beauty && !wish){ alert('Escreva pelo menos uma mensagem para a cápsula.'); return; }
-  const capsules=readList(CAPSULE_KEY);
-  capsules.unshift({know,beauty,wish,date:new Date().toLocaleDateString('pt-BR')});
-  writeList(CAPSULE_KEY,capsules.slice(0,80));
+  const payload={know,beauty,wish,date:new Date().toLocaleDateString('pt-BR'),createdAt:Date.now()};
   document.getElementById('cap-know').value='';
   document.getElementById('cap-beauty').value='';
   document.getElementById('cap-wish').value='';
-  renderCapsules();
+  if(firebaseReady && db){
+    db.ref(CAPSULES_PATH).push(payload).catch(err=>{
+      console.warn('Could not save global capsule', err);
+      const capsules=readList(CAPSULE_KEY); capsules.unshift(payload); writeList(CAPSULE_KEY,capsules.slice(0,120)); renderCapsules();
+      alert('Guardei neste aparelho, mas não consegui enviar ao banco agora.');
+    });
+  } else {
+    const capsules=readList(CAPSULE_KEY); capsules.unshift(payload); writeList(CAPSULE_KEY,capsules.slice(0,120)); renderCapsules();
+  }
 }
 
 function renderCapsules(){
   const box=document.getElementById('capsule-list');
   if(!box) return;
-  const capsules=readList(CAPSULE_KEY);
+  const capsules=globalCapsules.length?globalCapsules:readList(CAPSULE_KEY);
   box.innerHTML=capsules.length?capsules.map((c,i)=>`
     <div class="wish-item">
       <strong>💌 Cápsula ${capsules.length-i}</strong>
@@ -2066,7 +2116,7 @@ function renderCapsules(){
 }
 
 function exportCapsules(){
-  const capsules=readList(CAPSULE_KEY);
+  const capsules=globalCapsules.length?globalCapsules:readList(CAPSULE_KEY);
   const text=capsules.map((c,i)=>`Cápsula ${i+1}\n${c.know||''}\n${c.beauty||''}\nDesejo: ${c.wish||'-'}\n`).join('\n---\n') || 'Ainda não há cápsulas.';
   copyText(text,'Cápsulas copiadas.');
 }
@@ -2125,6 +2175,7 @@ initGlobalScore();
 if(isAdmin()){
   document.getElementById('reveal-btn').style.display='';
   document.getElementById('reset-score-btn').style.display='';
+  document.getElementById('reset-all-btn').style.display='';
 }
 if(sessionStorage.getItem('luizaJogou')){
   // already played - show dashboard directly when entering quiz tab
