@@ -383,12 +383,21 @@ body{font-family:'Nunito',sans-serif;background:var(--dark);color:var(--black);m
     <div class="home-title"><span class="pink">Luiza</span> faz 3!</div>
     <div class="home-date">🎀 Festa de aniversário da Luiza - Maio/26</div>
 
-    <!-- PREGNANCY ANNOUNCEMENT -->
-    <div class="preg-card">
-      <span class="preg-tag">🤫 Novidade!</span>
-      <h2>Muitos ainda não sabem…<br>mas a Nath está grávida! 🤰</h2>
-      <p>A família está crescendo! Além de celebrar os 3 aninhos da Luiza, hoje também tem revelação do irmãozinho ou irmãzinha que vem aí! 🍼</p>
-      <div class="preg-emojis">👶🎀⚽💕</div>
+    <!-- PREGNANCY ANNOUNCEMENT - discreto -->
+    <div style="
+      background:rgba(181,123,238,.08);
+      border:1px solid rgba(181,123,238,.2);
+      border-radius:16px;
+      padding:.85rem 1.1rem;
+      margin-bottom:1.2rem;
+      display:flex;align-items:center;gap:.8rem;
+      text-align:left;
+    ">
+      <span style="font-size:1.6rem;flex-shrink:0;">🤫</span>
+      <div>
+        <div style="font-family:'Fredoka One',cursive;color:var(--lilac-light);font-size:.88rem;margin-bottom:.1rem;">Psiu… a Nath está grávida!</div>
+        <div style="font-size:.75rem;color:#4a3f62;line-height:1.4;">Hoje também tem revelação do irmãozinho ou irmãzinha que vem aí 🍼</div>
+      </div>
     </div>
 
     <!-- EVENTS -->
@@ -514,37 +523,50 @@ body{font-family:'Nunito',sans-serif;background:var(--dark);color:var(--black);m
      PAGE: ALBUM
 ══════════════════════════════════ -->
 <div class="page" id="pg-album">
-  <div class="album-inner">
-    <div class="section-header">
-      <div class="sh-tag">📸 Fotos da Aniversariante</div>
-      <h1>Nossa <span style="color:var(--rose-light)">Luly</span> 💕</h1>
-      <p style="color:#4a3f62;">30 momentos especiais · toque para ampliar</p>
+  <!-- sticky header -->
+  <div style="position:sticky;top:0;z-index:10;background:var(--dark);padding:.8rem 1rem .6rem;border-bottom:1px solid #1e1928;">
+    <div style="display:flex;align-items:center;justify-content:space-between;max-width:520px;margin:0 auto;">
+      <div>
+        <div style="font-family:'Fredoka One',cursive;color:var(--cream);font-size:1.1rem;">📸 Nossa Luly 💕</div>
+        <div id="album-count" style="font-size:.72rem;color:#4a3f62;">95 fotos</div>
+      </div>
+      <!-- upload button compacto -->
+      <label style="background:rgba(181,123,238,.15);border:1.5px solid rgba(181,123,238,.4);color:var(--lilac-light);font-family:'Fredoka One',cursive;font-size:.8rem;padding:.4rem .9rem;border-radius:50px;cursor:pointer;white-space:nowrap;">
+        ➕ Adicionar
+        <input type="file" accept="image/*" multiple onchange="handleAlbumUpload(event)" style="display:none;">
+      </label>
     </div>
-
-    <!-- Fixed grid: 30 Google Photos -->
-    <div class="album-grid" id="album-grid-fixed"></div>
-
-    <!-- Divider for party additions -->
-    <div style="border-top:2px dashed #2e2840;margin:1.2rem 0;"></div>
-    <p style="text-align:center;font-family:'Fredoka One',cursive;color:#4a3f62;font-size:.85rem;margin-bottom:.8rem;">📷 Adicionar fotos da festa</p>
-    <div class="album-upload-zone">
-      <input type="file" accept="image/*" multiple onchange="handleAlbumUpload(event)">
-      <div class="auz-icon">➕</div>
-      <div class="auz-title">Suas fotos da festa</div>
-      <div class="auz-sub">Toque para adicionar da galeria</div>
-    </div>
-    <div class="album-grid" id="album-grid-extra"></div>
   </div>
+
+  <!-- grid unificado -->
+  <div id="album-grid-all" style="
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:3px;
+    max-width:520px;
+    margin:0 auto;
+    padding:3px 3px 90px;
+  "></div>
 </div>
 
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox">
-  <button class="lb-close" onclick="closeLightbox()">✕</button>
-  <button class="lb-nav lb-prev" onclick="lbNav(-1)">‹</button>
-  <img id="lb-img" src="" alt="">
-  <button class="lb-nav lb-next" onclick="lbNav(1)">›</button>
+<!-- Lightbox fullscreen -->
+<div id="lightbox" style="display:none;position:fixed;inset:0;z-index:950;background:#000;flex-direction:column;">
+  <!-- top bar -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:.8rem 1rem;flex-shrink:0;">
+    <button onclick="closeLightbox()" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:1.1rem;cursor:pointer;">✕</button>
+    <span id="lb-counter" style="font-family:'Fredoka One',cursive;color:rgba(255,255,255,.7);font-size:.9rem;"></span>
+    <a id="lb-download" download style="background:rgba(255,255,255,.1);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none;">⬇</a>
+  </div>
+  <!-- imagem -->
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;" id="lb-img-wrap">
+    <img id="lb-img" src="" style="max-width:100%;max-height:100%;object-fit:contain;user-select:none;">
+    <!-- nav areas (toque nos lados) -->
+    <div onclick="lbNav(-1)" style="position:absolute;left:0;top:0;width:40%;height:100%;cursor:w-resize;"></div>
+    <div onclick="lbNav(1)"  style="position:absolute;right:0;top:0;width:40%;height:100%;cursor:e-resize;"></div>
+  </div>
+  <!-- bottom: thumbnails strip -->
+  <div id="lb-strip" style="display:flex;gap:3px;padding:3px 3px 12px;overflow-x:auto;flex-shrink:0;height:68px;background:#111;scrollbar-width:none;"></div>
 </div>
-<div id="lb-counter" style="display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;font-family:'Fredoka One',cursive;font-size:.88rem;padding:.3rem .9rem;border-radius:50px;z-index:910;pointer-events:none;"></div>
 
 <!-- ══════════════════════════════════
      PAGE: QUIZ
@@ -788,135 +810,123 @@ function saveAdmin(){
 }
 
 // ══════════════════════════════
-// ALBUM — fotos hospedadas em /fotos/
+// ALBUM — grid unificado + lightbox profissional
 // ══════════════════════════════
 const TOTAL_FOTOS = 95;
 const BASE_URL = 'https://claudiovestevao.github.io/festa-luiza/';
-const FOTOS = Array.from({length: TOTAL_FOTOS}, (_,i) =>
+let FOTOS = Array.from({length: TOTAL_FOTOS}, (_,i) =>
   `${BASE_URL}fotos/foto${String(i+1).padStart(2,'0')}.jpg`
 );
-
-let lbAll = [];
+let extraPhotos = [];
 let lbIndex = 0;
 
-function buildFixedAlbum(){
-  lbAll = FOTOS.map(src => ({ src }));
-  renderFixedGrid();
-}
+function allFotos(){ return [...FOTOS, ...extraPhotos]; }
 
-function renderFixedGrid(){
-  const grid = document.getElementById('album-grid-fixed');
+function buildFixedAlbum(){ renderAlbumGrid(); }
+
+function renderAlbumGrid(){
+  const grid = document.getElementById('album-grid-all');
+  if(!grid) return;
   grid.innerHTML = '';
-  FOTOS.forEach((src, i) => {
+  const all = allFotos();
+  const countEl = document.getElementById('album-count');
+  if(countEl) countEl.textContent = `${all.length} fotos`;
+  all.forEach((src, i) => {
     const div = document.createElement('div');
-    div.className = 'album-thumb';
-    div.style.cssText = 'background:#1e1928;cursor:pointer;';
-
-    // Usa background-image — mais confiável que <img> para cross-origin
-    div.style.backgroundImage = `url('${src}')`;
-    div.style.backgroundSize = 'cover';
-    div.style.backgroundPosition = 'center';
-
-    // Fallback emoji se não carregar
-    div.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#2e2245;font-size:1.5rem;opacity:0;" class="fb-icon">📷</div>`;
-
-    // Testa se a imagem carrega; mostra emoji só se falhar
-    const tester = new Image();
-    tester.onload = () => { /* imagem ok, background já está visível */ };
-    tester.onerror = () => {
-      div.style.backgroundImage = 'none';
-      div.querySelector('.fb-icon').style.opacity = '1';
-    };
-    tester.src = src;
-
+    div.style.cssText = 'aspect-ratio:1;background:#1e1928;cursor:pointer;background-size:cover;background-position:center;';
     div.onclick = () => openLightbox(i);
+    const img = new Image();
+    img.onload = () => { div.style.backgroundImage = `url('${src}')`; };
+    img.src = src;
     grid.appendChild(div);
   });
 }
 
-let extraPhotos = [];
-
 function handleAlbumUpload(e){
   Array.from(e.target.files).forEach(f => {
-    if(f.size > 8*1024*1024) return;
+    if(f.size > 10*1024*1024) return;
     const r = new FileReader();
-    r.onload = ev => {
-      extraPhotos.push(ev.target.result);
-      lbAll = [
-        ...FOTOS.map(src => ({ src })),
-        ...extraPhotos.map(src => ({ src }))
-      ];
-      renderExtraGrid();
-    };
+    r.onload = ev => { extraPhotos.push(ev.target.result); renderAlbumGrid(); };
     r.readAsDataURL(f);
   });
   e.target.value = '';
 }
 
-function renderExtraGrid(){
-  const grid = document.getElementById('album-grid-extra');
-  grid.innerHTML = '';
-  extraPhotos.forEach((src, i) => {
+function openLightbox(i){
+  lbIndex = i;
+  document.getElementById('lightbox').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  setLbPhoto(i);
+  buildLbStrip();
+}
+
+function setLbPhoto(i){
+  const all = allFotos();
+  lbIndex = i;
+  const src = all[i];
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lb-counter').textContent = `${i+1} / ${all.length}`;
+  document.getElementById('lb-download').href = src;
+  const strip = document.getElementById('lb-strip');
+  Array.from(strip.children).forEach((t,j) => {
+    t.style.opacity = j===i ? '1' : '0.35';
+    t.style.outline = j===i ? '2px solid #d4a8f7' : 'none';
+  });
+  if(strip.children[i]) strip.children[i].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+}
+
+function buildLbStrip(){
+  const strip = document.getElementById('lb-strip');
+  strip.innerHTML = '';
+  allFotos().forEach((src, i) => {
     const div = document.createElement('div');
-    div.className = 'album-thumb';
-    div.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;display:block;" onclick="openLightbox(${FOTOS.length + i})">
-      <button class="del-btn" onclick="deleteExtra(event,${i})">✕</button>`;
-    grid.appendChild(div);
+    div.style.cssText = `width:58px;height:58px;flex-shrink:0;background:center/cover no-repeat url('${src}');cursor:pointer;border-radius:4px;opacity:${i===lbIndex?'1':'0.35'};outline:${i===lbIndex?'2px solid #d4a8f7':'none'};`;
+    div.onclick = () => setLbPhoto(i);
+    strip.appendChild(div);
   });
 }
 
-function deleteExtra(e, i){
-  e.stopPropagation();
-  extraPhotos.splice(i, 1);
-  lbAll = [
-    ...FOTOS.map(src => ({ src })),
-    ...extraPhotos.map(src => ({ src }))
-  ];
-  renderExtraGrid();
+function closeLightbox(){
+  document.getElementById('lightbox').style.display = 'none';
+  document.body.style.overflow = '';
 }
 
-function openLightbox(i){
-  lbIndex = i;
-  const src = i < FOTOS.length
-    ? FOTOS[i]
-    : extraPhotos[i - FOTOS.length];
-  document.getElementById('lb-img').src = src;
-  document.getElementById('lb-counter').textContent = `${i+1} / ${lbAll.length}`;
-  document.getElementById('lb-counter').style.display = 'block';
-  document.getElementById('lightbox').classList.add('open');
-}
-function closeLightbox(){
-  document.getElementById('lightbox').classList.remove('open');
-  document.getElementById('lb-counter').style.display = 'none';
-}
 function lbNav(d){
-  lbIndex = (lbIndex + d + lbAll.length) % lbAll.length;
-  const src = lbIndex < FOTOS.length
-    ? FOTOS[lbIndex]
-    : extraPhotos[lbIndex - FOTOS.length];
-  document.getElementById('lb-img').src = src;
-  document.getElementById('lb-counter').textContent = `${lbIndex+1} / ${lbAll.length}`;
+  const all = allFotos();
+  setLbPhoto((lbIndex + d + all.length) % all.length);
 }
-document.getElementById('lightbox').addEventListener('click', function(e){
-  if(e.target === this) closeLightbox();
-});
+
+// swipe + teclado
+(function(){
+  let sx = 0;
+  const lb = document.getElementById('lightbox');
+  if(!lb) return;
+  lb.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, {passive:true});
+  lb.addEventListener('touchend',   e => { const dx = e.changedTouches[0].clientX - sx; if(Math.abs(dx)>50) lbNav(dx<0?1:-1); }, {passive:true});
+  document.addEventListener('keydown', e => {
+    if(document.getElementById('lightbox').style.display!=='flex') return;
+    if(e.key==='ArrowRight') lbNav(1);
+    if(e.key==='ArrowLeft')  lbNav(-1);
+    if(e.key==='Escape')     closeLightbox();
+  });
+})();
 
 // ══════════════════════════════
 // QUESTIONS
 // ══════════════════════════════
 const QUESTIONS=[
-  {round:'luiza',emoji:'🍈',q:'Qual é a fruta favorita da Luiza?',opts:['Morango 🍓','Manga 🥭','Goiaba 🍈','Melancia 🍉'],ans:2,fun:'Goiaba! A Luiza tem um gosto refinadíssimo! 🍈😂'},
-  {round:'luiza',emoji:'🍫',q:'Qual é o doce favorito da Luiza?',opts:['Sorvete 🍦','Pirulito 🍭','Brigadeiro 🍫','Bolo de chocolate 🎂'],ans:2,fun:'Brigadeiro! Clássico infalível da nossa rainha! 🍫👑'},
-  {round:'luiza',emoji:'🧸',q:'Quantas bonecas a Luiza coloca pra dormir todo dia?',opts:['1 ou 2 🧸','De 3 a 5','De 6 a 9','Mais de 10! 🧸🧸🧸'],ans:3,fun:'Mais de 10! A cama dela parece uma loja de brinquedos! 🧸😂'},
-  {round:'luiza',emoji:'😴',q:'Qual é a naninha favorita da Luiza pra dormir?',opts:['Chupeta 🍬','O cobertinho','Pegar o cabelo da mamãe 👩','Abraçar o papai 👨'],ans:2,fun:'Pegar o cabelo da mamãe! A Nathalie sabe muito bem disso! 😂💕'},
-  {round:'luiza',emoji:'🎵',q:'Qual música a Luiza sabe cantar inteirinha?',opts:['Parabéns pra você 🎂','Let It Go ❄️','Baby Shark 🦈','Hino do São Paulo 🔴⚫'],ans:3,fun:'Hino do São Paulo! Tricolor de coração desde pequenininha! 🔴⚫🎶'},
-  {round:'bebe',emoji:'🎀',q:'No universo Disney, quem é a namorada do Mickey?',opts:['Daisy','Cinderela','Minnie 🎀','Clarabelle'],ans:2,fun:'Minnie Mouse! Com sua polka dot dress icônica! 🎀'},
-  {round:'bebe',emoji:'🐭',q:'Em que ano o Mickey Mouse apareceu pela primeira vez nas telas?',opts:['1920','1924','1928 🎬','1932'],ans:2,fun:'1928, no curta "Steamboat Willie"! Mickey tem quase 100 anos! 🎬'},
-  {round:'bebe',emoji:'🎩',q:'Qual é o nome do cachorro do Mickey Mouse?',opts:['Rex','Pluto 🐕','Goofy','Bolt'],ans:1,fun:'Pluto! O fiel companheiro de orelhas caídas do Mickey! 🐕'},
-  {round:'bebe',emoji:'🌹',q:'Qual é a cor do laço da Minnie Mouse?',opts:['Vermelho com bolinhas brancas 🔴','Rosa 🩷','Amarelo 💛','Roxo 💜'],ans:0,fun:'Vermelho com bolinhas brancas! Icônico e inconfundível! 🔴⚪'},
+  {round:'luiza',emoji:'🍈',q:'Qual é a fruta favorita da Luiza?',opts:['Morango','Manga','Goiaba','Melancia'],ans:2,fun:'Goiaba! A Luiza tem um gosto refinadíssimo! 🍈😂'},
+  {round:'luiza',emoji:'🍫',q:'Qual é o doce favorito da Luiza?',opts:['Sorvete','Pirulito','Brigadeiro','Bolo de chocolate'],ans:2,fun:'Brigadeiro! Clássico infalível da nossa rainha! 🍫👑'},
+  {round:'luiza',emoji:'🧸',q:'Quantas bonecas a Luiza coloca pra dormir todo dia?',opts:['1 ou 2','De 3 a 5','De 6 a 9','Mais de 10'],ans:3,fun:'Mais de 10! A cama dela parece uma loja de brinquedos! 🧸😂'},
+  {round:'luiza',emoji:'😴',q:'Qual é a naninha favorita da Luiza pra dormir?',opts:['Chupeta','O cobertinho','Pegar o cabelo da mamãe','Abraçar o papai'],ans:2,fun:'Pegar o cabelo da mamãe! A Nathalie sabe muito bem disso! 😂💕'},
+  {round:'luiza',emoji:'🎵',q:'Qual música a Luiza sabe cantar inteirinha?',opts:['Parabéns pra você','Let It Go','Baby Shark','Hino do São Paulo'],ans:3,fun:'Hino do São Paulo! Tricolor de coração desde pequenininha! 🔴⚫🎶'},
+  {round:'bebe',emoji:'🎀',q:'No universo Disney, quem é a namorada do Mickey?',opts:['Daisy','Cinderela','Minnie','Clarabelle'],ans:2,fun:'Minnie Mouse! Com sua polka dot dress icônica! 🎀'},
+  {round:'bebe',emoji:'🐭',q:'Em que ano o Mickey Mouse apareceu pela primeira vez nas telas?',opts:['1920','1924','1928','1932'],ans:2,fun:'1928, no curta "Steamboat Willie"! Mickey tem quase 100 anos! 🎬'},
+  {round:'bebe',emoji:'🎩',q:'Qual é o nome do cachorro do Mickey Mouse?',opts:['Rex','Pluto','Goofy','Bolt'],ans:1,fun:'Pluto! O fiel companheiro de orelhas caídas do Mickey! 🐕'},
+  {round:'bebe',emoji:'🌹',q:'Qual é a cor do laço da Minnie Mouse?',opts:['Vermelho com bolinhas brancas','Rosa','Amarelo','Roxo'],ans:0,fun:'Vermelho com bolinhas brancas! Icônico e inconfundível! 🔴⚪'},
   {round:'bebe',emoji:'🤰',q:'Quantas semanas dura uma gravidez humana (em média)?',opts:['32 semanas','36 semanas','40 semanas','44 semanas'],ans:2,fun:'40 semanas — 9 meses de muito amor! 💕'},
-  {round:'bebe',emoji:'🍼',q:'Qual é geralmente o primeiro sentido que o bebê desenvolve no útero?',opts:['Visão 👁️','Olfato 👃','Audição 👂','Paladar 👅'],ans:2,fun:'A audição! Bebês ouvem a voz da mamãe desde a 18ª semana! 👂💕'},
-  {round:'bebe',emoji:'💛',q:'O que a lenda diz quando o bebê chuta muito à noite?',opts:['Vai ser artista 🎭','Sinal de saúde 💚','Bebê agitado 🌀','Vai ser artilheiro ⚽'],ans:3,fun:'Vai ser artilheiro! Mas o que importa é a saúde e o amor! ⚽💕'},
+  {round:'bebe',emoji:'🍼',q:'Qual é geralmente o primeiro sentido que o bebê desenvolve no útero?',opts:['Visão','Olfato','Audição','Paladar'],ans:2,fun:'A audição! Bebês ouvem a voz da mamãe desde a 18ª semana! 👂💕'},
+  {round:'bebe',emoji:'💛',q:'O que a lenda diz quando o bebê chuta muito à noite?',opts:['Vai ser artista','Sinal de saúde','Bebê agitado','Vai ser artilheiro'],ans:3,fun:'Vai ser artilheiro! Mas o que importa é a saúde e o amor! ⚽💕'},
 ];
 const LQS=QUESTIONS.filter(q=>q.round==='luiza').length;
 const BQS=QUESTIONS.filter(q=>q.round==='bebe').length;
