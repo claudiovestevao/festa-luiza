@@ -1036,13 +1036,9 @@ function renderAlbumGrid(){
     div.setAttribute('role','button');
     div.setAttribute('tabindex','0');
     div.setAttribute('aria-label',`Abrir foto ${i+1}`);
-    div.style.cssText = 'aspect-ratio:1;background:#1e1928;cursor:pointer;background-size:cover;background-position:center;';
+    div.style.cssText = `aspect-ratio:1;background:#1e1928 center/cover no-repeat url('${src}');cursor:pointer;`;
     div.onclick = () => openLightbox(i);
     div.onkeydown = (ev) => { if(ev.key==='Enter' || ev.key===' ') { ev.preventDefault(); openLightbox(i); } };
-    const img = new Image();
-    img.loading = 'lazy';
-    img.onload = () => { div.style.backgroundImage = `url('${src}')`; };
-    img.src = src;
     grid.appendChild(div);
   });
 }
