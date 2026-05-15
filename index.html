@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎂 Luiza faz 3! · Festa da Minnie & Mickey</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* ── Candy palette ── */
+  --lilac:#b57bee;       --lilac-light:#d4a8f7;  --lilac-pale:#f5eeff;
+  --mint:#3dbf8a;        --mint-light:#6ed9a8;   --mint-pale:#eafaf4;
+  --rose:#f06292;        --rose-light:#f8a4c0;   --rose-pale:#fff0f5;
+  --peach:#ff8c69;       --peach-light:#ffb38a;
+  --gold:#f5c842;        --gold-light:#ffe47a;
+  --black:#1a1220;       --dark:#0f0d14;
+  --cream:#fff9f2;       --white:#fff;
+  --dot:#ffffff08;       --red:#e05270;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{font-family:'Nunito',sans-serif;background:var(--dark);color:var(--black);min-height:100vh;overflow-x:hidden;}
+.polka{position:fixed;inset:0;z-index:0;pointer-events:none;background-color:var(--dark);background-image:radial-gradient(circle,var(--dot) 3px,transparent 3px);background-size:28px 28px;}
+
+/* ════ NAV TABS ════ */
+.nav-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:500;
+  background:#0d0b11;border-top:1px solid #221e2e;
+  display:flex;padding:.3rem .5rem calc(.3rem + env(safe-area-inset-bottom));
+  gap:.3rem;
+}
+.nav-tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:.15rem;
+  padding:.5rem .2rem;border-radius:12px;cursor:pointer;
+  transition:all .2s;border:none;background:transparent;
+  color:#3d3550;font-family:'Nunito',sans-serif;font-size:.58rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:.04em;
+}
+.nav-tab .nt-icon{font-size:1.3rem;transition:transform .2s;}
+.nav-tab.active{color:var(--lilac-light);}
+.nav-tab.active .nt-icon{transform:scale(1.2);}
+.nav-tab:hover{color:#7a6e99;}
+
+/* ════ PAGES ════ */
+.page{display:none;min-height:100vh;padding-bottom:80px;position:relative;z-index:1;}
+.page.active{display:block;}
+
+/* ════ SHARED ════ */
+.section-header{text-align:center;padding:2rem 1.5rem 1rem;}
+.section-header .sh-tag{
+  display:inline-block;background:linear-gradient(135deg,var(--lilac),var(--lilac-light));
+  color:#fff;padding:.3rem 1rem;border-radius:50px;
+  font-family:'Fredoka One',cursive;font-size:.82rem;margin-bottom:.8rem;
+  box-shadow:0 4px 14px rgba(181,123,238,.4);
+}
+.section-header h1{font-family:'Fredoka One',cursive;font-size:clamp(1.8rem,6vw,2.8rem);color:var(--cream);line-height:1.1;}
+.section-header p{color:#5c5470;font-size:.9rem;margin-top:.4rem;}
+
+.card{background:var(--cream);border-radius:22px;overflow:hidden;}
+.card-dark{background:#1e1928;border:1px solid #2e2840;border-radius:22px;}
+.stripe-top{height:6px;background:repeating-linear-gradient(90deg,var(--rose) 0 15px,var(--black) 15px 22px,var(--lilac) 22px 37px,var(--black) 37px 44px,var(--mint) 44px 59px,var(--black) 59px 66px);}
+
+.btn{font-family:'Fredoka One',cursive;font-size:1.1rem;padding:.9rem 2rem;border-radius:50px;border:none;cursor:pointer;transition:all .2s;letter-spacing:.03em;}
+.btn:active{transform:scale(.97);}
+.btn-pink{background:linear-gradient(135deg,var(--rose),var(--rose-light));color:#fff;box-shadow:0 6px 22px rgba(240,98,146,.35);}
+.btn-pink:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(240,98,146,.5);}
+.btn-blue{background:linear-gradient(135deg,var(--lilac),var(--lilac-light));color:#fff;box-shadow:0 6px 22px rgba(181,123,238,.35);}
+.btn-blue:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(181,123,238,.5);}
+.btn-gold{background:linear-gradient(135deg,#c9a000,var(--gold));color:var(--black);font-weight:900;box-shadow:0 6px 22px rgba(245,200,66,.35);}
+.btn-dark{background:#1e1928;color:var(--lilac-light);border:2px solid #3d3560;}
+.btn-ghost{background:transparent;border:2px solid rgba(255,255,255,.25);color:rgba(255,255,255,.65);font-family:'Nunito',sans-serif;font-size:.9rem;padding:.55rem 1.4rem;border-radius:50px;cursor:pointer;transition:all .2s;}
+.btn-ghost:hover{border-color:rgba(255,255,255,.55);color:#fff;}
+.btn-sm-admin{background:transparent;border:2px dashed #2e2840;color:#4a4060;font-family:'Nunito',sans-serif;font-size:.75rem;padding:.4rem 1rem;border-radius:50px;cursor:pointer;transition:all .2s;}
+.btn-sm-admin:hover{border-color:#5c5070;color:#8878aa;}
+.err{color:#f87171;font-size:.82rem;margin-top:.5rem;min-height:1.2rem;text-align:center;}
+.back-link{position:fixed;top:1rem;left:1rem;z-index:200;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);padding:.4rem 1rem;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.78rem;cursor:pointer;transition:all .2s;}
+.back-link:hover{color:#fff;}
+
+/* ════ PAGE: HOME ════ */
+#pg-home{background:radial-gradient(ellipse at 40% 0%,#1e0e30 0%,var(--dark) 65%);}
+.home-inner{max-width:460px;margin:0 auto;padding:2rem 1.5rem;text-align:center;}
+
+.home-hero{
+  width:100px;height:100px;
+  background:linear-gradient(135deg,var(--lilac),var(--lilac-light));
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:3.5rem;margin:0 auto 1.2rem;
+  box-shadow:0 0 0 4px var(--dark),0 0 0 8px var(--lilac),0 12px 40px rgba(181,123,238,.5);
+  animation:heroFloat 3s ease-in-out infinite;
+}
+@keyframes heroFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+
+.home-title{font-family:'Fredoka One',cursive;font-size:clamp(2.5rem,9vw,4rem);color:var(--cream);line-height:1;margin-bottom:.3rem;}
+.home-title .pink{color:var(--rose-light);}
+.home-date{font-size:.88rem;color:#4a3f62;margin-bottom:2rem;font-style:italic;}
+
+/* pregnancy announcement card */
+.preg-card{
+  background:linear-gradient(135deg,#180e2a,#2a1548);
+  border:2px solid rgba(181,123,238,.45);
+  border-radius:22px;padding:1.5rem;margin-bottom:1.5rem;
+  position:relative;overflow:hidden;
+  animation:glowPulse 3s ease-in-out infinite;
+}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(181,123,238,.18);}50%{box-shadow:0 0 40px rgba(181,123,238,.4);}}
+.preg-card::before{content:'✨';position:absolute;top:.8rem;right:1rem;font-size:1.4rem;animation:spin 4s linear infinite;}
+@keyframes spin{0%{transform:rotate(0);}100%{transform:rotate(360deg);}}
+.preg-tag{display:inline-block;background:linear-gradient(135deg,var(--lilac),var(--lilac-light));color:#fff;padding:.25rem .9rem;border-radius:50px;font-family:'Fredoka One',cursive;font-size:.78rem;margin-bottom:.7rem;}
+.preg-card h2{font-family:'Fredoka One',cursive;font-size:clamp(1.3rem,5vw,1.8rem);color:var(--cream);margin-bottom:.5rem;line-height:1.2;}
+.preg-card p{font-size:.88rem;color:rgba(255,255,255,.55);line-height:1.6;}
+.preg-card .preg-emojis{font-size:2rem;margin-top:.8rem;letter-spacing:.4rem;}
+
+/* events row */
+.events-row{display:flex;gap:.7rem;margin-bottom:1rem;}
+.event-pill{flex:1;padding:.8rem .6rem;border-radius:16px;text-align:center;font-family:'Fredoka One',cursive;font-size:.82rem;line-height:1.3;cursor:pointer;transition:transform .2s;}
+.event-pill:active{transform:scale(.96);}
+.event-pill .ep-icon{font-size:1.8rem;display:block;margin-bottom:.25rem;}
+.ep-bday{background:var(--rose-pale);color:var(--rose);border:2.5px solid var(--rose);}
+.ep-reveal{background:var(--lilac-pale);color:var(--lilac);border:2.5px solid var(--lilac);}
+.ep-menu{background:#fffbea;color:#a07000;border:2.5px solid var(--gold);}
+.ep-album{background:var(--mint-pale);color:var(--mint);border:2.5px solid var(--mint);}
+
+.home-cta{margin-bottom:.8rem;}
+.home-divider{border:none;border-top:2px dashed #2e2840;margin:1rem 0;}
+.teams-row{display:flex;gap:.7rem;margin-bottom:.7rem;}
+.tp{flex:1;padding:.7rem .4rem;border-radius:14px;font-family:'Fredoka One',cursive;font-size:.82rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:.15rem;border:2.5px solid transparent;transition:transform .2s;}
+.tp:active{transform:scale(.95);}
+.tp-pink{background:var(--rose-pale);border-color:var(--rose);color:var(--rose);}
+.tp-blue{background:var(--lilac-pale);border-color:var(--lilac);color:var(--lilac);}
+.tp .tp-icon{font-size:1.8rem;}
+
+/* ════ PAGE: MENU ════ */
+#pg-menu{background:var(--dark);}
+.menu-inner{max-width:520px;margin:0 auto;padding:0 1rem 1.5rem;}
+.menu-hero{text-align:center;padding:2rem 1.5rem 1.5rem;background:linear-gradient(180deg,#130820 0%,transparent 100%);}
+.menu-logo{font-size:3rem;margin-bottom:.5rem;}
+.menu-brand{font-family:'Fredoka One',cursive;font-size:1.6rem;color:var(--lilac-light);letter-spacing:.05em;}
+.menu-tagline{font-size:.8rem;color:#4a3f62;letter-spacing:.15em;text-transform:uppercase;}
+.menu-section{margin-bottom:1.2rem;}
+.menu-section-title{font-family:'Fredoka One',cursive;font-size:1rem;padding:.5rem 1rem;border-radius:10px;margin-bottom:.8rem;display:inline-flex;align-items:center;gap:.5rem;}
+.mst-salgado{background:rgba(61,191,138,.12);color:var(--mint-light);border:1px solid rgba(61,191,138,.3);}
+.mst-doce{background:rgba(240,98,146,.12);color:var(--rose-light);border:1px solid rgba(240,98,146,.3);}
+.mst-acomp{background:rgba(245,200,66,.1);color:var(--gold);border:1px solid rgba(245,200,66,.3);}
+.mst-bolo{background:rgba(181,123,238,.12);color:var(--lilac-light);border:1px solid rgba(181,123,238,.3);}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+.menu-item{background:#1e1928;border:1px solid #2e2840;border-radius:14px;padding:.8rem .9rem;font-size:.88rem;color:#c4b8dd;font-weight:700;transition:all .2s;cursor:default;display:flex;align-items:center;gap:.5rem;}
+.menu-item:hover{border-color:#3e3460;background:#261e38;}
+.menu-item .mi-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.mi-dot-mint{background:var(--mint-light);}
+.mi-dot-rose{background:var(--rose-light);}
+.mi-dot-lilac{background:var(--lilac-light);}
+.mi-dot-gold{background:var(--gold);}
+.acomp-list{display:flex;flex-wrap:wrap;gap:.5rem;}
+.acomp-chip{background:#1e1928;border:1px solid #2e2840;border-radius:50px;padding:.35rem .9rem;font-size:.8rem;color:#9a8ab8;font-weight:700;}
+.menu-divider{border:none;border-top:1px solid #1e1928;margin:1.2rem 0;}
+
+/* ════ PAGE: ALBUM ════ */
+#pg-album{background:var(--dark);}
+.album-inner{max-width:520px;margin:0 auto;padding:0 1rem 1.5rem;}
+.album-upload-zone{border:2px dashed #2e2840;border-radius:18px;padding:2rem;text-align:center;cursor:pointer;transition:all .2s;background:#180e28;margin-bottom:1.2rem;position:relative;}
+.album-upload-zone:hover{border-color:var(--lilac);background:#1e1230;}
+.album-upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.auz-icon{font-size:2.5rem;margin-bottom:.5rem;}
+.auz-title{font-family:'Fredoka One',cursive;color:#4a3f62;font-size:1rem;margin-bottom:.25rem;}
+.auz-sub{font-size:.75rem;color:#2e2840;}
+.album-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;}
+.album-thumb{aspect-ratio:1;border-radius:12px;overflow:hidden;position:relative;cursor:pointer;background:#1e1928;}
+.album-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s;}
+.album-thumb:hover img{transform:scale(1.08);}
+.album-thumb .del-btn{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.7);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:.7rem;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;}
+.album-thumb:hover .del-btn{opacity:1;}
+.album-thumb .del-btn:hover{background:var(--red);}
+
+/* lightbox */
+.lightbox{
+  position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.95);
+  display:none;align-items:center;justify-content:center;padding:1rem;
+}
+.lightbox.open{display:flex;}
+.lightbox img{max-width:100%;max-height:90vh;border-radius:12px;object-fit:contain;}
+.lb-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.1);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem;}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:none;color:#fff;width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:1.3rem;transition:background .2s;}
+.lb-nav:hover{background:rgba(255,255,255,.2);}
+.lb-prev{left:1rem;} .lb-next{right:1rem;}
+.album-empty{text-align:center;padding:3rem 1rem;color:#333;}
+.album-empty .ae-icon{font-size:3rem;margin-bottom:.5rem;}
+.album-empty p{font-size:.85rem;}
+
+/* ════ PAGE: QUIZ ════ */
+#pg-quiz{background:var(--black);}
+.quiz-wrap{min-height:calc(100vh - 80px);display:flex;flex-direction:column;}
+
+/* quiz sub-screens */
+.qscreen{display:none;flex:1;flex-direction:column;}
+.qscreen.qactive{display:flex;}
+
+/* join */
+.join-outer{align-items:center;justify-content:center;padding:1.5rem;background:var(--dark);}
+.join-card{background:var(--cream);border-radius:26px;padding:1.8rem 1.5rem;max-width:400px;width:100%;text-align:center;box-shadow:0 16px 50px rgba(0,0,0,.5);overflow:hidden;position:relative;}
+.join-card::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:repeating-linear-gradient(90deg,var(--rose) 0 14px,var(--black) 14px 22px,var(--gold) 22px 36px,var(--black) 36px 44px,var(--mint) 44px 58px,var(--black) 58px 66px);}
+.join-avatar{width:64px;height:64px;background:linear-gradient(135deg,var(--lilac),var(--lilac-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:.5rem auto 1rem;box-shadow:0 0 0 3px #fff,0 0 0 6px var(--lilac);}
+.join-card h2{font-family:'Fredoka One',cursive;font-size:1.5rem;margin-bottom:.2rem;}
+.join-sub{font-size:.82rem;color:#888;margin-bottom:1.3rem;line-height:1.5;}
+.join-name input{width:100%;padding:.85rem 1.1rem;border-radius:50px;border:2.5px solid #e0d8f0;font-family:'Nunito',sans-serif;font-size:1.05rem;text-align:center;outline:none;transition:border-color .2s;background:#fff;margin-bottom:1.2rem;}
+.join-name input:focus{border-color:var(--lilac);}
+.join-name input::placeholder{color:#ccc;}
+.join-teams{display:flex;gap:.9rem;margin-bottom:.8rem;}
+.jtb{flex:1;padding:1.2rem .5rem;border-radius:18px;border:3px solid transparent;cursor:pointer;font-family:'Fredoka One',cursive;display:flex;flex-direction:column;align-items:center;gap:.4rem;transition:all .25s cubic-bezier(.34,1.56,.64,1);}
+.jtb .ji{font-size:2.6rem;transition:transform .3s;}
+.jtb .jn{font-size:1.1rem;}
+.jtb .js{font-size:.68rem;font-family:'Nunito',sans-serif;font-weight:700;opacity:.65;}
+.jtb.pink-btn{background:var(--rose-pale);border-color:var(--rose);color:var(--rose);}
+.jtb.pink-btn:hover,.jtb.pink-btn.sel{background:linear-gradient(135deg,#ffe5ef,#ffcce0);box-shadow:0 8px 28px rgba(240,98,146,.3);transform:scale(1.04);}
+.jtb.pink-btn:hover .ji{transform:rotate(-12deg) scale(1.2);}
+.jtb.blue-btn{background:var(--lilac-pale);border-color:var(--lilac);color:var(--lilac);}
+.jtb.blue-btn:hover,.jtb.blue-btn.sel{background:linear-gradient(135deg,#ede8ff,#d9ccff);box-shadow:0 8px 28px rgba(181,123,238,.3);transform:scale(1.04);}
+.jtb.blue-btn:hover .ji{transform:rotate(12deg) scale(1.2);}
+
+/* quiz active */
+.qz-header{padding:.95rem 1.2rem .85rem;display:flex;align-items:center;gap:.8rem;flex-shrink:0;}
+.qz-header.ph{background:linear-gradient(135deg,var(--rose),var(--rose-light));}
+.qz-header.bh{background:linear-gradient(135deg,var(--lilac),var(--lilac-light));}
+.qh-icon{font-size:1.8rem;} .qh-info{flex:1;}
+.qh-player{font-family:'Fredoka One',cursive;font-size:1rem;color:#fff;}
+.qh-team{font-size:.72rem;color:rgba(255,255,255,.8);}
+.qh-prog{font-family:'Fredoka One',cursive;font-size:1.1rem;color:#fff;}
+.qz-pbar{height:5px;background:rgba(255,255,255,.25);flex-shrink:0;}
+.qz-pfill{height:100%;background:#fff;transition:width .5s ease;border-radius:0 3px 3px 0;}
+.round-badge{display:flex;align-items:center;gap:.5rem;padding:.45rem .9rem;margin:.8rem 1.2rem .15rem;border-radius:9px;font-family:'Fredoka One',cursive;font-size:.78rem;flex-shrink:0;}
+.rb-luiza{background:rgba(240,98,146,.1);border:1.5px solid rgba(240,98,146,.3);color:var(--rose);}
+.rb-bebe{background:rgba(181,123,238,.1);border:1.5px solid rgba(181,123,238,.3);color:var(--lilac-light);}
+.qz-body{flex:1;padding:.6rem 1.2rem .9rem;background:var(--cream);overflow-y:auto;}
+.qz-qnum{font-family:'Fredoka One',cursive;font-size:.75rem;color:#bbb;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.1em;}
+.qz-emoji{font-size:1.8rem;margin-bottom:.35rem;}
+.qz-q{font-family:'Fredoka One',cursive;font-size:clamp(1rem,4vw,1.35rem);color:var(--black);line-height:1.3;margin-bottom:.85rem;}
+.qz-opts{display:flex;flex-direction:column;gap:.55rem;margin-bottom:.65rem;}
+.qz-opt{padding:.78rem 1rem;border-radius:12px;border:2.5px solid #e5dff5;background:#fff;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .17s;text-align:left;display:flex;align-items:center;gap:.65rem;}
+.qz-opt:hover{border-color:#c8bcee;transform:translateX(4px);}
+.ol{width:24px;height:24px;border-radius:50%;background:#f0ecff;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:.78rem;flex-shrink:0;transition:all .17s;}
+.qz-opt.po:hover{border-color:var(--rose);} .qz-opt.po:hover .ol{background:var(--rose);color:#fff;}
+.qz-opt.bo:hover{border-color:var(--lilac);} .qz-opt.bo:hover .ol{background:var(--lilac);color:#fff;}
+.qz-opt.sc{border-color:#22c55e!important;background:#f0fdf4!important;} .qz-opt.sc .ol{background:#22c55e!important;color:#fff!important;}
+.qz-opt.sw{border-color:#ef4444!important;background:#fef2f2!important;} .qz-opt.sw .ol{background:#ef4444!important;color:#fff!important;}
+.qz-opt.rc{border-color:#22c55e;background:#f0fdf4;} .qz-opt.rc .ol{background:#22c55e;color:#fff;}
+.qz-opt.dis{pointer-events:none;}
+.qz-fb{text-align:center;font-family:'Fredoka One',cursive;font-size:.92rem;min-height:1.5rem;padding:.3rem;border-radius:9px;transition:all .3s;}
+.qz-fb.ok{color:#22c55e;} .qz-fb.no{color:#ef4444;}
+.qz-sbar{display:flex;align-items:center;justify-content:space-around;padding:.65rem 1.2rem;background:#fff;border-top:1px solid #ede8ff;flex-shrink:0;}
+.qs-lbl{font-size:.62rem;color:#c4b8e0;font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
+.qs-val{font-family:'Fredoka One',cursive;font-size:1.2rem;}
+.qv-me{color:#7a6e99;} .qv-p{color:var(--rose);} .qv-b{color:var(--lilac);}
+
+/* finish */
+.finish-outer{align-items:center;justify-content:center;padding:2rem;background:var(--cream);}
+.finish-card{background:#fff;border-radius:26px;padding:2.2rem 1.8rem;max-width:370px;width:100%;box-shadow:0 16px 50px rgba(181,123,238,.12);position:relative;overflow:hidden;text-align:center;}
+.fc-stripe{height:7px;margin:-2.2rem -1.8rem 1.8rem;}
+.fc-stripe.ps{background:linear-gradient(90deg,var(--rose),var(--rose-light));}
+.fc-stripe.bs{background:linear-gradient(90deg,var(--lilac),var(--lilac-light));}
+.fc-icon{font-size:3.5rem;margin-bottom:.4rem;animation:popIn .6s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+.fc-title{font-family:'Fredoka One',cursive;font-size:1.8rem;margin-bottom:.2rem;}
+.fc-score{font-family:'Fredoka One',cursive;font-size:3rem;line-height:1;margin:.4rem 0;}
+.fc-score.ps{color:var(--rose);} .fc-score.bs{color:var(--lilac);}
+.fc-msg{color:#aaa;font-size:.88rem;margin-bottom:1.2rem;line-height:1.4;}
+.fc-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem 1.3rem;border-radius:50px;font-family:'Fredoka One',cursive;font-size:.88rem;margin-bottom:1.2rem;}
+.fc-badge.pb{background:var(--rose-pale);color:var(--rose);}
+.fc-badge.bb{background:var(--lilac-pale);color:var(--lilac);}
+.fc-breakdown{background:#f9f6ff;border-radius:12px;padding:.75rem;margin-bottom:1.2rem;font-size:.8rem;text-align:left;}
+.fc-breakdown .fbd-title{font-family:'Fredoka One',cursive;font-size:.8rem;color:#c4b8e0;margin-bottom:.3rem;}
+
+/* dashboard */
+.dash-outer{padding:1rem 1rem 0;max-width:700px;margin:0 auto;}
+.dash-header{text-align:center;margin-bottom:1.2rem;}
+.dash-avatar{font-size:2.8rem;display:inline-block;animation:heroFloat 3s ease-in-out infinite;}
+.dash-title{font-family:'Fredoka One',cursive;font-size:clamp(1.3rem,4vw,2.2rem);color:var(--cream);line-height:1.1;margin:.2rem 0;}
+.dash-tags{display:flex;gap:.4rem;justify-content:center;margin-top:.3rem;}
+.dash-tag{font-size:.66rem;font-weight:800;padding:.18rem .65rem;border-radius:50px;}
+.dt-bday{background:rgba(245,200,66,.1);color:var(--gold);border:1px solid rgba(245,200,66,.25);}
+.dt-rev{background:rgba(181,123,238,.1);color:var(--lilac-light);border:1px solid rgba(181,123,238,.22);}
+.scoreboard{display:grid;grid-template-columns:1fr auto 1fr;gap:.8rem;align-items:stretch;margin-bottom:1.1rem;}
+.sc-card{border-radius:18px;padding:1.2rem .8rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.35rem;transition:all .5s;}
+.sc-card.scp{background:linear-gradient(145deg,rgba(240,98,146,.15),rgba(240,98,146,.05));border:2px solid rgba(240,98,146,.28);}
+.sc-card.scb{background:linear-gradient(145deg,rgba(181,123,238,.15),rgba(181,123,238,.05));border:2px solid rgba(181,123,238,.28);}
+.sc-card.lead{transform:scale(1.04);}
+.sc-card.scp.lead{border-color:var(--rose);box-shadow:0 0 35px rgba(240,98,146,.2);}
+.sc-card.scb.lead{border-color:var(--lilac-light);box-shadow:0 0 35px rgba(181,123,238,.2);}
+.sc-icon{font-size:clamp(2rem,5vw,3.2rem);}
+.sc-name{font-family:'Fredoka One',cursive;font-size:clamp(.85rem,2.5vw,1.2rem);}
+.scp .sc-name{color:var(--rose);} .scb .sc-name{color:var(--lilac-light);}
+.sc-score{font-family:'Fredoka One',cursive;font-size:clamp(2.5rem,8vw,4.5rem);line-height:1;}
+.scp .sc-score{color:var(--rose);} .scb .sc-score{color:var(--lilac-light);}
+.sc-members{font-size:.65rem;color:#3d3560;max-width:100%;line-height:1.4;}
+.dash-vs{display:flex;align-items:center;justify-content:center;}
+.vs-pill{background:#1e1928;border:1px solid #2e2840;border-radius:50px;padding:.4rem .65rem;font-family:'Fredoka One',cursive;font-size:1rem;color:#3d3560;}
+.dash-pbar{display:flex;border-radius:50px;overflow:hidden;height:11px;margin-bottom:1.1rem;background:#1e1928;}
+.dpb-p{background:linear-gradient(90deg,#c44070,var(--rose));transition:width .8s cubic-bezier(.34,1.56,.64,1);}
+.dpb-b{flex:1;background:linear-gradient(90deg,var(--lilac-light),var(--lilac));}
+.ps-section{margin-bottom:1rem;}
+.ps-title{font-size:.62rem;color:#2e2840;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.55rem;text-align:center;}
+.ps-list{display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center;}
+.ps-chip{padding:.2rem .7rem;border-radius:50px;font-size:.72rem;font-weight:800;animation:chipIn .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes chipIn{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+.ps-chip.pc{background:rgba(240,98,146,.12);color:var(--rose);border:1px solid rgba(240,98,146,.28);}
+.ps-chip.bc{background:rgba(181,123,238,.12);color:var(--lilac-light);border:1px solid rgba(181,123,238,.28);}
+.dash-total{text-align:center;color:#2e2840;font-size:.75rem;margin-bottom:1rem;}
+.dash-total strong{color:#4a3f62;}
+.dash-actions{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;padding-bottom:1rem;}
+.dash-actions .btn{width:auto;padding:.8rem 1.6rem;font-size:.9rem;}
+
+/* reveal */
+.reveal-outer{align-items:center;justify-content:center;padding:2rem;text-align:center;overflow:hidden;position:relative;}
+.reveal-outer.girl-rev{background:radial-gradient(ellipse at 50% 15%,#4a1060 0%,#220830 45%,#0d0415 80%);}
+.reveal-outer.boy-rev{background:radial-gradient(ellipse at 50% 15%,#1a0840 0%,#0c0428 45%,#040210 80%);}
+.rev-content{position:relative;z-index:2;max-width:500px;width:100%;}
+.rev-lmsg{font-family:'Fredoka One',cursive;font-size:clamp(.9rem,3vw,1.25rem);color:rgba(255,255,255,.5);opacity:0;animation:rFade .6s .3s ease forwards;margin-bottom:.3rem;}
+.rev-drum{font-family:'Fredoka One',cursive;font-size:.82rem;letter-spacing:.3em;color:rgba(255,255,255,.4);text-transform:uppercase;opacity:0;animation:rFade .5s .9s ease forwards;margin:.3rem 0;}
+.rev-its{font-family:'Fredoka One',cursive;font-size:clamp(1.4rem,5vw,2.2rem);color:rgba(255,255,255,.7);opacity:0;animation:rSlide .7s 1.5s ease forwards;}
+.rev-gender{font-family:'Fredoka One',cursive;font-size:clamp(4rem,17vw,8rem);line-height:.9;opacity:0;animation:rBig .9s 2.2s cubic-bezier(.34,1.56,.64,1) forwards;}
+.girl-rev .rev-gender{color:var(--lilac-light);text-shadow:0 0 60px rgba(181,123,238,.9),0 0 120px rgba(181,123,238,.4);}
+.boy-rev .rev-gender{color:#8fd4ff;text-shadow:0 0 60px rgba(143,212,255,.9),0 0 120px rgba(143,212,255,.4);}
+.rev-emojis{font-size:2.8rem;letter-spacing:.5rem;opacity:0;animation:rFade .6s 3.2s ease forwards;margin-top:.5rem;}
+.rev-msg{font-family:'Fredoka One',cursive;font-size:clamp(1rem,3vw,1.35rem);color:rgba(255,255,255,.8);opacity:0;animation:rSlide .6s 3.8s ease forwards;margin-top:.6rem;line-height:1.3;}
+.rev-winners{margin-top:1.2rem;opacity:0;animation:rFade .6s 4.3s ease forwards;}
+.rev-winners h3{font-size:.72rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}
+.w-chip{display:inline-block;margin:.18rem;background:rgba(245,200,66,.18);border:1px solid rgba(245,200,66,.45);color:var(--gold);padding:.22rem .8rem;border-radius:50px;font-size:.8rem;font-weight:800;}
+.rev-back{margin-top:1.8rem;opacity:0;animation:rFade .6s 4.8s ease forwards;}
+.cfetti{position:absolute;pointer-events:none;}
+@keyframes rFade{from{opacity:0;}to{opacity:1;}}
+@keyframes rSlide{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+@keyframes rBig{from{opacity:0;transform:scale(.2) rotate(-8deg);}to{opacity:1;transform:scale(1) rotate(0deg);}}
+@keyframes cfFall{0%{opacity:1;transform:translateY(-10px) rotate(0);}100%{opacity:0;transform:translateY(110vh) rotate(900deg);}}
+
+/* admin modal */
+.modal-overlay{position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:1.5rem;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#1e1928;border:1px solid #2e2840;border-radius:22px;padding:2rem;max-width:420px;width:100%;text-align:center;}
+.modal-box h2{font-family:'Fredoka One',cursive;color:var(--gold);font-size:1.4rem;margin-bottom:.25rem;}
+.modal-box>p{color:#4a3f62;font-size:.8rem;margin-bottom:1.4rem;}
+.mf{margin-bottom:1rem;text-align:left;}
+.mf label{display:block;color:#4a3f62;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem;}
+.mf input{width:100%;padding:.75rem 1rem;border-radius:10px;border:1px solid #2e2840;background:#150e22;color:#fff;font-family:'Nunito',sans-serif;font-size:.95rem;outline:none;}
+.mf input:focus{border-color:var(--lilac);}
+.mf input::placeholder{color:#2e2840;}
+.gpick-row{display:flex;gap:.7rem;margin-bottom:1.2rem;}
+.gp{flex:1;padding:1rem .7rem;border-radius:12px;border:3px solid #2e2840;cursor:pointer;transition:all .2s;font-family:'Fredoka One',cursive;display:flex;flex-direction:column;align-items:center;gap:.3rem;background:#150e22;color:#3d3560;}
+.gp .gi{font-size:2rem;}
+.gp.gpp{color:var(--rose);}
+.gp.gpp:hover,.gp.gpp.sel{border-color:var(--rose);background:rgba(240,98,146,.1);box-shadow:0 0 16px rgba(240,98,146,.2);}
+.gp.gpb{color:var(--lilac-light);}
+.gp.gpb:hover,.gp.gpb.sel{border-color:var(--lilac-light);background:rgba(181,123,238,.1);box-shadow:0 0 16px rgba(181,123,238,.2);}
+.admin-warn{background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.2);border-radius:9px;padding:.5rem .8rem;font-size:.72rem;color:var(--gold);margin-bottom:1rem;}
+.modal-btns{display:flex;gap:.7rem;}
+.modal-btns .btn{font-size:.95rem;padding:.8rem 1.5rem;}
+
+</style>
+</head>
+<body>
+<div class="polka"></div>
+
+<!-- ════════ NAV ════════ -->
+<nav class="nav-bar">
+  <button class="nav-tab active" onclick="goPage('home')" id="nt-home">
+    <span class="nt-icon">🏠</span>Home
+  </button>
+  <button class="nav-tab" onclick="goPage('menu')" id="nt-menu">
+    <span class="nt-icon">🥞</span>Cardápio da festa
+  </button>
+  <button class="nav-tab" onclick="goPage('album')" id="nt-album">
+    <span class="nt-icon">📸</span>Fotos
+  </button>
+  <button class="nav-tab" onclick="goPage('quiz')" id="nt-quiz">
+    <span class="nt-icon">🎯</span>Quiz
+  </button>
+</nav>
+
+<!-- ══════════════════════════════════
+     PAGE: HOME
+══════════════════════════════════ -->
+<div class="page active" id="pg-home">
+  <div class="home-inner">
+    <div class="home-hero">👧</div>
+    <div class="home-title"><span class="pink">Luiza</span> faz 3!</div>
+    <div class="home-date">🎀 Festa de aniversário da Luiza - Maio/26</div>
+
+    <!-- PREGNANCY ANNOUNCEMENT -->
+    <div class="preg-card">
+      <span class="preg-tag">🤫 Novidade!</span>
+      <h2>Muitos ainda não sabem…<br>mas a Nath está grávida! 🤰</h2>
+      <p>A família está crescendo! Além de celebrar os 3 aninhos da Luiza, hoje também tem revelação do irmãozinho ou irmãzinha que vem aí! 🍼</p>
+      <div class="preg-emojis">👶🎀⚽💕</div>
+    </div>
+
+    <!-- EVENTS -->
+    <div class="events-row">
+      <div class="event-pill ep-bday" onclick="goPage('quiz')">
+        <span class="ep-icon">🎂</span>Quiz da Luiza
+      </div>
+      <div class="event-pill ep-reveal" onclick="goPage('quiz')">
+        <span class="ep-icon">🎀</span>Chá Revelação
+      </div>
+    </div>
+    <div class="events-row">
+      <div class="event-pill ep-menu" onclick="goPage('menu')">
+        <span class="ep-icon">🥞</span>Cardápio
+      </div>
+      <div class="event-pill ep-album" onclick="goPage('album')">
+        <span class="ep-icon">📸</span>Álbum
+      </div>
+    </div>
+
+    <div class="home-divider"></div>
+    <p style="font-size:.78rem;color:#444;margin-bottom:.6rem;">Seu palpite pro bebê:</p>
+    <div class="teams-row">
+      <div class="tp tp-pink" onclick="goPage('quiz')">
+        <span class="tp-icon">🎀</span>
+        <span style="font-family:'Fredoka One',cursive;">Minnie</span>
+        <span style="font-size:.68rem;font-family:'Nunito';font-weight:700;">é Menina!</span>
+      </div>
+      <div class="tp tp-blue" onclick="goPage('quiz')">
+        <span class="tp-icon">🐭</span>
+        <span style="font-family:'Fredoka One',cursive;">Mickey</span>
+        <span style="font-size:.68rem;font-family:'Nunito';font-weight:700;">é Menino!</span>
+      </div>
+    </div>
+    <button class="btn-sm-admin" onclick="openAdmin()">⚙️ admin</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: MENU
+══════════════════════════════════ -->
+<div class="page" id="pg-menu">
+  <div class="menu-inner">
+    <div class="menu-hero">
+      <div class="menu-logo">🗼</div>
+      <div class="menu-brand">Franscrepe Buffet</div>
+      <div class="menu-tagline">Cardápio da Festa</div>
+    </div>
+
+    <!-- SALGADOS -->
+    <div class="menu-section">
+      <div class="menu-section-title mst-salgado">🧀 Crepes Salgados</div>
+      <div class="menu-grid">
+        <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Camarão c/ Catupiry</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Creme de Espinafre</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Queijo, Tomate, Manjericão</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Queijo com Presunto</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Creme de Palmito</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Quatro Queijos</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Frango c/ Catupiry</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Funghi ao Creme</div>
+      </div>
+    </div>
+
+    <div class="menu-divider"></div>
+
+    <!-- DOCES -->
+    <div class="menu-section">
+      <div class="menu-section-title mst-doce">🍫 Crepes Doces</div>
+      <div class="menu-grid">
+        <div class="menu-item"><span class="mi-dot mi-dot-rose"></span>Chocolate</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-rose"></span>Banana c/ Açúcar e Canela</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-rose"></span>Doce de Leite</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-rose"></span>Crepe Suzete</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-rose"></span>Maçã ao Rum</div>
+      </div>
+    </div>
+
+    <div class="menu-divider"></div>
+
+    <!-- ACOMPANHAMENTOS -->
+    <div class="menu-section">
+      <div class="menu-section-title mst-acomp">🥗 Acompanhamentos</div>
+      <p style="font-size:.78rem;color:#555;margin-bottom:.6rem;font-weight:700;">Molhos</p>
+      <div class="acomp-list" style="margin-bottom:.9rem;">
+        <span class="acomp-chip">Quatro Queijos</span>
+        <span class="acomp-chip">Molho Vermelho</span>
+        <span class="acomp-chip">Mostarda para Saladas</span>
+      </div>
+      <p style="font-size:.78rem;color:#555;margin-bottom:.6rem;font-weight:700;">Saladas</p>
+      <div class="acomp-list" style="margin-bottom:.9rem;">
+        <span class="acomp-chip">Alface Americana, Cenoura e Kani Kama</span>
+        <span class="acomp-chip">Alface Crespa, Rúcula, Manga e Tomate Cereja</span>
+      </div>
+      <p style="font-size:.78rem;color:#555;margin-bottom:.6rem;font-weight:700;">Para os doces</p>
+      <div class="acomp-list">
+        <span class="acomp-chip">🍦 Sorvete de Creme</span>
+        <span class="acomp-chip">🍓 Calda de Morango</span>
+        <span class="acomp-chip">🍫 Raspa de Chocolate</span>
+      </div>
+    </div>
+
+    <div class="menu-divider"></div>
+
+    <!-- BOLO & DOCINHOS -->
+    <div class="menu-section">
+      <div class="menu-section-title mst-bolo">🎂 Bolo & Docinhos</div>
+      <p style="font-size:.82rem;color:#7a6e99;margin-bottom:.9rem;font-style:italic;">Depois dos crepes, chegam as surpresas da mesa de doces! 🎉</p>
+      <div class="menu-grid">
+        <div class="menu-item"><span class="mi-dot mi-dot-lilac"></span>🎂 Bolo de Aniversário</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-lilac"></span>🍫 Brigadeiro</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-lilac"></span>🤍 Beijinho</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-lilac"></span>🌰 Bicho de Pé</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-lilac"></span>🍬 Caramelinho</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-lilac"></span>✨ Surpresas da mesa</div>
+      </div>
+    </div>
+
+    <div style="background:#1e1928;border:1px solid #2e2840;border-radius:14px;padding:1rem;margin-top:.5rem;font-size:.78rem;color:#4a3f62;text-align:center;line-height:1.7;">
+      🗼 <strong style="color:#7a6e99;">Franscrepe Buffet</strong><br>
+      Rua Bairi, nº115 · Alto da Lapa<br>
+      (11) 3832-3989 · 99228-7430
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: ALBUM
+══════════════════════════════════ -->
+<div class="page" id="pg-album">
+  <div class="album-inner">
+    <div class="section-header">
+      <div class="sh-tag">📸 Fotos da Aniversariante</div>
+      <h1>Nossa <span style="color:var(--rose-light)">Luly</span> 💕</h1>
+      <p style="color:#4a3f62;">30 momentos especiais · toque para ampliar</p>
+    </div>
+
+    <!-- Fixed grid: 30 Google Photos -->
+    <div class="album-grid" id="album-grid-fixed"></div>
+
+    <!-- Divider for party additions -->
+    <div style="border-top:2px dashed #2e2840;margin:1.2rem 0;"></div>
+    <p style="text-align:center;font-family:'Fredoka One',cursive;color:#4a3f62;font-size:.85rem;margin-bottom:.8rem;">📷 Adicionar fotos da festa</p>
+    <div class="album-upload-zone">
+      <input type="file" accept="image/*" multiple onchange="handleAlbumUpload(event)">
+      <div class="auz-icon">➕</div>
+      <div class="auz-title">Suas fotos da festa</div>
+      <div class="auz-sub">Toque para adicionar da galeria</div>
+    </div>
+    <div class="album-grid" id="album-grid-extra"></div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <button class="lb-nav lb-prev" onclick="lbNav(-1)">‹</button>
+  <img id="lb-img" src="" alt="">
+  <button class="lb-nav lb-next" onclick="lbNav(1)">›</button>
+</div>
+<div id="lb-counter" style="display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;font-family:'Fredoka One',cursive;font-size:.88rem;padding:.3rem .9rem;border-radius:50px;z-index:910;pointer-events:none;"></div>
+
+<!-- ══════════════════════════════════
+     PAGE: QUIZ
+══════════════════════════════════ -->
+<div class="page" id="pg-quiz">
+  <div class="quiz-wrap">
+
+    <!-- JOIN -->
+    <div class="qscreen qactive join-outer" id="qs-join">
+      <div class="join-card">
+        <div class="join-avatar">👧</div>
+        <h2>Quiz da Luiza! 🎂</h2>
+        <p class="join-sub">Prove que conhece a aniversariante<br>e chute o sexo do bebê! 🍼</p>
+        <div class="join-name">
+          <input type="text" id="join-name" placeholder="✏️ Seu nome" maxlength="20" autocomplete="off">
+        </div>
+        <p style="font-family:'Fredoka One',cursive;font-size:.9rem;color:#888;margin-bottom:.7rem;">Seu palpite pro bebê:</p>
+        <div class="join-teams">
+          <div class="jtb pink-btn" id="jt-pink" onclick="selectTeam('pink')">
+            <span class="ji">🎀</span><span class="jn">Minnie</span><span class="js">é Menina!</span>
+          </div>
+          <div class="jtb blue-btn" id="jt-blue" onclick="selectTeam('blue')">
+            <span class="ji">🐭</span><span class="jn">Mickey</span><span class="js">é Menino!</span>
+          </div>
+        </div>
+        <div class="err" id="join-err"></div>
+        <button class="btn btn-pink" onclick="startQuiz()" style="width:100%;margin-top:.8rem;">Vamos lá! 🚀</button>
+        <button class="btn" style="width:100%;margin-top:.5rem;background:#f5f5f5;color:#888;font-size:.9rem;" onclick="showDash()">📊 Ver placar ao vivo</button>
+      </div>
+    </div>
+
+    <!-- PLAYING -->
+    <div class="qscreen" id="qs-playing">
+      <div class="qz-header" id="qz-header">
+        <div class="qh-icon" id="qh-icon">🎀</div>
+        <div class="qh-info">
+          <div class="qh-player" id="qh-player">Jogador</div>
+          <div class="qh-team" id="qh-team">Time Minnie</div>
+        </div>
+        <div class="qh-prog" id="qh-prog">1/12</div>
+      </div>
+      <div class="qz-pbar"><div class="qz-pfill" id="qz-pfill" style="width:0%"></div></div>
+      <div class="round-badge" id="round-badge"></div>
+      <div class="qz-body">
+        <div class="qz-qnum" id="qz-qnum">Pergunta 1</div>
+        <div class="qz-emoji" id="qz-emoji">🎂</div>
+        <div class="qz-q" id="qz-q">...</div>
+        <div class="qz-opts" id="qz-opts"></div>
+        <div class="qz-fb" id="qz-fb"></div>
+      </div>
+      <div class="qz-sbar">
+        <div><div class="qs-lbl">Você</div><div class="qs-val qv-me" id="qs-me">0 pts</div></div>
+        <div style="text-align:center"><div class="qs-lbl">🎀 Minnie</div><div class="qs-val qv-p" id="qs-p">0</div></div>
+        <div style="text-align:center"><div class="qs-lbl">🐭 Mickey</div><div class="qs-val qv-b" id="qs-b">0</div></div>
+      </div>
+    </div>
+
+    <!-- FINISH -->
+    <div class="qscreen finish-outer" id="qs-finish">
+      <div class="finish-card">
+        <div class="fc-stripe" id="fc-stripe"></div>
+        <div class="fc-icon" id="fc-icon">🎉</div>
+        <div class="fc-title" id="fc-title">Arrasou!</div>
+        <div class="fc-score" id="fc-score">0/12</div>
+        <div class="fc-msg" id="fc-msg"></div>
+        <div class="fc-badge" id="fc-badge">🎀 Time Minnie</div>
+        <div class="fc-breakdown">
+          <div class="fbd-title">📊 Seu desempenho</div>
+          <div id="fbd-luiza" style="color:var(--rose);font-weight:800;font-size:.82rem;"></div>
+          <div id="fbd-bebe" style="color:var(--lilac);font-weight:800;font-size:.82rem;margin-top:.2rem;"></div>
+        </div>
+        <button class="btn btn-pink" id="fc-btn" onclick="showDash()" style="width:100%;">Ver placar ao vivo 📊</button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="qscreen" id="qs-dash">
+      <div class="dash-outer">
+        <div class="dash-header">
+          <div class="dash-avatar">👧</div>
+          <div class="dash-title">Luiza faz 3! 🎂</div>
+          <div style="font-family:'Fredoka One',cursive;font-size:.82rem;color:#555;margin:.1rem 0 .3rem;">+ Chá Revelação do bebê 🍼</div>
+          <div class="dash-tags">
+            <span class="dash-tag dt-bday">🎂 Aniversário</span>
+            <span class="dash-tag dt-rev">🎀 Revelação</span>
+          </div>
+        </div>
+        <div class="scoreboard">
+          <div class="sc-card scp" id="sc-pink">
+            <div class="sc-icon">🎀</div>
+            <div class="sc-name">Minnie</div>
+            <div class="sc-score" id="sc-p-score">0</div>
+            <div class="sc-members" id="sc-p-members">ninguém ainda</div>
+          </div>
+          <div class="dash-vs"><div class="vs-pill">VS</div></div>
+          <div class="sc-card scb" id="sc-blue">
+            <div class="sc-icon">🐭</div>
+            <div class="sc-name">Mickey</div>
+            <div class="sc-score" id="sc-b-score">0</div>
+            <div class="sc-members" id="sc-b-members">ninguém ainda</div>
+          </div>
+        </div>
+        <div class="dash-pbar">
+          <div class="dpb-p" id="dpb-p" style="width:50%"></div>
+          <div class="dpb-b"></div>
+        </div>
+        <div class="ps-section">
+          <div class="ps-title">Quem já jogou</div>
+          <div class="ps-list" id="ps-list"><span style="color:#2a2a2a;font-size:.75rem;">ninguém ainda...</span></div>
+        </div>
+        <div class="dash-total">Participantes: <strong id="dash-total">0</strong></div>
+        <div class="dash-actions">
+          <button class="btn btn-gold" id="reveal-btn" onclick="triggerReveal()" style="display:none;">🎉 Revelar agora!</button>
+          <button class="btn-ghost" onclick="updateDash()">🔄 Atualizar</button>
+          <button class="btn-ghost" onclick="showQScreen('qs-join')">← Voltar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVEAL -->
+    <div class="qscreen reveal-outer" id="qs-reveal">
+      <div class="rev-content" style="margin:auto;">
+        <div class="rev-lmsg" id="r-lmsg">A Luiza já sabe e escolheu contar pra vocês… 🤫</div>
+        <div class="rev-drum">🥁 &nbsp; grande revelação &nbsp; 🥁</div>
+        <div class="rev-its">O bebê é…</div>
+        <div class="rev-gender" id="r-gender">?</div>
+        <div class="rev-emojis" id="r-emojis">🎉</div>
+        <div class="rev-msg" id="r-msg"></div>
+        <div class="rev-winners" id="r-winners"></div>
+        <div class="rev-back">
+          <button class="btn-ghost" onclick="showQScreen('qs-join')">← Voltar ao início</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- quiz-wrap -->
+</div>
+
+<!-- ════════ ADMIN MODAL ════════ -->
+<div class="modal-overlay" id="admin-modal">
+  <div class="modal-box">
+    <h2>⚙️ Admin</h2>
+    <p>Só você vê isso. Não mostre!</p>
+    <div class="mf">
+      <label>Nome do bebê (opcional)</label>
+      <input type="text" id="a-name" placeholder="Ex: bebê Estevão" maxlength="25">
+    </div>
+    <div class="mf">
+      <label>Senha secreta do admin</label>
+      <input type="password" id="a-pwd" placeholder="Crie uma senha só sua" maxlength="30">
+    </div>
+    <p style="color:#555;font-size:.78rem;margin-bottom:.7rem;text-align:left;font-weight:800;">Qual é o sexo?</p>
+    <div class="gpick-row">
+      <button class="gp gpp" id="gp-girl" onclick="pickGender('girl')"><span class="gi">🎀</span><span style="font-family:'Fredoka One',cursive;">Menina</span></button>
+      <button class="gp gpb" id="gp-boy" onclick="pickGender('boy')"><span class="gi">⚽</span><span style="font-family:'Fredoka One',cursive;">Menino</span></button>
+    </div>
+    <div class="admin-warn">⚠️ Salvo apenas neste dispositivo</div>
+    <div class="modal-btns">
+      <button class="btn btn-gold" onclick="saveAdmin()" style="flex:1;">Salvar ✓</button>
+      <button class="btn btn-dark" onclick="closeAdmin()" style="flex:1;">Fechar</button>
+    </div>
+    <div class="err" id="a-err"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════
+// STATE
+// ══════════════════════════════
+const S = { gender:null, babyName:'', players:[], adminGender:null };
+
+function _enc(s){ return btoa(s.split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)^(73+i))).join('')); }
+function _dec(s){ try{ return atob(s).split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)^(73+i))).join(''); }catch(e){ return null; } }
+
+function loadS(){
+  try{
+    const d=JSON.parse(sessionStorage.getItem('luizaFesta')||'{}');
+    if(d.g)        S.gender=_dec(d.g);
+    if(d.babyName) S.babyName=d.babyName;
+    if(d.players)  S.players=d.players;
+  }catch(e){}
+}
+function saveS(){
+  const p={babyName:S.babyName,players:S.players};
+  if(S.gender) p.g=_enc(S.gender);
+  sessionStorage.setItem('luizaFesta',JSON.stringify(p));
+}
+function isAdmin(){ return sessionStorage.getItem('luizaAdmin')==='ok'; }
+
+// ══════════════════════════════
+// NAVIGATION
+// ══════════════════════════════
+function goPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pg-'+id).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('nt-'+id).classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='quiz') updateScoreBar();
+}
+
+function showQScreen(id){
+  document.querySelectorAll('.qscreen').forEach(s=>s.classList.remove('qactive'));
+  document.getElementById(id).classList.add('qactive');
+  window.scrollTo(0,0);
+}
+
+function showDash(){ updateDash(); showQScreen('qs-dash'); }
+
+// ══════════════════════════════
+// ADMIN
+// ══════════════════════════════
+function openAdmin(){
+  if(S.babyName) document.getElementById('a-name').value=S.babyName;
+  if(S.gender){ S.adminGender=S.gender; document.getElementById(`gp-${S.gender==='girl'?'girl':'boy'}`).classList.add('sel'); }
+  document.getElementById('admin-modal').classList.add('open');
+}
+function closeAdmin(){ document.getElementById('admin-modal').classList.remove('open'); }
+function pickGender(g){
+  S.adminGender=g;
+  document.getElementById('gp-girl').classList.toggle('sel',g==='girl');
+  document.getElementById('gp-boy').classList.toggle('sel',g==='boy');
+}
+function saveAdmin(){
+  if(!S.adminGender){ document.getElementById('a-err').textContent='Escolha o sexo do bebê!'; return; }
+  const pwd=document.getElementById('a-pwd').value;
+  if(!pwd){ document.getElementById('a-err').textContent='Digite a senha secreta!'; return; }
+  const h=pwd.split('').reduce((a,c)=>((a<<5)-a)+c.charCodeAt(0)|0,0);
+  if(!sessionStorage.getItem('luizaAdminHash')){
+    sessionStorage.setItem('luizaAdminHash',h);
+  } else if(sessionStorage.getItem('luizaAdminHash')!=h){
+    document.getElementById('a-err').textContent='Senha incorreta! ❌'; return;
+  }
+  S.gender=S.adminGender;
+  S.babyName=document.getElementById('a-name').value.trim();
+  sessionStorage.setItem('luizaAdmin','ok');
+  saveS();
+  document.getElementById('a-err').textContent='';
+  document.getElementById('reveal-btn').style.display='';
+  closeAdmin();
+}
+
+// ══════════════════════════════
+// ALBUM — fotos fixas do Google Photos
+// ══════════════════════════════
+// Google Photos shared album: direct lh3 URLs via photo IDs
+const GPHOTO_KEY = 'SlJyakJvX2pjWEVHQTZLSDNlY01pV2RjR1VobnhR';
+const GPHOTO_ALBUM = 'AF1QipOwPBNtzsJkNjxUXxQFFvDr2W30Cr2FNgPJIR41l1qi5n1HnlWIpJiuXC3awcH64g';
+const PHOTO_IDS = [
+  'AF1QipNjIV__iJ_eoz4ii0Mo2E1Y6dmnqUiIV5d9swqR',
+  'AF1QipMqce_9567s-JnWQlRCYy5m01zjsuZEEUkrudam',
+  'AF1QipMgVfaF1mqmmQNbKNdrjiivl9ntPspwGE00HpMK',
+  'AF1QipOVOnpjDzuejaw7fx4MNRHfZb8UENYjeqUhmmzH',
+  'AF1QipNZqVJcHjYRKaT0fMudZ6fShn21cP3zaAm4NjG1',
+  'AF1QipMlT0wErZQXnw6ZtdAWVEJH9SKQq9Xw_j80iU2V',
+  'AF1QipPHkgIl2jgyk9hg29dwMMz-EeEDTKrvO9KWermY',
+  'AF1QipPmmrdXchgYwd_In80juOxjUN1no_ZhVMOpotsL',
+  'AF1QipO543EDPvTjUWITUFIaJRDrZhz7XRXIDUsqXD0Q',
+  'AF1QipMq_hRWXdM16aGC0-rtjSn2fZP9_fF85mTHSUM4',
+  'AF1QipO65C-pqUfpGUYAs-yLJTIr2uO5b2H4PlQ8pcYK',
+  'AF1QipPNE1NSqNWhyuSNsBjVwZJwCEyOMO1D5vnajCZR',
+  'AF1QipOtk0eEDdm61V46icrf6tqJhTHD3ig30cglS5oI',
+  'AF1QipMkjc5zu6aV-vN7og7H1iiIzqTmOWoT-nCS-sHm',
+  'AF1QipMqd_ShFLtME4koXMoyLYY3GrsmAkI3Lw5GkbC_',
+  'AF1QipMBQSXbHoxPr99CjvGgmEbXKcUj6Bxc3q2xr9xq',
+  'AF1QipMx3HNDUQj0fWfDc7DJwJM_2_JLdbr1D4hQftG8',
+  'AF1QipPidPdVpVutarWjIxJE8XFCH1cTSyysv6T-D7nY',
+  'AF1QipMtjQO7K9qFv8AZ-ACu3g64eDRSuOiyCYibQEWk',
+  'AF1QipObEZNILRwFrddtTdoj8_3u1mDfTbrEl_Nga3fG',
+  'AF1QipOXM6Na46MnyUf-edN-JjKXseqLht7jZl91VwHl',
+  'AF1QipNIB_ZugusLafDW69D3K2VGKJfvbCpDg3EtWUW3',
+  'AF1QipOogXtH5qYJW6luPahrTyVtpOILGSVCSjU2B27I',
+  'AF1QipPR-WucMF60xFW1mFsnB7QY6xOiwRewioj1So59',
+  'AF1QipMHwa5IiPh3XcRcVqmOGI5-ayzSS_gTV0osh9_2',
+  'AF1QipNv8_1UV8n9PB8YqH5f5zgiV_v8JM_gzKPUF2Vc',
+  'AF1QipOTMx484seeosT-U2ZMfjFcbwKN_SEKcco80kdb',
+  'AF1QipMkTtNrKP9pDs1HItaSaArchz0BiWGNTQcqf625',
+  'AF1QipNeQ9BXGWSJEB9bzVR-LrAqHD9doEswecHHsHzB',
+  'AF1QipPo2MDTKp5DH2YDvoD68w95ZwYz9m_BRaFPFVu1',
+];
+
+// Build thumb URL: lh3 serves resized images directly with size params
+function gPhotoThumb(id){ return `https://lh3.googleusercontent.com/pw/${id}=w400-h400-c`; }
+function gPhotoFull(id){  return `https://lh3.googleusercontent.com/pw/${id}=w1200`; }
+
+// Combined lightbox: fixed + extra
+let lbAll = [];
+let lbIndex = 0;
+
+function buildFixedAlbum(){
+  const grid = document.getElementById('album-grid-fixed');
+  lbAll = PHOTO_IDS.map(id => ({ thumb: gPhotoThumb(id), full: gPhotoFull(id), removable: false }));
+  renderFixedGrid();
+}
+
+function renderFixedGrid(){
+  const grid = document.getElementById('album-grid-fixed');
+  grid.innerHTML = '';
+  PHOTO_IDS.forEach((id, i) => {
+    const div = document.createElement('div');
+    div.className = 'album-thumb';
+    const img = document.createElement('img');
+    img.src = gPhotoThumb(id);
+    img.alt = `Luiza foto ${i+1}`;
+    img.loading = 'lazy';
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+    img.onclick = () => openLightbox(i);
+    // fallback: if lh3 blocked, link to Google Photos page
+    img.onerror = function(){
+      this.onerror=null;
+      this.src='';
+      this.parentElement.style.background='#1a1a1a';
+      this.parentElement.innerHTML=`<a href="https://photos.google.com/share/${GPHOTO_ALBUM}/photo/${id}?key=${GPHOTO_KEY}" target="_blank" style="display:flex;align-items:center;justify-content:center;height:100%;color:#555;font-size:1.5rem;text-decoration:none;">📷</a>`;
+    };
+    div.appendChild(img);
+    grid.appendChild(div);
+  });
+}
+
+let extraPhotos = [];
+
+function handleAlbumUpload(e){
+  Array.from(e.target.files).forEach(f => {
+    if(f.size > 8*1024*1024) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      extraPhotos.push(ev.target.result);
+      lbAll = [
+        ...PHOTO_IDS.map(id => ({ full: gPhotoFull(id) })),
+        ...extraPhotos.map(src => ({ full: src }))
+      ];
+      renderExtraGrid();
+    };
+    r.readAsDataURL(f);
+  });
+  e.target.value = '';
+}
+
+function renderExtraGrid(){
+  const grid = document.getElementById('album-grid-extra');
+  grid.innerHTML = '';
+  extraPhotos.forEach((src, i) => {
+    const div = document.createElement('div');
+    div.className = 'album-thumb';
+    div.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;display:block;" onclick="openLightbox(${PHOTO_IDS.length + i})">
+      <button class="del-btn" onclick="deleteExtra(event,${i})">✕</button>`;
+    grid.appendChild(div);
+  });
+}
+
+function deleteExtra(e, i){
+  e.stopPropagation();
+  extraPhotos.splice(i, 1);
+  lbAll = [
+    ...PHOTO_IDS.map(id => ({ full: gPhotoFull(id) })),
+    ...extraPhotos.map(src => ({ full: src }))
+  ];
+  renderExtraGrid();
+}
+
+function openLightbox(i){
+  lbIndex = i;
+  const src = lbAll[i] ? lbAll[i].full : gPhotoFull(PHOTO_IDS[i]);
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lb-counter').textContent = `${i+1} / ${lbAll.length}`;
+  document.getElementById('lb-counter').style.display = 'block';
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+  document.getElementById('lb-counter').style.display = 'none';
+}
+function lbNav(d){
+  lbIndex = (lbIndex + d + lbAll.length) % lbAll.length;
+  const src = lbAll[lbIndex].full || gPhotoFull(PHOTO_IDS[lbIndex]);
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lb-counter').textContent = `${lbIndex+1} / ${lbAll.length}`;
+}
+document.getElementById('lightbox').addEventListener('click', function(e){
+  if(e.target === this) closeLightbox();
+});
+
+// ══════════════════════════════
+// QUESTIONS
+// ══════════════════════════════
+const QUESTIONS=[
+  {round:'luiza',emoji:'🍈',q:'Qual é a fruta favorita da Luiza?',opts:['Morango 🍓','Manga 🥭','Goiaba 🍈','Melancia 🍉'],ans:2,fun:'Goiaba! A Luiza tem um gosto refinadíssimo! 🍈😂'},
+  {round:'luiza',emoji:'🍫',q:'Qual é o doce favorito da Luiza?',opts:['Sorvete 🍦','Pirulito 🍭','Brigadeiro 🍫','Bolo de chocolate 🎂'],ans:2,fun:'Brigadeiro! Clássico infalível da nossa rainha! 🍫👑'},
+  {round:'luiza',emoji:'🧸',q:'Quantas bonecas a Luiza coloca pra dormir todo dia?',opts:['1 ou 2 🧸','De 3 a 5','De 6 a 9','Mais de 10! 🧸🧸🧸'],ans:3,fun:'Mais de 10! A cama dela parece uma loja de brinquedos! 🧸😂'},
+  {round:'luiza',emoji:'😴',q:'Qual é a naninha favorita da Luiza pra dormir?',opts:['Chupeta 🍬','O cobertinho','Pegar o cabelo da mamãe 👩','Abraçar o papai 👨'],ans:2,fun:'Pegar o cabelo da mamãe! A Nathalie sabe muito bem disso! 😂💕'},
+  {round:'luiza',emoji:'🎵',q:'Qual música a Luiza sabe cantar inteirinha?',opts:['Parabéns pra você 🎂','Let It Go ❄️','Baby Shark 🦈','Hino do São Paulo 🔴⚫'],ans:3,fun:'Hino do São Paulo! Tricolor de coração desde pequenininha! 🔴⚫🎶'},
+  {round:'bebe',emoji:'🎀',q:'No universo Disney, quem é a namorada do Mickey?',opts:['Daisy','Cinderela','Minnie 🎀','Clarabelle'],ans:2,fun:'Minnie Mouse! Com sua polka dot dress icônica! 🎀'},
+  {round:'bebe',emoji:'🐭',q:'Em que ano o Mickey Mouse apareceu pela primeira vez nas telas?',opts:['1920','1924','1928 🎬','1932'],ans:2,fun:'1928, no curta "Steamboat Willie"! Mickey tem quase 100 anos! 🎬'},
+  {round:'bebe',emoji:'🎩',q:'Qual é o nome do cachorro do Mickey Mouse?',opts:['Rex','Pluto 🐕','Goofy','Bolt'],ans:1,fun:'Pluto! O fiel companheiro de orelhas caídas do Mickey! 🐕'},
+  {round:'bebe',emoji:'🌹',q:'Qual é a cor do laço da Minnie Mouse?',opts:['Vermelho com bolinhas brancas 🔴','Rosa 🩷','Amarelo 💛','Roxo 💜'],ans:0,fun:'Vermelho com bolinhas brancas! Icônico e inconfundível! 🔴⚪'},
+  {round:'bebe',emoji:'🤰',q:'Quantas semanas dura uma gravidez humana (em média)?',opts:['32 semanas','36 semanas','40 semanas','44 semanas'],ans:2,fun:'40 semanas — 9 meses de muito amor! 💕'},
+  {round:'bebe',emoji:'🍼',q:'Qual é geralmente o primeiro sentido que o bebê desenvolve no útero?',opts:['Visão 👁️','Olfato 👃','Audição 👂','Paladar 👅'],ans:2,fun:'A audição! Bebês ouvem a voz da mamãe desde a 18ª semana! 👂💕'},
+  {round:'bebe',emoji:'💛',q:'O que a lenda diz quando o bebê chuta muito à noite?',opts:['Vai ser artista 🎭','Sinal de saúde 💚','Bebê agitado 🌀','Vai ser artilheiro ⚽'],ans:3,fun:'Vai ser artilheiro! Mas o que importa é a saúde e o amor! ⚽💕'},
+];
+const LQS=QUESTIONS.filter(q=>q.round==='luiza').length;
+const BQS=QUESTIONS.filter(q=>q.round==='bebe').length;
+const TQS=QUESTIONS.length;
+
+// ══════════════════════════════
+// QUIZ ENGINE
+// ══════════════════════════════
+let qState={player:null,qIndex:0,score:0,luizaScore:0,bebeScore:0,answered:false};
+let selTeam=null;
+
+function selectTeam(t){
+  selTeam=t;
+  document.getElementById('jt-pink').classList.toggle('sel',t==='pink');
+  document.getElementById('jt-blue').classList.toggle('sel',t==='blue');
+}
+
+function startQuiz(){
+  const name=document.getElementById('join-name').value.trim();
+  const err=document.getElementById('join-err');
+  if(!name){ err.textContent='Coloca seu nome! 😄'; return; }
+  if(!selTeam){ err.textContent='Escolha seu time!'; return; }
+  if(S.players.find(p=>p.name.toLowerCase()===name.toLowerCase())){ err.textContent='Esse nome já participou! 🧐'; return; }
+  if(sessionStorage.getItem('luizaJogou')){ err.textContent='Você já participou neste dispositivo! 😄'; return; }
+  qState={player:{name,team:selTeam,score:0,luizaScore:0,bebeScore:0,done:false},qIndex:0,score:0,luizaScore:0,bebeScore:0,answered:false};
+  setupQuizUI();
+  showQScreen('qs-playing');
+}
+
+function setupQuizUI(){
+  const p=qState.player,isP=p.team==='pink';
+  document.getElementById('qz-header').className=`qz-header ${isP?'ph':'bh'}`;
+  document.getElementById('qh-icon').textContent=isP?'🎀':'🐭';
+  document.getElementById('qh-player').textContent=p.name;
+  document.getElementById('qh-team').textContent=isP?'Time Minnie 🎀':'Time Mickey 🐭';
+  renderQ();
+}
+
+function renderQ(){
+  const qi=qState.qIndex;
+  if(qi>=TQS){ finishQuiz(); return; }
+  const q=QUESTIONS[qi];
+  document.getElementById('qh-prog').textContent=`${qi+1}/${TQS}`;
+  document.getElementById('qz-pfill').style.width=`${(qi/TQS)*100}%`;
+  document.getElementById('qz-qnum').textContent=`Pergunta ${qi+1} de ${TQS}`;
+  document.getElementById('qz-emoji').textContent=q.emoji;
+  document.getElementById('qz-q').textContent=q.q;
+  document.getElementById('qz-fb').textContent='';
+  document.getElementById('qz-fb').className='qz-fb';
+  const rb=document.getElementById('round-badge');
+  if(q.round==='luiza'){ rb.className='round-badge rb-luiza'; rb.innerHTML='👧 <span>Ronda da Luiza</span>'; }
+  else { rb.className='round-badge rb-bebe'; rb.innerHTML='🍼 <span>Ronda do Bebê</span>'; }
+  const isP=qState.player.team==='pink';
+  const opts=document.getElementById('qz-opts');
+  opts.innerHTML='';
+  ['A','B','C','D'].forEach((l,i)=>{
+    const b=document.createElement('button');
+    b.className=`qz-opt ${isP?'po':'bo'}`;
+    b.innerHTML=`<span class="ol">${l}</span><span>${q.opts[i]}</span>`;
+    b.onclick=()=>answerQ(i);
+    opts.appendChild(b);
+  });
+  qState.answered=false;
+  updateScoreBar();
+}
+
+function answerQ(chosen){
+  if(qState.answered) return;
+  qState.answered=true;
+  const q=QUESTIONS[qState.qIndex],ok=chosen===q.ans;
+  if(ok){ qState.score++; if(q.round==='luiza') qState.luizaScore++; else qState.bebeScore++; }
+  document.querySelectorAll('.qz-opt').forEach((b,i)=>{
+    b.classList.add('dis');
+    if(i===chosen) b.classList.add(ok?'sc':'sw');
+    if(i===q.ans&&!ok) b.classList.add('rc');
+  });
+  const fb=document.getElementById('qz-fb');
+  fb.className=`qz-fb ${ok?'ok':'no'}`;
+  fb.textContent=ok?`✅ ${q.fun}`:`❌ ${q.fun}`;
+  updateScoreBar();
+  setTimeout(()=>{ qState.qIndex++; renderQ(); },2400);
+}
+
+function updateScoreBar(){
+  const ps=S.players.filter(p=>p.team==='pink').reduce((a,p)=>a+p.score,0);
+  const bs=S.players.filter(p=>p.team==='blue').reduce((a,p)=>a+p.score,0);
+  document.getElementById('qs-p').textContent=ps;
+  document.getElementById('qs-b').textContent=bs;
+  document.getElementById('qs-me').textContent=`${qState.score} pts`;
+}
+
+function finishQuiz(){
+  const p=qState.player;
+  p.done=true; p.score=qState.score; p.luizaScore=qState.luizaScore; p.bebeScore=qState.bebeScore;
+  S.players.push(p); saveS();
+  sessionStorage.setItem('luizaJogou','sim');
+  const isP=p.team==='pink';
+  const pct=Math.round((p.score/TQS)*100);
+  const msg=pct>=87?'🏆 Especialista em Luiza e bebês!':pct>=60?'🎉 Arrasou! Você conhece bem a família!':pct>=40?'😄 Boa participação, quase lá!':'🥞 Tinha crepe demais na cabeça? 😂';
+  document.getElementById('fc-stripe').className=`fc-stripe ${isP?'ps':'bs'}`;
+  document.getElementById('fc-icon').textContent=isP?'🎀':'🐭';
+  document.getElementById('fc-title').textContent=`${p.name}!`;
+  document.getElementById('fc-score').className=`fc-score ${isP?'ps':'bs'}`;
+  document.getElementById('fc-score').textContent=`${p.score}/${TQS}`;
+  document.getElementById('fc-msg').textContent=msg;
+  const badge=document.getElementById('fc-badge');
+  badge.className=`fc-badge ${isP?'pb':'bb'}`;
+  badge.textContent=isP?'🎀 Time Minnie':'🐭 Time Mickey';
+  document.getElementById('fc-btn').className=`btn ${isP?'btn-pink':'btn-blue'}`;
+  document.getElementById('fbd-luiza').textContent=`👧 Luiza: ${p.luizaScore}/${LQS} (${Math.round(p.luizaScore/LQS*100)}%)`;
+  document.getElementById('fbd-bebe').textContent=`🍼 Bebê: ${p.bebeScore}/${BQS}`;
+  showQScreen('qs-finish');
+}
+
+// ══════════════════════════════
+// DASHBOARD
+// ══════════════════════════════
+function updateDash(){
+  const pink=S.players.filter(p=>p.team==='pink');
+  const blue=S.players.filter(p=>p.team==='blue');
+  const ps=pink.reduce((a,p)=>a+p.score,0);
+  const bs=blue.reduce((a,p)=>a+p.score,0);
+  const total=pink.length+blue.length;
+  const ts=ps+bs;
+  document.getElementById('sc-p-score').textContent=ps;
+  document.getElementById('sc-b-score').textContent=bs;
+  document.getElementById('dash-total').textContent=total;
+  document.getElementById('sc-p-members').textContent=pink.length?pink.map(p=>`${p.name}(${p.score})`).join(' · '):'ninguém ainda';
+  document.getElementById('sc-b-members').textContent=blue.length?blue.map(p=>`${p.name}(${p.score})`).join(' · '):'ninguém ainda';
+  document.getElementById('dpb-p').style.width=(ts>0?Math.round(ps/ts*100):50)+'%';
+  document.getElementById('sc-pink').classList.toggle('lead',ps>bs);
+  document.getElementById('sc-blue').classList.toggle('lead',bs>ps);
+  const list=document.getElementById('ps-list');
+  list.innerHTML='';
+  if(!total){ list.innerHTML='<span style="color:#2a2a2a;font-size:.75rem;">ninguém ainda...</span>'; return; }
+  S.players.forEach(p=>{
+    const c=document.createElement('div');
+    c.className=`ps-chip ${p.team==='pink'?'pc':'bc'}`;
+    c.textContent=`${p.team==='pink'?'🎀':'🐭'} ${p.name} · ${p.score}pts`;
+    list.appendChild(c);
+  });
+}
+
+// ══════════════════════════════
+// REVEAL
+// ══════════════════════════════
+function triggerReveal(){
+  if(!isAdmin()){ alert('Acesso restrito ao admin! ⚙️'); return; }
+  if(!S.gender){ alert('Configure o sexo no Admin primeiro! ⚙️'); return; }
+  const scr=document.getElementById('qs-reveal');
+  scr.className=`qscreen reveal-outer ${S.gender==='girl'?'girl-rev':'boy-rev'}`;
+  if(S.gender==='girl'){
+    document.getElementById('r-lmsg').textContent='A Luiza já sabe… e escolheu contar pra vocês! 🤫🎀';
+    document.getElementById('r-gender').textContent='MENINA!';
+    document.getElementById('r-emojis').textContent='🎀 💖 🌸 🎀';
+    document.getElementById('r-msg').textContent=S.babyName?`A ${S.babyName} chegou pra ser a melhor amiga da Luiza! 💕`:'Ela chegou pra completar essa família linda! 💕';
+  } else {
+    document.getElementById('r-lmsg').textContent='A Luiza já sabe… e escolheu contar pra vocês! 🤫🐭';
+    document.getElementById('r-gender').textContent='MENINO!';
+    document.getElementById('r-emojis').textContent='⚽ 💙 🐭 ⭐';
+    document.getElementById('r-msg').textContent=S.babyName?`O ${S.babyName} chega pra ser o companheiro da Luiza! 💙`:'Ele chega pra completar essa família incrível! 💙';
+  }
+  const winners=S.players.filter(p=>(S.gender==='girl'&&p.team==='pink')||(S.gender==='boy'&&p.team==='blue'));
+  document.getElementById('r-winners').innerHTML=winners.length
+    ?`<h3>🏆 Time ${S.gender==='girl'?'Minnie':'Mickey'} acertou! (${winners.length})</h3><div>${winners.map(w=>`<span class="w-chip">⭐ ${w.name}</span>`).join('')}</div>`
+    :'';
+  scr.querySelectorAll('.rev-lmsg,.rev-drum,.rev-its,.rev-gender,.rev-emojis,.rev-msg,.rev-winners,.rev-back').forEach(el=>{
+    el.style.animation='none'; el.offsetHeight; el.style.animation='';
+  });
+  showQScreen('qs-reveal');
+  setTimeout(launchConfetti,2500);
+}
+
+function launchConfetti(){
+  const colors=S.gender==='girl'
+    ?['#e8157a','#ff5caa','#ffe0f4','#f5c400','#fff','#f48fb1']
+    :['#1251a3','#3d8ef0','#ddeeff','#f5c400','#fff','#80cbc4'];
+  const scr=document.getElementById('qs-reveal');
+  for(let i=0;i<120;i++){
+    const p=document.createElement('div');
+    const sz=Math.random()*13+4;
+    p.className='cfetti';
+    p.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*-30}%;width:${sz}px;height:${sz}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:${Math.random()>.5?'50%':'3px'};animation:cfFall ${Math.random()*4+2}s ${Math.random()*2}s ease-in forwards;`;
+    scr.appendChild(p);
+    setTimeout(()=>p.remove(),7000);
+  }
+}
+
+// ══════════════════════════════
+// INIT
+// ══════════════════════════════
+loadS();
+buildFixedAlbum();
+if(isAdmin()) document.getElementById('reveal-btn').style.display='';
+if(sessionStorage.getItem('luizaJogou')){
+  // already played - show dashboard directly when entering quiz tab
+  document.getElementById('pg-quiz').addEventListener('click',()=>{},{ once:false });
+}
+</script>
+</body>
+</html>
