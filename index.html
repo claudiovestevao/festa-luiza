@@ -921,6 +921,24 @@ body{
 }
 .wish-item strong{display:block;color:#7a45c6;margin-bottom:.2rem;}
 .wish-item p{font-size:.84rem;color:#5e5368;line-height:1.55;}
+.crud-actions{
+  display:flex;
+  gap:.45rem;
+  flex-wrap:wrap;
+  margin-top:.65rem;
+}
+.crud-actions button{
+  border:1px solid rgba(122,69,198,.18);
+  border-radius:999px;
+  background:#fff;
+  color:#7a45c6;
+  font-family:'Nunito',sans-serif;
+  font-size:.72rem;
+  font-weight:900;
+  padding:.36rem .68rem;
+  cursor:pointer;
+}
+.crud-actions button:hover{border-color:#f06292;color:#c42b65;}
 .mission-card{
   display:flex;
   align-items:flex-start;
@@ -2040,6 +2058,21 @@ function writeList(key, value){
   localStorage.setItem(key, JSON.stringify(value));
 }
 
+function listForKey(key, globalList){
+  return globalList.length?globalList:readList(key);
+}
+
+function replaceLocalItem(key, id, patch){
+  const list=readList(key);
+  const next=list.map(item=>item.id===id||String(item.createdAt)===String(id)?{...item,...patch,updatedAt:Date.now()}:item);
+  writeList(key,next);
+}
+
+function removeLocalItem(key, id){
+  const list=readList(key);
+  writeList(key,list.filter(item=>item.id!==id && String(item.createdAt)!==String(id)));
+}
+
 function escapeHtml(str){
   return String(str||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
@@ -2067,19 +2100,56 @@ function saveWish(){
 function renderWishes(){
   const box=document.getElementById('wish-list');
   if(!box) return;
-  const wishes=globalWishes.length?globalWishes:readList(WISH_KEY);
-  box.innerHTML=wishes.length?wishes.map(w=>`
+  const wishes=listForKey(WISH_KEY,globalWishes);
+  box.innerHTML=wishes.length?wishes.map((w,i)=>{
+    const itemId=w.id||w.createdAt||i;
+    return `
     <div class="wish-item">
       <strong>⭐ ${escapeHtml(w.name)}</strong>
       <p>${escapeHtml(w.message)}</p>
       ${w.future?`<p><em>Desejo: ${escapeHtml(w.future)}</em></p>`:''}
-    </div>`).join(''):'<div class="wish-item"><p>Nenhuma estrelinha ainda. A primeira pode ser sua.</p></div>';
+      ${isAdmin()?`<div class="crud-actions"><button type="button" onclick="editWish('${itemId}')">Editar</button><button type="button" onclick="deleteWish('${itemId}')">Excluir</button></div>`:''}
+    </div>`}).join(''):'<div class="wish-item"><p>Nenhuma estrelinha ainda. A primeira pode ser sua.</p></div>';
 }
 
 function exportWishes(){
-  const wishes=globalWishes.length?globalWishes:readList(WISH_KEY);
+  const wishes=listForKey(WISH_KEY,globalWishes);
   const text=wishes.map(w=>`${w.name}\nMensagem: ${w.message}\nDesejo: ${w.future||'-'}\n`).join('\n---\n') || 'Ainda não há mensagens.';
   copyText(text,'Mensagens copiadas.');
+}
+
+function findWish(id){
+  return listForKey(WISH_KEY,globalWishes).find(w=>w.id===id || String(w.createdAt)===String(id));
+}
+
+function editWish(id){
+  if(!isAdmin()){ alert('Acesso restrito ao admin.'); return; }
+  const item=findWish(id);
+  if(!item) return;
+  const name=prompt('Nome:', item.name||'');
+  if(name===null) return;
+  const message=prompt('Mensagem para a Luiza:', item.message||'');
+  if(message===null) return;
+  const future=prompt('Desejo para o futuro:', item.future||'');
+  if(future===null) return;
+  const patch={name:name.trim(),message:message.trim(),future:future.trim(),updatedAt:Date.now()};
+  if(!patch.name || !patch.message){ alert('Nome e mensagem não podem ficar vazios.'); return; }
+  if(firebaseReady && db && item.id){
+    db.ref(`${WISHES_PATH}/${item.id}`).update(patch).catch(()=>alert('Não consegui editar no Firebase agora.'));
+  } else {
+    replaceLocalItem(WISH_KEY,id,patch); renderWishes();
+  }
+}
+
+function deleteWish(id){
+  if(!isAdmin()){ alert('Acesso restrito ao admin.'); return; }
+  const item=findWish(id);
+  if(!item || !confirm('Excluir este recado?')) return;
+  if(firebaseReady && db && item.id){
+    db.ref(`${WISHES_PATH}/${item.id}`).remove().catch(()=>alert('Não consegui excluir no Firebase agora.'));
+  } else {
+    removeLocalItem(WISH_KEY,id); renderWishes();
+  }
 }
 
 function saveCapsule(){
@@ -2105,20 +2175,57 @@ function saveCapsule(){
 function renderCapsules(){
   const box=document.getElementById('capsule-list');
   if(!box) return;
-  const capsules=globalCapsules.length?globalCapsules:readList(CAPSULE_KEY);
-  box.innerHTML=capsules.length?capsules.map((c,i)=>`
+  const capsules=listForKey(CAPSULE_KEY,globalCapsules);
+  box.innerHTML=capsules.length?capsules.map((c,i)=>{
+    const itemId=c.id||c.createdAt||i;
+    return `
     <div class="wish-item">
       <strong>💌 Cápsula ${capsules.length-i}</strong>
       ${c.know?`<p>${escapeHtml(c.know)}</p>`:''}
       ${c.beauty?`<p>${escapeHtml(c.beauty)}</p>`:''}
       ${c.wish?`<p><em>${escapeHtml(c.wish)}</em></p>`:''}
-    </div>`).join(''):'<div class="wish-item"><p>A cápsula ainda está esperando a primeira mensagem.</p></div>';
+      ${isAdmin()?`<div class="crud-actions"><button type="button" onclick="editCapsule('${itemId}')">Editar</button><button type="button" onclick="deleteCapsule('${itemId}')">Excluir</button></div>`:''}
+    </div>`}).join(''):'<div class="wish-item"><p>A cápsula ainda está esperando a primeira mensagem.</p></div>';
 }
 
 function exportCapsules(){
-  const capsules=globalCapsules.length?globalCapsules:readList(CAPSULE_KEY);
+  const capsules=listForKey(CAPSULE_KEY,globalCapsules);
   const text=capsules.map((c,i)=>`Cápsula ${i+1}\n${c.know||''}\n${c.beauty||''}\nDesejo: ${c.wish||'-'}\n`).join('\n---\n') || 'Ainda não há cápsulas.';
   copyText(text,'Cápsulas copiadas.');
+}
+
+function findCapsule(id){
+  return listForKey(CAPSULE_KEY,globalCapsules).find(c=>c.id===id || String(c.createdAt)===String(id));
+}
+
+function editCapsule(id){
+  if(!isAdmin()){ alert('Acesso restrito ao admin.'); return; }
+  const item=findCapsule(id);
+  if(!item) return;
+  const know=prompt('Luiza, quando você ler isso...', item.know||'');
+  if(know===null) return;
+  const beauty=prompt('Uma coisa linda sobre você hoje é...', item.beauty||'');
+  if(beauty===null) return;
+  const wish=prompt('Meu desejo para sua vida é...', item.wish||'');
+  if(wish===null) return;
+  const patch={know:know.trim(),beauty:beauty.trim(),wish:wish.trim(),updatedAt:Date.now()};
+  if(!patch.know && !patch.beauty && !patch.wish){ alert('A cápsula precisa ter algum texto.'); return; }
+  if(firebaseReady && db && item.id){
+    db.ref(`${CAPSULES_PATH}/${item.id}`).update(patch).catch(()=>alert('Não consegui editar no Firebase agora.'));
+  } else {
+    replaceLocalItem(CAPSULE_KEY,id,patch); renderCapsules();
+  }
+}
+
+function deleteCapsule(id){
+  if(!isAdmin()){ alert('Acesso restrito ao admin.'); return; }
+  const item=findCapsule(id);
+  if(!item || !confirm('Excluir esta cápsula?')) return;
+  if(firebaseReady && db && item.id){
+    db.ref(`${CAPSULES_PATH}/${item.id}`).remove().catch(()=>alert('Não consegui excluir no Firebase agora.'));
+  } else {
+    removeLocalItem(CAPSULE_KEY,id); renderCapsules();
+  }
 }
 
 function copyText(text, okMsg){
