@@ -1498,7 +1498,7 @@ body{
         <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Refrigerante</div>
         <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Suco de laranja</div>
         <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Suco de uva</div>
-        <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Chopp Germânia servido na chopeira para se servir</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Chopp</div>
       </div>
     </div>
 
@@ -1579,7 +1579,7 @@ body{
       <div class="join-card">
         <div class="join-avatar">👧</div>
         <h2>Quiz da Luiza: você conhece essa pequena estrela?</h2>
-        <p class="join-sub">Uma brincadeira mágica com perguntas sobre a Luiza, histórias encantadas e o novo capítulo da família.</p>
+        <p class="join-sub">Responda, veja seu nome no ranking da festa e deixe seu palpite para o bebê.</p>
         <div class="join-name">
           <label for="join-name">Antes de começar, escreva seu nome</label>
           <input type="text" id="join-name" placeholder="Ex.: Claudio, Dinda, Vovó..." maxlength="20" autocomplete="name">
@@ -2095,8 +2095,7 @@ const QUESTIONS=[
   {round:'bebe',emoji:'🎩',q:'Qual é o nome do cachorro do Mickey Mouse?',opts:['Rex','Pluto','Goofy','Bolt'],ans:1,fun:'Pluto! O fiel companheiro de orelhas caídas do Mickey! 🐕'},
   {round:'bebe',emoji:'🌹',q:'Qual é a cor do laço da Minnie Mouse?',opts:['Vermelho com bolinhas brancas','Rosa','Amarelo','Roxo'],ans:0,fun:'Vermelho com bolinhas brancas! Icônico e inconfundível! 🔴⚪'},
   {round:'bebe',emoji:'💛',q:'O que a lenda diz quando o bebê chuta muito à noite?',opts:['Vai ser artista','Sinal de saúde','Bebê agitado (a)','Vai ser artilheiro (a)'],ans:3,fun:'Vai ser artilheiro (a)! Mas o que importa é a saúde e o amor! ⚽💕'},
-  {round:'bebe',emoji:'🇧🇷',q:'Quando a Luiza abrir a Cápsula do Tempo no futuro, será que o Brasil já vai ter ganhado o hexa?',opts:['Sim, rumo ao Hexa em 2026, eu acredito','Sim, com Neymar fazendo gol na final','Ainda não, mas seguimos acreditando'],ans:0,fun:'Rumo ao Hexa em 2026, eu acredito! A cápsula vai cobrar essa profecia no futuro. 🇧🇷🏆'},
-  {round:'bebe',emoji:'🎈',q:'Você acha que Nathalie e Claudio Vitor terão menino ou menina?',opts:['Menino','Menina'],ans:null,noScore:true,fun:'Palpite registrado com carinho. A resposta de verdade fica para o momento especial depois do parabéns! 🎈'}
+  {round:'bebe',emoji:'🇧🇷',q:'Quando a Luiza abrir a Cápsula do Tempo no futuro, será que o Brasil já vai ter ganhado o hexa?',opts:['Sim, rumo ao Hexa em 2026, eu acredito','Sim, com Neymar fazendo gol na final','Ainda não, mas seguimos acreditando'],ans:0,fun:'Rumo ao Hexa em 2026, eu acredito! A cápsula vai cobrar essa profecia no futuro. 🇧🇷🏆'}
 ];
 const SCORED_QUESTIONS=QUESTIONS.filter(q=>!q.noScore);
 const LQS=SCORED_QUESTIONS.filter(q=>q.round==='luiza').length;
