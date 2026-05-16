@@ -36,12 +36,12 @@ input,textarea,select{font-size:16px!important;}
 .nav-tab{
   flex:1;display:flex;flex-direction:column;align-items:center;gap:.15rem;
   min-height:48px;
-  padding:.5rem .2rem;border-radius:12px;cursor:pointer;
+  padding:.5rem .16rem;border-radius:12px;cursor:pointer;
   transition:all .2s;border:none;background:transparent;
-  color:#3d3550;font-family:'Nunito',sans-serif;font-size:.58rem;font-weight:800;
-  text-transform:uppercase;letter-spacing:.04em;
+  color:#3d3550;font-family:'Nunito',sans-serif;font-size:.52rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:0;line-height:1.05;
 }
-.nav-tab .nt-icon{font-size:1.3rem;transition:transform .2s;}
+.nav-tab .nt-icon{font-size:1.22rem;transition:transform .2s;}
 .nav-tab.active{color:var(--lilac-light);}
 .nav-tab.active .nt-icon{transform:scale(1.2);}
 .nav-tab:hover{color:#7a6e99;}
@@ -458,6 +458,22 @@ body{
   color:#8f86a5;
   letter-spacing:0;
 }
+.join-name label{
+  display:block;
+  margin:0 0 .45rem;
+  color:#7a45c6;
+  font-family:'Fredoka One',cursive;
+  font-size:.95rem;
+  text-align:center;
+}
+.join-name .name-hint{
+  display:block;
+  margin:-.85rem 0 1rem;
+  color:#8f86a5;
+  font-size:.76rem;
+  font-weight:800;
+  text-align:center;
+}
 .nav-tab.active{
   color:#fff;
   background:linear-gradient(135deg,rgba(240,98,146,.22),rgba(181,123,238,.22));
@@ -474,7 +490,7 @@ body{
   overflow:hidden;
   background:
     linear-gradient(180deg,rgba(15,13,20,.22),rgba(15,13,20,.95) 72%),
-    url('fotos/foto01.jpg') center 28%/cover no-repeat,
+    url('fotos/foto89.jpg') center 35%/cover no-repeat,
     var(--dark);
 }
 #pg-home::before{
@@ -498,7 +514,7 @@ body{
   width:118px;height:118px;
   background:
     linear-gradient(rgba(255,255,255,.02),rgba(255,255,255,.02)),
-    url('fotos/foto01.jpg') center 28%/cover no-repeat;
+    url('fotos/foto89.jpg') center 35%/cover no-repeat;
   color:transparent;
   border:4px solid rgba(255,255,255,.88);
   box-shadow:0 0 0 7px rgba(240,98,146,.82),0 16px 46px rgba(0,0,0,.45);
@@ -628,7 +644,7 @@ body{
   background:
     linear-gradient(180deg,rgba(7,5,11,.12),rgba(7,5,11,.94) 74%),
     radial-gradient(circle at 20% 18%,rgba(255,228,122,.28),transparent 12rem),
-    url('fotos/foto01.jpg') center 28%/cover no-repeat,
+    url('fotos/foto89.jpg') center 35%/cover no-repeat,
     var(--magic-night);
 }
 #pg-home::after{
@@ -942,13 +958,13 @@ body{
   background:#fff;
   color:#24162b;
 }
-.wish-form input,.wish-form textarea,.capsule-form textarea,.join-name input,.mf input{
+.wish-form input,.wish-form textarea,.capsule-form input,.capsule-form textarea,.join-name input,.mf input{
   line-height:1.35;
 }
 .wish-form textarea,.capsule-form textarea{
   min-height:116px;
 }
-.wish-form input::placeholder,.wish-form textarea::placeholder,.capsule-form textarea::placeholder,.join-name input::placeholder,.mf input::placeholder{
+.wish-form input::placeholder,.wish-form textarea::placeholder,.capsule-form input::placeholder,.capsule-form textarea::placeholder,.join-name input::placeholder,.mf input::placeholder{
   opacity:.72;
 }
 .wish-form textarea,.capsule-form textarea{resize:vertical;}
@@ -1113,8 +1129,8 @@ body{
   .wish-form textarea,.wish-form .mini-actions{grid-column:1/-1;}
 }
 @media (max-width:380px){
-  .nav-tab{font-size:.5rem;}
-  .nav-tab .nt-icon{font-size:1.18rem;}
+  .nav-tab{font-size:.43rem;min-height:52px;padding:.42rem .08rem;}
+  .nav-tab .nt-icon{font-size:1rem;}
   .home-inner{padding-left:1rem;padding-right:1rem;}
   .events-row,.teams-row{gap:.5rem;}
   .event-pill,.tp{font-size:.74rem;}
@@ -1127,8 +1143,8 @@ body{
     border-radius:20px;
   }
   .nav-tab{
-    min-height:58px;
-    padding:.5rem .12rem;
+    min-height:56px;
+    padding:.46rem .1rem;
   }
   .home-inner{
     min-height:calc(100svh - 62px);
@@ -1198,7 +1214,7 @@ body{
 <div class="magic-progress" id="magic-progress"></div>
 <div class="magic-toast" id="magic-toast" role="status" aria-live="polite"></div>
 <button class="top-button" id="top-button" type="button" onclick="scrollToTop()" aria-label="Voltar ao topo">↑</button>
-<button class="floating-wish" id="floating-wish" type="button" onclick="openAdventure('sec-recados')">⭐ deixar recado</button>
+<button class="floating-wish" id="floating-wish" type="button" onclick="openAdventure('sec-capsula','capsula')">⭐ cápsula do tempo</button>
 
 <!-- ════════ NAV ════════ -->
 <nav class="nav-bar">
@@ -1206,13 +1222,19 @@ body{
     <span class="nt-icon">🏠</span>Home
   </button>
   <button class="nav-tab" type="button" onclick="goPage('menu')" id="nt-menu" aria-label="Abrir cardápio">
-    <span class="nt-icon">🥞</span>Cardápio da festa
+    <span class="nt-icon">🥞</span>Cardápio
   </button>
   <button class="nav-tab" type="button" onclick="goPage('album')" id="nt-album" aria-label="Abrir fotos">
     <span class="nt-icon">📸</span>Fotos
   </button>
   <button class="nav-tab" type="button" onclick="goPage('quiz')" id="nt-quiz" aria-label="Abrir quiz">
     <span class="nt-icon">🎯</span>Quiz
+  </button>
+  <button class="nav-tab" type="button" onclick="openAdventure('sec-capsula','capsula')" id="nt-capsula" aria-label="Abrir cápsula do tempo">
+    <span class="nt-icon">💌</span>Cápsula
+  </button>
+  <button class="nav-tab" type="button" onclick="openAdventure('sec-missoes','missoes')" id="nt-missoes" aria-label="Abrir missões da festa">
+    <span class="nt-icon">✨</span>Missões
   </button>
 </nav>
 
@@ -1226,7 +1248,7 @@ body{
     <div class="home-title"><span class="pink">Luiza</span> faz 3!</div>
     <p class="story-lead">Era uma vez uma menina chamada Luiza... <strong>que está completando 3 anos de amor, imaginação, bonecas, brigadeiros e muita magia.</strong></p>
     <button class="btn-magic" type="button" onclick="scrollToHomeMain()">✦ Entrar no Mundo da Luiza</button>
-    <div class="home-date">🎀 Festa de aniversário da Luiza - Maio/26</div>
+    <div class="home-date">Maio/26</div>
 
     <!-- PREGNANCY ANNOUNCEMENT - discreto -->
     <div class="announcement-card" style="
@@ -1247,14 +1269,14 @@ body{
 
     <!-- EVENTS -->
     <div class="events-row">
-      <div class="event-pill ep-bday" onclick="goPage('quiz')">
-        <span class="ep-icon">🎯</span>Quiz da Luiza
-      </div>
       <div class="event-pill ep-menu" onclick="goPage('menu')">
         <span class="ep-icon">🥞</span>Cardápio
       </div>
       <div class="event-pill ep-album" onclick="goPage('album')">
-        <span class="ep-icon">📸</span>Fotos da Luly
+        <span class="ep-icon">📸</span>Fotos
+      </div>
+      <div class="event-pill ep-bday" onclick="goPage('quiz')">
+        <span class="ep-icon">🎯</span>Quiz
       </div>
     </div>
 
@@ -1279,7 +1301,8 @@ body{
     <section class="story-section soft reveal-on-scroll" id="sec-luiza">
       <span class="story-eyebrow">👧 protagonista da história</span>
       <h2 class="story-title">Quem é a Luiza?</h2>
-      <p class="story-copy">A Luiza está fazendo 3 anos e transformando cada cantinho da festa num pequeno mundo de imaginação, carinho e descobertas.</p>
+      <p class="story-copy">Luiza Bonomi Estevão nasceu em São Paulo-SP, filha de Nathalie e Claudio Vitor. Agora, aos 3 anos, transforma cada cantinho da festa num pequeno mundo de imaginação, carinho e descobertas.</p>
+      <p class="story-copy">Meiga, carinhosa e cheia de imaginação, a Luiza adora imitar as pessoas e arrancar risadas de quem convive bem de pertinho com ela. À primeira vista, parece tímida e observadora, pois demora um pouquinho para ganhar confiança. Mas, quando se sente à vontade, revela seu lado mais divertido, espontâneo e encantador.</p>
       <div class="luiza-grid">
         <div class="story-card"><span class="sc-ico">🎂</span><h3>3 anos de magia</h3><p>Uma fase cheia de alegria, palavras novas, histórias e jeitinho próprio.</p></div>
         <div class="story-card"><span class="sc-ico">🧸</span><h3>Menina das bonecas</h3><p>Ela ama brincar de bonecas e colocar todas para nanar com muito cuidado.</p></div>
@@ -1295,11 +1318,11 @@ body{
       <h2 class="story-title">Escolha sua aventura</h2>
       <p class="story-copy">Cada porta abre um pedacinho do Mundo Encantado da Luiza.</p>
       <div class="adventure-grid">
-        <button class="story-card adventure-card" type="button" onclick="openAdventure('sec-luiza')"><span class="sc-ico">👧</span><h3>Conheça a Luiza</h3><p>Detalhes fofos da aniversariante.</p></button>
-        <button class="story-card adventure-card" type="button" onclick="goPage('quiz')"><span class="sc-ico">🎯</span><h3>Quiz da Luiza</h3><p>Uma brincadeira para quem conhece essa pequena estrela.</p></button>
-        <button class="story-card adventure-card" type="button" onclick="goPage('album')"><span class="sc-ico">📖</span><h3>Galeria de Memórias</h3><p>Capítulos dos 3 anos da Luiza.</p></button>
         <button class="story-card adventure-card" type="button" onclick="goPage('menu')"><span class="sc-ico">🥞</span><h3>Cardápio da Festa</h3><p>Os sabores especiais da comemoração.</p></button>
-        <button class="story-card adventure-card" type="button" onclick="openAdventure('sec-recados')"><span class="sc-ico">⭐</span><h3>Recados Encantados</h3><p>Deixe uma estrelinha para a Luiza.</p></button>
+        <button class="story-card adventure-card" type="button" onclick="goPage('album')"><span class="sc-ico">📖</span><h3>Galeria de Memórias</h3><p>Capítulos dos 3 anos da Luiza.</p></button>
+        <button class="story-card adventure-card" type="button" onclick="goPage('quiz')"><span class="sc-ico">🎯</span><h3>Quiz da Luiza</h3><p>Uma brincadeira para quem conhece essa pequena estrela.</p></button>
+        <button class="story-card adventure-card" type="button" onclick="openAdventure('sec-capsula','capsula')"><span class="sc-ico">💌</span><h3>Cápsula do Tempo</h3><p>Escreva uma mensagem para a Luiza ler quando crescer.</p></button>
+        <button class="story-card adventure-card" type="button" onclick="openAdventure('sec-missoes','missoes')"><span class="sc-ico">✨</span><h3>Missões da Festa</h3><p>Pequenas aventuras para completar durante a comemoração.</p></button>
         <button class="story-card adventure-card" type="button" onclick="openAdventure('sec-bebe')"><span class="sc-ico">🍼</span><h3>Uma Nova Magia Chegando</h3><p>Um novo capítulo da família.</p></button>
       </div>
     </section>
@@ -1318,26 +1341,6 @@ body{
       <button class="btn-magic" type="button" onclick="goPage('album')" style="margin-top:1rem;">Abrir galeria de memórias</button>
     </section>
 
-    <section class="story-section reveal-on-scroll" id="sec-recados">
-      <span class="story-eyebrow">⭐ memória afetiva</span>
-      <h2 class="story-title">Deixe uma estrelinha para a Luiza</h2>
-      <p class="story-copy">Um dia, quando a Luiza crescer, ela vai poder ler todas as mensagens deixadas nesse momento tão especial.</p>
-      <div class="magic-counts">
-        <span class="magic-count" id="wish-count">0 estrelinhas</span>
-        <span class="magic-count" id="capsule-count-inline">0 cápsulas</span>
-      </div>
-      <div class="wish-form">
-        <input id="wish-name" type="text" maxlength="40" placeholder="Seu nome">
-        <input id="wish-future" type="text" maxlength="90" placeholder="Um desejo para o futuro dela">
-        <textarea id="wish-message" maxlength="420" placeholder="Mensagem para a Luiza"></textarea>
-        <div class="mini-actions">
-          <button class="mini-btn" type="button" onclick="saveWish()">Salvar estrelinha</button>
-          <button class="mini-btn secondary" type="button" onclick="exportWishes()">Copiar/exportar mensagens</button>
-        </div>
-      </div>
-      <div class="wish-list" id="wish-list"></div>
-    </section>
-
     <section class="story-section soft reveal-on-scroll" id="sec-capsula">
       <span class="story-eyebrow">💌 para o futuro</span>
       <h2 class="story-title">Cápsula do Tempo da Luiza</h2>
@@ -1346,6 +1349,7 @@ body{
         <span class="magic-count" id="capsule-count">0 cápsulas guardadas</span>
       </div>
       <div class="capsule-form">
+        <input id="cap-name" type="text" maxlength="40" placeholder="Seu nome">
         <textarea id="cap-know" maxlength="360" placeholder="Luiza, quando você ler isso, quero que saiba que..."></textarea>
         <textarea id="cap-beauty" maxlength="360" placeholder="Uma coisa linda sobre você hoje é..."></textarea>
         <textarea id="cap-wish" maxlength="360" placeholder="Meu desejo para sua vida é..."></textarea>
@@ -1361,7 +1365,7 @@ body{
       <span class="story-eyebrow">🍼 novo capítulo</span>
       <h2 class="story-title">Uma nova magia está chegando</h2>
       <p class="story-copy">Neste aniversário, celebramos os 3 anos da Luiza e também um novo capítulo da nossa família. A Luiza vai ganhar uma missão muito especial: ser irmã mais velha.</p>
-      <div class="baby-note">Depois do parabéns, teremos um momento especial com balões para celebrar essa nova fase, com todo carinho e sem tirar o brilho da aniversariante.</div>
+      <div class="baby-note">Depois do parabéns, teremos um momento especial para celebrar essa nova fase, com todo carinho e sem tirar o brilho da aniversariante.</div>
     </section>
 
     <section class="story-section reveal-on-scroll" id="sec-missoes">
@@ -1444,6 +1448,18 @@ body{
 
     <div class="menu-divider"></div>
 
+    <!-- BEBIDAS -->
+    <div class="menu-section">
+      <div class="menu-section-title mst-acomp">🥤 Bebidas</div>
+      <div class="menu-grid">
+        <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Suco de laranja</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Suco de uva</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Chopp Germânia servido na chopeira para se servir</div>
+      </div>
+    </div>
+
+    <div class="menu-divider"></div>
+
     <!-- BOLO & DOCINHOS -->
     <div class="menu-section">
       <div class="menu-section-title mst-bolo">🎂 Especiais da Luiza</div>
@@ -1458,11 +1474,6 @@ body{
       </div>
     </div>
 
-    <div style="background:#1e1928;border:1px solid #2e2840;border-radius:14px;padding:1rem;margin-top:.5rem;font-size:.78rem;color:#4a3f62;text-align:center;line-height:1.7;">
-      🗼 <strong style="color:#7a6e99;">Franscrepe Buffet</strong><br>
-      Rua Bairi, nº115 · Alto da Lapa<br>
-      (11) 3832-3989 · 99228-7430
-    </div>
   </div>
 </div>
 
@@ -1475,7 +1486,7 @@ body{
     <div style="display:flex;align-items:center;justify-content:space-between;max-width:520px;margin:0 auto;">
       <div>
         <div style="font-family:'Fredoka One',cursive;color:var(--cream);font-size:1.1rem;">📖 Capítulos dos 3 anos da Luiza</div>
-        <div id="album-count" style="font-size:.72rem;color:#4a3f62;">95 fotos</div>
+        <div id="album-count" style="font-size:.72rem;color:#4a3f62;">89 fotos</div>
       </div>
       <!-- upload button compacto -->
       <label style="background:rgba(181,123,238,.15);border:1.5px solid rgba(181,123,238,.4);color:var(--lilac-light);font-family:'Fredoka One',cursive;font-size:.8rem;padding:.4rem .9rem;border-radius:50px;cursor:pointer;white-space:nowrap;">
@@ -1528,7 +1539,9 @@ body{
         <h2>Quiz da Luiza: você conhece essa pequena estrela?</h2>
         <p class="join-sub">Uma brincadeira mágica com perguntas sobre a Luiza, histórias encantadas e o novo capítulo da família.</p>
         <div class="join-name">
-          <input type="text" id="join-name" placeholder="✏️ Seu nome" maxlength="20" autocomplete="off">
+          <label for="join-name">Antes de começar, escreva seu nome</label>
+          <input type="text" id="join-name" placeholder="Ex.: Claudio, Dinda, Vovó..." maxlength="20" autocomplete="name">
+          <span class="name-hint">Esse nome aparece no placar ao vivo.</span>
         </div>
         <p style="font-family:'Fredoka One',cursive;font-size:.9rem;color:#888;margin-bottom:.7rem;">Seu palpite carinhoso para o novo bebê:</p>
         <div class="join-teams">
@@ -1840,7 +1853,7 @@ function goPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('pg-'+id).classList.add('active');
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('nt-'+id).classList.add('active');
+  document.getElementById('nt-'+id)?.classList.add('active');
   window.scrollTo(0,0);
   if(id==='quiz') updateScoreBar();
 }
@@ -1849,8 +1862,12 @@ function scrollToHomeMain(){
   document.getElementById('home-main')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function openAdventure(sectionId){
+function openAdventure(sectionId, navId){
   goPage('home');
+  if(navId){
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById('nt-'+navId)?.classList.add('active');
+  }
   setTimeout(()=>document.getElementById(sectionId)?.scrollIntoView({behavior:'smooth',block:'start'}),80);
 }
 
@@ -2215,13 +2232,14 @@ const WISH_KEY='luizaWishesV1';
 const CAPSULE_KEY='luizaCapsulesV1';
 const MISSIONS_KEY='luizaMissionsV1';
 const MISSIONS=[
-  ['📸','Tirar uma foto com a Luiza.'],
+  ['📸','Dar um toque na fotógrafa e tirar uma foto com a Luiza.'],
   ['🍫','Comer um brigadeiro em homenagem à aniversariante.'],
-  ['😄','Fazer uma pose divertida.'],
-  ['⭐','Deixar um recado encantado no site.'],
+  ['💃','Dançar junto com a Luiza, porque ela adora dançar.'],
+  ['💌','Escrever uma mensagem na Cápsula do Tempo.'],
   ['💛','Dar um abraço bem gostoso na Luiza.'],
-  ['🔴','Procurar alguém usando vermelho.'],
-  ['🎈','Celebrar o novo capítulo da família depois do parabéns.']
+  ['🥞','Experimentar o crepe doce Suzete, que é o melhor.'],
+  ['🎈','Celebrar o novo capítulo da família depois do parabéns.'],
+  ['🎁','Não esquecer de pegar a lembrancinha no final da festa.']
 ];
 
 function readList(key){
@@ -2332,11 +2350,14 @@ function deleteWish(id){
 }
 
 function saveCapsule(){
+  const name=document.getElementById('cap-name').value.trim();
   const know=document.getElementById('cap-know').value.trim();
   const beauty=document.getElementById('cap-beauty').value.trim();
   const wish=document.getElementById('cap-wish').value.trim();
+  if(!name){ alert('Escreva seu nome para identificar a cápsula.'); return; }
   if(!know && !beauty && !wish){ alert('Escreva pelo menos uma mensagem para a cápsula.'); return; }
-  const payload={know,beauty,wish,date:new Date().toLocaleDateString('pt-BR'),createdAt:Date.now()};
+  const payload={name,know,beauty,wish,date:new Date().toLocaleDateString('pt-BR'),createdAt:Date.now()};
+  document.getElementById('cap-name').value='';
   document.getElementById('cap-know').value='';
   document.getElementById('cap-beauty').value='';
   document.getElementById('cap-wish').value='';
@@ -2364,7 +2385,7 @@ function renderCapsules(){
     const itemId=c.id||c.createdAt||i;
     return `
     <div class="wish-item">
-      <strong>💌 Cápsula ${capsules.length-i}</strong>
+      <strong>💌 ${escapeHtml(c.name||'Convidado')} deixou uma cápsula</strong>
       ${c.know?`<p>${escapeHtml(c.know)}</p>`:''}
       ${c.beauty?`<p>${escapeHtml(c.beauty)}</p>`:''}
       ${c.wish?`<p><em>${escapeHtml(c.wish)}</em></p>`:''}
@@ -2374,7 +2395,7 @@ function renderCapsules(){
 
 function exportCapsules(){
   const capsules=listForKey(CAPSULE_KEY,globalCapsules);
-  const text=capsules.map((c,i)=>`Cápsula ${i+1}\n${c.know||''}\n${c.beauty||''}\nDesejo: ${c.wish||'-'}\n`).join('\n---\n') || 'Ainda não há cápsulas.';
+  const text=capsules.map((c,i)=>`Cápsula ${i+1}\nNome: ${c.name||'Convidado'}\n${c.know||''}\n${c.beauty||''}\nDesejo: ${c.wish||'-'}\n`).join('\n---\n') || 'Ainda não há cápsulas.';
   copyText(text,'Cápsulas copiadas.');
 }
 
@@ -2386,13 +2407,16 @@ function editCapsule(id){
   if(!isAdmin()){ alert('Acesso restrito ao admin.'); return; }
   const item=findCapsule(id);
   if(!item) return;
+  const name=prompt('Nome:', item.name||'');
+  if(name===null) return;
   const know=prompt('Luiza, quando você ler isso...', item.know||'');
   if(know===null) return;
   const beauty=prompt('Uma coisa linda sobre você hoje é...', item.beauty||'');
   if(beauty===null) return;
   const wish=prompt('Meu desejo para sua vida é...', item.wish||'');
   if(wish===null) return;
-  const patch={know:know.trim(),beauty:beauty.trim(),wish:wish.trim(),updatedAt:Date.now()};
+  const patch={name:name.trim(),know:know.trim(),beauty:beauty.trim(),wish:wish.trim(),updatedAt:Date.now()};
+  if(!patch.name){ alert('Nome não pode ficar vazio.'); return; }
   if(!patch.know && !patch.beauty && !patch.wish){ alert('A cápsula precisa ter algum texto.'); return; }
   if(firebaseReady && db && item.id){
     db.ref(`${CAPSULES_PATH}/${item.id}`).update(patch).catch(()=>alert('Não consegui editar no Firebase agora.'));
