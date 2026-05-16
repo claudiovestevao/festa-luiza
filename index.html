@@ -2048,19 +2048,22 @@ const QUESTIONS=[
   {round:'luiza',emoji:'🍈',q:'Qual é a fruta favorita da Luiza?',opts:['Morango','Manga','Goiaba','Melancia'],ans:2,fun:'Goiaba! A Luiza tem um gosto refinadíssimo! 🍈😂'},
   {round:'luiza',emoji:'🍫',q:'Qual é o doce favorito da Luiza?',opts:['Sorvete','Pirulito','Brigadeiro','Bolo de chocolate'],ans:2,fun:'Brigadeiro! Clássico infalível da nossa rainha! 🍫👑'},
   {round:'luiza',emoji:'🧸',q:'Quantas bonecas a Luiza coloca pra dormir todo dia?',opts:['1 ou 2','De 3 a 5','De 6 a 9','Mais de 10'],ans:3,fun:'Mais de 10! A cama dela parece uma loja de brinquedos! 🧸😂'},
-  {round:'luiza',emoji:'😴',q:'Qual é a naninha favorita da Luiza pra dormir?',opts:['Chupeta','O cobertinho','Pegar o cabelo da mamãe','Abraçar o papai'],ans:2,fun:'Pegar o cabelo da mamãe! A Nathalie sabe muito bem disso! 😂💕'},
+  {round:'luiza',emoji:'😴',q:'Qual é a naninha favorita da Luiza pra dormir?',opts:['Chupeta','O cobertorzinho','Pegar o cabelo da mamãe','Abraçar o papai'],ans:2,fun:'Pegar o cabelo da mamãe! A Nathalie sabe muito bem disso! 😂💕'},
   {round:'luiza',emoji:'🎵',q:'Qual música a Luiza sabe cantar inteirinha?',opts:['Parabéns pra você','Let It Go','Baby Shark','Hino do São Paulo'],ans:3,fun:'Hino do São Paulo! Tricolor de coração desde pequenininha! 🔴⚫🎶'},
-  {round:'bebe',emoji:'🎀',q:'No universo Disney, quem é a namorada do Mickey?',opts:['Daisy','Cinderela','Minnie','Clarabelle'],ans:2,fun:'Minnie Mouse! Com sua polka dot dress icônica! 🎀'},
+  {round:'luiza',emoji:'🍼',q:'A Luiza está prestes a ganhar uma nova missão muito especial. Qual é?',opts:['Virar bailarina','Ser irmã mais velha','Aprender a lutar judô'],ans:1,fun:'Ser irmã mais velha! Uma missão cheia de carinho, cuidado e descobertas. 🍼✨'},
+  {round:'luiza',emoji:'💃',q:'Se a Luiza pudesse escolher uma missão mágica na festa, qual provavelmente seria?',opts:['Organizar um gol a gol','Comer um brigadeiro e dançar','Fazer imposto de renda','Dormir cedo sem negociar'],ans:1,fun:'Comer um brigadeiro e dançar! Essa resposta tem a cara da Luiza. 🍫💃'},
   {round:'bebe',emoji:'🐭',q:'Em que ano o Mickey Mouse apareceu pela primeira vez nas telas?',opts:['1920','1924','1928','1932'],ans:2,fun:'1928, no curta "Steamboat Willie"! Mickey tem quase 100 anos! 🎬'},
   {round:'bebe',emoji:'🎩',q:'Qual é o nome do cachorro do Mickey Mouse?',opts:['Rex','Pluto','Goofy','Bolt'],ans:1,fun:'Pluto! O fiel companheiro de orelhas caídas do Mickey! 🐕'},
   {round:'bebe',emoji:'🌹',q:'Qual é a cor do laço da Minnie Mouse?',opts:['Vermelho com bolinhas brancas','Rosa','Amarelo','Roxo'],ans:0,fun:'Vermelho com bolinhas brancas! Icônico e inconfundível! 🔴⚪'},
-  {round:'bebe',emoji:'🤰',q:'Quantas semanas dura uma gravidez humana (em média)?',opts:['32 semanas','36 semanas','40 semanas','44 semanas'],ans:2,fun:'40 semanas — 9 meses de muito amor! 💕'},
-  {round:'bebe',emoji:'🍼',q:'Qual é geralmente o primeiro sentido que o bebê desenvolve no útero?',opts:['Visão','Olfato','Audição','Paladar'],ans:2,fun:'A audição! Bebês ouvem a voz da mamãe desde a 18ª semana! 👂💕'},
-  {round:'bebe',emoji:'💛',q:'O que a lenda diz quando o bebê chuta muito à noite?',opts:['Vai ser artista','Sinal de saúde','Bebê agitado','Vai ser artilheiro'],ans:3,fun:'Vai ser artilheiro! Mas o que importa é a saúde e o amor! ⚽💕'},
+  {round:'bebe',emoji:'💛',q:'O que a lenda diz quando o bebê chuta muito à noite?',opts:['Vai ser artista','Sinal de saúde','Bebê agitado (a)','Vai ser artilheiro (a)'],ans:3,fun:'Vai ser artilheiro (a)! Mas o que importa é a saúde e o amor! ⚽💕'},
+  {round:'bebe',emoji:'🇧🇷',q:'Quando a Luiza abrir a Cápsula do Tempo no futuro, será que o Brasil já vai ter ganhado o hexa?',opts:['Sim, rumo ao Hexa em 2026, eu acredito','Sim, com Neymar fazendo gol na final','Ainda não, mas seguimos acreditando'],ans:0,fun:'Rumo ao Hexa em 2026, eu acredito! A cápsula vai cobrar essa profecia no futuro. 🇧🇷🏆'},
+  {round:'bebe',emoji:'🎈',q:'Você acha que Nathalie e Claudio Vitor terão menino ou menina?',opts:['Menino','Menina'],ans:null,noScore:true,fun:'Palpite registrado com carinho. A resposta de verdade fica para o momento especial depois do parabéns! 🎈'}
 ];
-const LQS=QUESTIONS.filter(q=>q.round==='luiza').length;
-const BQS=QUESTIONS.filter(q=>q.round==='bebe').length;
+const SCORED_QUESTIONS=QUESTIONS.filter(q=>!q.noScore);
+const LQS=SCORED_QUESTIONS.filter(q=>q.round==='luiza').length;
+const BQS=SCORED_QUESTIONS.filter(q=>q.round==='bebe').length;
 const TQS=QUESTIONS.length;
+const MAX_SCORE=SCORED_QUESTIONS.length;
 
 // ══════════════════════════════
 // QUIZ ENGINE
@@ -2112,10 +2115,11 @@ function renderQ(){
   const isP=qState.player.team==='pink';
   const opts=document.getElementById('qz-opts');
   opts.innerHTML='';
-  ['A','B','C','D'].forEach((l,i)=>{
+  const letters=['A','B','C','D'];
+  q.opts.forEach((opt,i)=>{
     const b=document.createElement('button');
     b.className=`qz-opt ${isP?'po':'bo'}`;
-    b.innerHTML=`<span class="ol">${l}</span><span>${q.opts[i]}</span>`;
+    b.innerHTML=`<span class="ol">${letters[i]}</span><span>${opt}</span>`;
     b.onclick=()=>answerQ(i);
     opts.appendChild(b);
   });
@@ -2126,16 +2130,16 @@ function renderQ(){
 function answerQ(chosen){
   if(qState.answered) return;
   qState.answered=true;
-  const q=QUESTIONS[qState.qIndex],ok=chosen===q.ans;
-  if(ok){ qState.score++; if(q.round==='luiza') qState.luizaScore++; else qState.bebeScore++; }
+  const q=QUESTIONS[qState.qIndex],isFree=!!q.noScore,ok=isFree || chosen===q.ans;
+  if(!isFree && ok){ qState.score++; if(q.round==='luiza') qState.luizaScore++; else qState.bebeScore++; }
   document.querySelectorAll('.qz-opt').forEach((b,i)=>{
     b.classList.add('dis');
     if(i===chosen) b.classList.add(ok?'sc':'sw');
-    if(i===q.ans&&!ok) b.classList.add('rc');
+    if(!isFree && i===q.ans&&!ok) b.classList.add('rc');
   });
   const fb=document.getElementById('qz-fb');
   fb.className=`qz-fb ${ok?'ok':'no'}`;
-  fb.textContent=ok?`✅ ${q.fun}`:`❌ ${q.fun}`;
+  fb.textContent=isFree?`💌 ${q.fun}`:(ok?`✅ ${q.fun}`:`❌ ${q.fun}`);
   updateScoreBar();
   setTimeout(()=>{ qState.qIndex++; renderQ(); },2400);
 }
@@ -2154,13 +2158,13 @@ function finishQuiz(){
   savePlayerScore(p);
   sessionStorage.setItem('luizaJogou','sim');
   const isP=p.team==='pink';
-  const pct=Math.round((p.score/TQS)*100);
+  const pct=Math.round((p.score/MAX_SCORE)*100);
   const msg=pct>=80?'🏆 Você conhece muito bem o Mundo da Luiza!':pct>=50?'🎉 Você está quase virando especialista em Luiza!':'😄 Você precisa brincar mais com a Luiza na festa!';
   document.getElementById('fc-stripe').className=`fc-stripe ${isP?'ps':'bs'}`;
   document.getElementById('fc-icon').textContent=isP?'🎀':'🐭';
   document.getElementById('fc-title').textContent=`${p.name}!`;
   document.getElementById('fc-score').className=`fc-score ${isP?'ps':'bs'}`;
-  document.getElementById('fc-score').textContent=`${p.score}/${TQS}`;
+  document.getElementById('fc-score').textContent=`${p.score}/${MAX_SCORE}`;
   document.getElementById('fc-msg').textContent=msg;
   const badge=document.getElementById('fc-badge');
   badge.className=`fc-badge ${isP?'pb':'bb'}`;
@@ -2184,18 +2188,19 @@ function updateDash(){
   document.getElementById('sc-p-score').textContent=ps;
   document.getElementById('sc-b-score').textContent=bs;
   document.getElementById('dash-total').textContent=total;
-  document.getElementById('sc-p-members').textContent=pink.length?pink.map(p=>`${p.name}(${p.score})`).join(' · '):'ninguém ainda';
-  document.getElementById('sc-b-members').textContent=blue.length?blue.map(p=>`${p.name}(${p.score})`).join(' · '):'ninguém ainda';
+  const sortPlayers=list=>[...list].sort((a,b)=>b.score-a.score || (a.name||'').localeCompare(b.name||''));
+  document.getElementById('sc-p-members').textContent=pink.length?sortPlayers(pink).map(p=>`${p.name}(${p.score})`).join(' · '):'ninguém ainda';
+  document.getElementById('sc-b-members').textContent=blue.length?sortPlayers(blue).map(p=>`${p.name}(${p.score})`).join(' · '):'ninguém ainda';
   document.getElementById('dpb-p').style.width=(ts>0?Math.round(ps/ts*100):50)+'%';
   document.getElementById('sc-pink').classList.toggle('lead',ps>bs);
   document.getElementById('sc-blue').classList.toggle('lead',bs>ps);
   const list=document.getElementById('ps-list');
   list.innerHTML='';
   if(!total){ list.innerHTML='<span style="color:#2a2a2a;font-size:.75rem;">ninguém ainda...</span>'; return; }
-  S.players.forEach(p=>{
+  sortPlayers(S.players).forEach((p,idx)=>{
     const c=document.createElement('div');
     c.className=`ps-chip ${p.team==='pink'?'pc':'bc'}`;
-    c.textContent=`${p.team==='pink'?'🎀':'🐭'} ${p.name} · ${p.score}pts`;
+    c.textContent=`#${idx+1} ${p.team==='pink'?'🎀':'🐭'} ${p.name} · ${p.score}pts`;
     list.appendChild(c);
   });
 }
