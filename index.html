@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>🎂 Luiza faz 3! · Festa da Minnie & Mickey</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
 <style>
@@ -19,7 +19,11 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;}
-body{font-family:'Nunito',sans-serif;background:var(--dark);color:var(--black);min-height:100vh;overflow-x:hidden;}
+html{-webkit-text-size-adjust:100%;touch-action:manipulation;}
+body{font-family:'Nunito',sans-serif;background:var(--dark);color:var(--black);min-height:100vh;overflow-x:hidden;overscroll-behavior-y:none;}
+button,input,textarea{font:inherit;}
+button,.event-pill,.tp,.jtb,.story-card,.mini-btn,.nav-tab{-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+input,textarea,select{font-size:16px!important;}
 .polka{position:fixed;inset:0;z-index:0;pointer-events:none;background-color:var(--dark);background-image:radial-gradient(circle,var(--dot) 3px,transparent 3px);background-size:28px 28px;}
 
 /* ════ NAV TABS ════ */
@@ -31,6 +35,7 @@ body{font-family:'Nunito',sans-serif;background:var(--dark);color:var(--black);m
 }
 .nav-tab{
   flex:1;display:flex;flex-direction:column;align-items:center;gap:.15rem;
+  min-height:48px;
   padding:.5rem .2rem;border-radius:12px;cursor:pointer;
   transition:all .2s;border:none;background:transparent;
   color:#3d3550;font-family:'Nunito',sans-serif;font-size:.58rem;font-weight:800;
@@ -70,7 +75,7 @@ body{font-family:'Nunito',sans-serif;background:var(--dark);color:var(--black);m
 .btn-dark{background:#1e1928;color:var(--lilac-light);border:2px solid #3d3560;}
 .btn-ghost{background:transparent;border:2px solid rgba(255,255,255,.25);color:rgba(255,255,255,.65);font-family:'Nunito',sans-serif;font-size:.9rem;padding:.55rem 1.4rem;border-radius:50px;cursor:pointer;transition:all .2s;}
 .btn-ghost:hover{border-color:rgba(255,255,255,.55);color:#fff;}
-.btn-sm-admin{background:transparent;border:2px dashed #2e2840;color:#4a4060;font-family:'Nunito',sans-serif;font-size:.75rem;padding:.4rem 1rem;border-radius:50px;cursor:pointer;transition:all .2s;}
+.btn-sm-admin{background:transparent;border:2px dashed #2e2840;color:#4a4060;font-family:'Nunito',sans-serif;font-size:.75rem;padding:.55rem 1rem;min-height:42px;border-radius:50px;cursor:pointer;transition:all .2s;}
 .btn-sm-admin:hover{border-color:#5c5070;color:#8878aa;}
 .err{color:#f87171;font-size:.82rem;margin-top:.5rem;min-height:1.2rem;text-align:center;}
 .back-link{position:fixed;top:1rem;left:1rem;z-index:200;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);padding:.4rem 1rem;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.78rem;cursor:pointer;transition:all .2s;}
@@ -937,7 +942,16 @@ body{
   background:#fff;
   color:#24162b;
 }
-.wish-form textarea,.capsule-form textarea{min-height:94px;resize:vertical;}
+.wish-form input,.wish-form textarea,.capsule-form textarea,.join-name input,.mf input{
+  line-height:1.35;
+}
+.wish-form textarea,.capsule-form textarea{
+  min-height:116px;
+}
+.wish-form input::placeholder,.wish-form textarea::placeholder,.capsule-form textarea::placeholder,.join-name input::placeholder,.mf input::placeholder{
+  opacity:.72;
+}
+.wish-form textarea,.capsule-form textarea{resize:vertical;}
 .wish-form input:focus,.wish-form textarea:focus,.capsule-form textarea:focus{
   border-color:#f06292;
   box-shadow:0 0 0 4px rgba(240,98,146,.13);
@@ -947,6 +961,7 @@ body{
   border:0;
   border-radius:999px;
   padding:.72rem 1rem;
+  min-height:46px;
   background:#221329;
   color:#fff;
   font-family:'Fredoka One',cursive;
@@ -981,6 +996,7 @@ body{
   font-size:.72rem;
   font-weight:900;
   padding:.36rem .68rem;
+  min-height:38px;
   cursor:pointer;
 }
 .crud-actions button:hover{border-color:#f06292;color:#c42b65;}
@@ -1034,9 +1050,9 @@ body{
 .top-button{
   position:fixed;
   right:.9rem;
-  bottom:5.25rem;
+  bottom:calc(6.4rem + env(safe-area-inset-bottom));
   z-index:520;
-  width:42px;height:42px;
+  width:46px;height:46px;
   border:0;
   border-radius:50%;
   background:rgba(255,249,242,.92);
@@ -1049,7 +1065,7 @@ body{
 .floating-wish{
   position:fixed;
   left:.9rem;
-  bottom:5.25rem;
+  bottom:calc(6.4rem + env(safe-area-inset-bottom));
   z-index:520;
   display:none;
   align-items:center;
@@ -1057,6 +1073,7 @@ body{
   border:0;
   border-radius:999px;
   padding:.7rem .92rem;
+  min-height:46px;
   background:linear-gradient(135deg,#fff6d8,#f5c842,#f8a4c0);
   color:#24131d;
   font-family:'Fredoka One',cursive;
@@ -1101,6 +1118,74 @@ body{
   .home-inner{padding-left:1rem;padding-right:1rem;}
   .events-row,.teams-row{gap:.5rem;}
   .event-pill,.tp{font-size:.74rem;}
+}
+@media (max-width:520px){
+  .page{padding-bottom:calc(96px + env(safe-area-inset-bottom));}
+  .nav-bar{
+    width:calc(100% - .75rem);
+    bottom:.38rem;
+    border-radius:20px;
+  }
+  .nav-tab{
+    min-height:58px;
+    padding:.5rem .12rem;
+  }
+  .home-inner{
+    min-height:calc(100svh - 62px);
+    padding-bottom:1.35rem;
+  }
+  .home-main{
+    padding-left:.78rem;
+    padding-right:.78rem;
+  }
+  .story-section{
+    border-radius:20px;
+    padding:1rem;
+  }
+  .adventure-card,.story-card{
+    min-height:unset;
+  }
+  .join-card,.finish-card{
+    max-width:100%;
+    border-radius:22px;
+  }
+  .join-teams{
+    gap:.62rem;
+  }
+  .jtb{
+    padding:1rem .35rem;
+  }
+  .qz-body{
+    padding:.75rem 1rem 1rem;
+  }
+  .qz-opt{
+    min-height:50px;
+    padding:.8rem .85rem;
+  }
+  .dash-actions .btn,.dash-actions .btn-ghost{
+    width:100%;
+    justify-content:center;
+    min-height:46px;
+  }
+  .modal-box{
+    width:calc(100% - 1rem);
+    max-height:calc(100svh - 1rem);
+    overflow:auto;
+  }
+  .magic-toast{
+    bottom:calc(6.7rem + env(safe-area-inset-bottom));
+    width:calc(100% - 1rem);
+  }
+  .floating-wish{
+    max-width:calc(100vw - 6.3rem);
+    overflow:hidden;
+    white-space:nowrap;
+  }
+}
+@media (hover:none){
+  .event-pill:hover,.tp:hover,.jtb:hover,.story-card:hover,.menu-item:hover{
+    transform:none;
+  }
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important;}
@@ -2345,7 +2430,10 @@ function showMagicToast(text){
 }
 
 function sparkleAt(x,y,count=8){
-  for(let i=0;i<count;i++){
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  const finalCount = coarse ? Math.min(count,4) : count;
+  for(let i=0;i<finalCount;i++){
     const s=document.createElement('span');
     s.className='sparkle-pop';
     s.textContent=i%3===0?'✦':'✧';
@@ -2405,7 +2493,8 @@ function setupPortalMagic(){
     topBtn?.classList.toggle('show',window.scrollY>520);
     wishBtn?.classList.toggle('show',window.scrollY>760);
   },{passive:true});
-  document.addEventListener('pointerdown', e=>{
+  const touchEvent = window.PointerEvent ? 'pointerdown' : 'click';
+  document.addEventListener(touchEvent, e=>{
     const interactive=e.target.closest('button,.story-card,.event-pill,.tp,.jtb,.mini-btn,a');
     if(interactive) sparkleAt(e.clientX,e.clientY,5);
   },{passive:true});
