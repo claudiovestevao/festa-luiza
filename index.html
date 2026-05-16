@@ -1637,14 +1637,14 @@ body{
         <div class="scoreboard">
           <div class="sc-card scp" id="sc-pink">
             <div class="sc-icon">🎀</div>
-            <div class="sc-name">Minnie</div>
+            <div class="sc-name">Palpites menina</div>
             <div class="sc-score" id="sc-p-score">0</div>
             <div class="sc-members" id="sc-p-members">ninguém ainda</div>
           </div>
           <div class="dash-vs"><div class="vs-pill">VS</div></div>
           <div class="sc-card scb" id="sc-blue">
             <div class="sc-icon">🐭</div>
-            <div class="sc-name">Mickey</div>
+            <div class="sc-name">Palpites menino</div>
             <div class="sc-score" id="sc-b-score">0</div>
             <div class="sc-members" id="sc-b-members">ninguém ainda</div>
           </div>
@@ -1654,7 +1654,7 @@ body{
           <div class="dpb-b"></div>
         </div>
         <div class="ps-section">
-          <div class="ps-title">Quem já jogou</div>
+          <div class="ps-title">Placar de acertos em tempo real</div>
           <div class="ps-list" id="ps-list"><span style="color:#2a2a2a;font-size:.75rem;">ninguém ainda...</span></div>
         </div>
         <div class="dash-total">Participantes: <strong id="dash-total">0</strong></div>
@@ -1699,18 +1699,19 @@ body{
     </div>
     <div class="mf">
       <label>Senha secreta do admin</label>
-      <input type="password" id="a-pwd" placeholder="Crie uma senha só sua" maxlength="30">
+      <input type="password" id="a-pwd" placeholder="Digite a senha do admin" maxlength="30">
     </div>
-    <p style="color:#555;font-size:.78rem;margin-bottom:.7rem;text-align:left;font-weight:800;">Qual é o sexo?</p>
+    <p style="color:#555;font-size:.78rem;margin-bottom:.7rem;text-align:left;font-weight:800;">Sexo do beb? (opcional, s? para o momento admin)</p>
     <div class="gpick-row">
       <button class="gp gpp" id="gp-girl" onclick="pickGender('girl')"><span class="gi">🎀</span><span style="font-family:'Fredoka One',cursive;">Menina</span></button>
       <button class="gp gpb" id="gp-boy" onclick="pickGender('boy')"><span class="gi">⚽</span><span style="font-family:'Fredoka One',cursive;">Menino</span></button>
     </div>
-    <div class="admin-warn">⚠️ Salvo apenas neste dispositivo</div>
+    <div class="admin-warn">Reset do quiz protegido pela senha do Claudio.</div>
     <div class="modal-btns">
-      <button class="btn btn-gold" onclick="saveAdmin()" style="flex:1;">Salvar ✓</button>
+      <button class="btn btn-gold" onclick="saveAdmin()" style="flex:1;">Entrar</button>
       <button class="btn btn-dark" onclick="closeAdmin()" style="flex:1;">Fechar</button>
     </div>
+    <button class="btn-ghost" onclick="resetGlobalScore()" style="width:100%;margin-top:.7rem;">Resetar quiz global</button>
     <div class="err" id="a-err"></div>
   </div>
 </div>
@@ -1757,6 +1758,19 @@ function saveS(){
   sessionStorage.setItem('luizaFesta',JSON.stringify(p));
 }
 function isAdmin(){ return sessionStorage.getItem('luizaAdmin')==='ok'; }
+function checkAdminPassword(){
+  const pwd=prompt('Senha do admin para resetar o quiz:');
+  if(pwd===null) return false;
+  if(pwd.trim().toLowerCase()!=='brigadeiro'){
+    alert('Senha incorreta.');
+    return false;
+  }
+  sessionStorage.setItem('luizaAdmin','ok');
+  document.getElementById('reset-score-btn')?.style.setProperty('display','');
+  document.getElementById('reset-all-btn')?.style.setProperty('display','');
+  document.getElementById('reveal-btn')?.style.setProperty('display','');
+  return true;
+}
 
 function setSyncStatus(kind, text){
   const el=document.getElementById('sync-status');
@@ -1771,6 +1785,10 @@ function playersFromFirebase(value){
   return list
     .filter(p=>p && p.name && p.team)
     .sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+}
+
+function playerGuess(p){
+  return p.guess || p.team;
 }
 
 function listFromFirebase(value){
@@ -1838,22 +1856,21 @@ function savePlayerScore(player){
 }
 
 function resetGlobalScore(){
-  if(!isAdmin()){ alert('Acesso restrito ao admin.'); return; }
+  if(!isAdmin() && !checkAdminPassword()) return;
   const ok=confirm('Zerar o placar global do quiz? Isso apaga os participantes de todos os celulares. Recados e cápsulas serão mantidos.');
   if(!ok) return;
   S.players=[]; saveS(); refreshScoreViews();
   if(firebaseReady && db){
     db.ref(SCOREBOARD_PATH).remove()
-      .then(()=>{ sessionStorage.removeItem('luizaJogou'); alert('Placar global zerado.'); })
+      .then(()=>{ alert('Placar global zerado.'); })
       .catch(()=>alert('Não consegui zerar no Firebase agora. Tente novamente com internet.'));
   } else {
-    sessionStorage.removeItem('luizaJogou');
     alert('Placar local zerado neste aparelho. O Firebase não está conectado.');
   }
 }
 
 function resetAllGlobalData(){
-  if(!isAdmin()){ alert('Acesso restrito ao admin.'); return; }
+  if(!isAdmin() && !checkAdminPassword()) return;
   const ok=confirm('Apagar placar, recados e cápsulas do banco? Use só se estiver testando antes da festa.');
   if(!ok) return;
   S.players=[]; globalWishes=[]; globalCapsules=[];
@@ -1861,7 +1878,7 @@ function resetAllGlobalData(){
   refreshScoreViews(); renderWishes(); renderCapsules();
   if(firebaseReady && db){
     db.ref('festaLuiza2026').remove()
-      .then(()=>{ sessionStorage.removeItem('luizaJogou'); alert('Banco da festa zerado.'); })
+      .then(()=>{ alert('Banco da festa zerado.'); })
       .catch(()=>alert('Não consegui zerar o Firebase agora. Tente novamente com internet.'));
   }
 }
@@ -1918,16 +1935,12 @@ function pickGender(g){
   document.getElementById('gp-boy').classList.toggle('sel',g==='boy');
 }
 function saveAdmin(){
-  if(!S.adminGender){ document.getElementById('a-err').textContent='Escolha a opção secreta!'; return; }
-  const pwd=document.getElementById('a-pwd').value;
-  if(!pwd){ document.getElementById('a-err').textContent='Digite a senha secreta!'; return; }
-  const h=pwd.split('').reduce((a,c)=>((a<<5)-a)+c.charCodeAt(0)|0,0);
-  if(!sessionStorage.getItem('luizaAdminHash')){
-    sessionStorage.setItem('luizaAdminHash',h);
-  } else if(sessionStorage.getItem('luizaAdminHash')!=h){
-    document.getElementById('a-err').textContent='Senha incorreta! ❌'; return;
+  const pwd=document.getElementById('a-pwd').value.trim();
+  if(pwd.toLowerCase()!=='brigadeiro'){
+    document.getElementById('a-err').textContent='Senha incorreta.';
+    return;
   }
-  S.gender=S.adminGender;
+  if(S.adminGender) S.gender=S.adminGender;
   S.babyName=document.getElementById('a-name').value.trim();
   sessionStorage.setItem('luizaAdmin','ok');
   saveS();
@@ -2082,9 +2095,7 @@ function startQuiz(){
   const err=document.getElementById('join-err');
   if(!name){ err.textContent='Coloca seu nome! 😄'; return; }
   if(!selTeam){ err.textContent='Escolha seu time!'; return; }
-  if(S.players.find(p=>p.name.toLowerCase()===name.toLowerCase())){ err.textContent='Esse nome já participou! 🧐'; return; }
-  if(sessionStorage.getItem('luizaJogou')){ err.textContent='Você já participou neste dispositivo! Chame o admin se precisar jogar de novo. 😄'; return; }
-  qState={player:{name,team:selTeam,score:0,luizaScore:0,bebeScore:0,done:false},qIndex:0,score:0,luizaScore:0,bebeScore:0,answered:false};
+  qState={player:{name,team:selTeam,guess:selTeam,score:0,luizaScore:0,bebeScore:0,done:false},qIndex:0,score:0,luizaScore:0,bebeScore:0,answered:false};
   setupQuizUI();
   showQScreen('qs-playing');
 }
@@ -2131,6 +2142,7 @@ function answerQ(chosen){
   if(qState.answered) return;
   qState.answered=true;
   const q=QUESTIONS[qState.qIndex],isFree=!!q.noScore,ok=isFree || chosen===q.ans;
+  if(isFree){ qState.player.guess=chosen===0?'blue':'pink'; }
   if(!isFree && ok){ qState.score++; if(q.round==='luiza') qState.luizaScore++; else qState.bebeScore++; }
   document.querySelectorAll('.qz-opt').forEach((b,i)=>{
     b.classList.add('dis');
@@ -2145,8 +2157,8 @@ function answerQ(chosen){
 }
 
 function updateScoreBar(){
-  const ps=S.players.filter(p=>p.team==='pink').reduce((a,p)=>a+p.score,0);
-  const bs=S.players.filter(p=>p.team==='blue').reduce((a,p)=>a+p.score,0);
+  const ps=S.players.filter(p=>playerGuess(p)==='pink').length;
+  const bs=S.players.filter(p=>playerGuess(p)==='blue').length;
   document.getElementById('qs-p').textContent=ps;
   document.getElementById('qs-b').textContent=bs;
   document.getElementById('qs-me').textContent=`${qState.score} pts`;
@@ -2156,7 +2168,6 @@ function finishQuiz(){
   const p=qState.player;
   p.done=true; p.score=qState.score; p.luizaScore=qState.luizaScore; p.bebeScore=qState.bebeScore;
   savePlayerScore(p);
-  sessionStorage.setItem('luizaJogou','sim');
   const isP=p.team==='pink';
   const pct=Math.round((p.score/MAX_SCORE)*100);
   const msg=pct>=80?'🏆 Você conhece muito bem o Mundo da Luiza!':pct>=50?'🎉 Você está quase virando especialista em Luiza!':'😄 Você precisa brincar mais com a Luiza na festa!';
@@ -2179,12 +2190,13 @@ function finishQuiz(){
 // DASHBOARD
 // ══════════════════════════════
 function updateDash(){
-  const pink=S.players.filter(p=>p.team==='pink');
-  const blue=S.players.filter(p=>p.team==='blue');
-  const ps=pink.reduce((a,p)=>a+p.score,0);
-  const bs=blue.reduce((a,p)=>a+p.score,0);
+  const pink=S.players.filter(p=>playerGuess(p)==='pink');
+  const blue=S.players.filter(p=>playerGuess(p)==='blue');
+  const ps=pink.length;
+  const bs=blue.length;
   const total=pink.length+blue.length;
   const ts=ps+bs;
+  const totalHits=S.players.reduce((a,p)=>a+(p.score||0),0);
   document.getElementById('sc-p-score').textContent=ps;
   document.getElementById('sc-b-score').textContent=bs;
   document.getElementById('dash-total').textContent=total;
@@ -2197,6 +2209,10 @@ function updateDash(){
   const list=document.getElementById('ps-list');
   list.innerHTML='';
   if(!total){ list.innerHTML='<span style="color:#2a2a2a;font-size:.75rem;">ninguém ainda...</span>'; return; }
+  const totalChip=document.createElement('div');
+  totalChip.className='ps-chip pc';
+  totalChip.textContent=`Acertos somados: ${totalHits}`;
+  list.appendChild(totalChip);
   sortPlayers(S.players).forEach((p,idx)=>{
     const c=document.createElement('div');
     c.className=`ps-chip ${p.team==='pink'?'pc':'bc'}`;
@@ -2224,7 +2240,7 @@ function triggerReveal(){
     document.getElementById('r-emojis').textContent='⚽ 💙 🐭 ⭐';
     document.getElementById('r-msg').textContent=S.babyName?`O ${S.babyName} chega pra ser o companheiro da Luiza! 💙`:'Ele chega pra completar essa família incrível! 💙';
   }
-  const winners=S.players.filter(p=>(S.gender==='girl'&&p.team==='pink')||(S.gender==='boy'&&p.team==='blue'));
+  const winners=S.players.filter(p=>(S.gender==='girl'&&playerGuess(p)==='pink')||(S.gender==='boy'&&playerGuess(p)==='blue'));
   document.getElementById('r-winners').innerHTML=winners.length
     ?`<h3>🏆 Time ${S.gender==='girl'?'Minnie':'Mickey'} acertou! (${winners.length})</h3><div>${winners.map(w=>`<span class="w-chip">⭐ ${w.name}</span>`).join('')}</div>`
     :'';
@@ -2570,10 +2586,6 @@ if(isAdmin()){
   document.getElementById('reveal-btn').style.display='';
   document.getElementById('reset-score-btn').style.display='';
   document.getElementById('reset-all-btn').style.display='';
-}
-if(sessionStorage.getItem('luizaJogou')){
-  // already played - show dashboard directly when entering quiz tab
-  document.getElementById('pg-quiz').addEventListener('click',()=>{},{ once:false });
 }
 </script>
 </body>
