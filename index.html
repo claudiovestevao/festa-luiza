@@ -77,6 +77,20 @@ input,textarea,select{font-size:16px!important;}
 .btn-ghost:hover{border-color:rgba(255,255,255,.55);color:#fff;}
 .btn-sm-admin{background:transparent;border:2px dashed #2e2840;color:#4a4060;font-family:'Nunito',sans-serif;font-size:.75rem;padding:.55rem 1rem;min-height:42px;border-radius:50px;cursor:pointer;transition:all .2s;}
 .btn-sm-admin:hover{border-color:#5c5070;color:#8878aa;}
+.footer-admin{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:40px;height:40px;
+  margin-top:.85rem;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.05);
+  color:rgba(255,255,255,.58);
+  cursor:pointer;
+  font-size:1rem;
+}
+.footer-admin:hover{color:#ffe47a;border-color:rgba(245,200,66,.42);}
 .err{color:#f87171;font-size:.82rem;margin-top:.5rem;min-height:1.2rem;text-align:center;}
 .back-link{position:fixed;top:1rem;left:1rem;z-index:200;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);padding:.4rem 1rem;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.78rem;cursor:pointer;transition:all .2s;}
 .back-link:hover{color:#fff;}
@@ -1300,20 +1314,6 @@ body{
     </div>
 
     <div class="home-divider"></div>
-    <p style="font-size:.78rem;color:rgba(255,255,255,.78);margin-bottom:.6rem;">Seu palpite carinhoso para o novo bebê:</p>
-    <div class="teams-row">
-      <div class="tp tp-pink" onclick="goPage('quiz')">
-        <span class="tp-icon">🎀</span>
-        <span style="font-family:'Fredoka One',cursive;">Minnie</span>
-        <span style="font-size:.68rem;font-family:'Nunito';font-weight:700;">é Menina!</span>
-      </div>
-      <div class="tp tp-blue" onclick="goPage('quiz')">
-        <span class="tp-icon">🐭</span>
-        <span style="font-family:'Fredoka One',cursive;">Mickey</span>
-        <span style="font-size:.68rem;font-family:'Nunito';font-weight:700;">é Menino!</span>
-      </div>
-    </div>
-    <button class="btn-sm-admin" type="button" onclick="openAdmin()">⚙️ admin</button>
   </div>
 
   <div class="home-main" id="home-main">
@@ -1363,7 +1363,7 @@ body{
     <section class="story-section soft reveal-on-scroll" id="sec-capsula">
       <span class="story-eyebrow">💌 para o futuro</span>
       <h2 class="story-title">Cápsula do Tempo da Luiza</h2>
-      <p class="story-copy">Escreva algo que a Luiza possa ler quando crescer.</p>
+      <p class="story-copy">Uma cápsula do tempo é uma forma de guardar mensagens, fotos ou lembranças de hoje para alguém abrir no futuro. Escreva algo que a Luiza possa ler quando crescer.</p>
       <div class="magic-counts">
         <span class="magic-count" id="capsule-count">0 cápsulas guardadas</span>
       </div>
@@ -1373,8 +1373,7 @@ body{
         <textarea id="cap-beauty" maxlength="360" placeholder="Uma coisa linda sobre você hoje é..."></textarea>
         <textarea id="cap-wish" maxlength="360" placeholder="Meu desejo para sua vida é..."></textarea>
         <div class="mini-actions">
-          <button class="mini-btn" type="button" onclick="saveCapsule()">Guardar na cápsula</button>
-          <button class="mini-btn secondary" type="button" onclick="exportCapsules()">Copiar cápsulas</button>
+          <button class="mini-btn" type="button" onclick="saveCapsule()">Enviar mensagem para a cápsula do tempo</button>
         </div>
       </div>
       <div class="wish-list" id="capsule-list"></div>
@@ -1397,6 +1396,8 @@ body{
     <footer class="emotional-footer">
       <p>Luiza, você transformou nossa vida em uma aventura mais doce, divertida e cheia de amor. Celebrar seus 3 anos é celebrar tudo que você nos ensina todos os dias: alegria, carinho, imaginação e amor.</p>
       <strong>Com amor, papai, mamãe e toda a família.</strong>
+      <br>
+      <button class="footer-admin" type="button" onclick="openAdmin()" aria-label="Abrir admin">⚙️</button>
     </footer>
   </div>
 </div>
@@ -1471,6 +1472,8 @@ body{
     <div class="menu-section">
       <div class="menu-section-title mst-acomp">🥤 Bebidas</div>
       <div class="menu-grid">
+        <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Água</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Refrigerante</div>
         <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Suco de laranja</div>
         <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Suco de uva</div>
         <div class="menu-item"><span class="mi-dot mi-dot-mint"></span>Chopp Germânia servido na chopeira para se servir</div>
@@ -1484,12 +1487,10 @@ body{
       <div class="menu-section-title mst-bolo">🎂 Especiais da Luiza</div>
       <p style="font-size:.82rem;color:#7a6e99;margin-bottom:.9rem;font-style:italic;">Depois dos crepes, chegam as surpresas da mesa de doces! 🎉</p>
       <div class="menu-grid">
-        <div class="menu-item"><span class="mi-dot mi-dot-lilac"></span>🎂 Bolo de Aniversário</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-lilac"></span>🎂 Bolo de brigadeiro</div>
         <div class="menu-item"><span class="mi-dot mi-dot-lilac"></span>🍫 Brigadeiro</div>
-        <div class="menu-item"><span class="mi-dot mi-dot-lilac"></span>🤍 Beijinho</div>
         <div class="menu-item"><span class="mi-dot mi-dot-lilac"></span>🌰 Bicho de Pé</div>
-        <div class="menu-item"><span class="mi-dot mi-dot-lilac"></span>🍬 Caramelinho</div>
-        <div class="menu-item"><span class="mi-dot mi-dot-lilac"></span>✨ Surpresas da mesa</div>
+        <div class="menu-item"><span class="mi-dot mi-dot-lilac"></span>🍇 Surpresa de uva</div>
       </div>
     </div>
 
@@ -2251,12 +2252,13 @@ const WISH_KEY='luizaWishesV1';
 const CAPSULE_KEY='luizaCapsulesV1';
 const MISSIONS_KEY='luizaMissionsV1';
 const MISSIONS=[
-  ['📸','Dar um toque na fotógrafa e tirar uma foto com a Luiza.'],
+  ['📸','Tire uma foto com a Luiza, se puder chame a Amanda (fotógrafa) para registrar o momento.'],
   ['🍫','Comer um brigadeiro em homenagem à aniversariante.'],
   ['💃','Dançar junto com a Luiza, porque ela adora dançar.'],
   ['💌','Escrever uma mensagem na Cápsula do Tempo.'],
   ['💛','Dar um abraço bem gostoso na Luiza.'],
   ['🥞','Experimentar o crepe doce Suzete, que é o melhor.'],
+  ['🎠','Se divertir na festa e levar as crianças para a equipe de recreação, para os pais ficarem mais à vontade.'],
   ['🎈','Celebrar o novo capítulo da família depois do parabéns.'],
   ['✨','Depois do parabéns da Luiza, prepare-se para viver com a gente o momento mágico da revelação: vem irmãozinho ou irmãzinha?'],
   ['🎁','Não esquecer de pegar a lembrancinha no final da festa.']
