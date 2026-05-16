@@ -1347,7 +1347,7 @@ body{
       <div class="luiza-grid">
         <div class="story-card"><span class="sc-ico">👑</span><h3>3 anos de magia</h3><p>Uma fase cheia de alegria, palavras novas, histórias e jeitinho próprio.</p></div>
         <div class="story-card"><span class="sc-ico">🧸</span><h3>Menina das bonecas</h3><p>Ela ama brincar de bonecas e colocar todas para nanar com muito cuidado.</p></div>
-        <div class="story-card"><span class="sc-ico">🍫</span><h3>Rainha do brigadeiro</h3><p>Brigadeiro combina com festa, com infância e com a Luiza sendo Luiza.</p></div>
+        <div class="story-card"><span class="sc-ico">✈️</span><h3>Viajante</h3><p>Ela adora viajar, se adapta às aventuras da família com ou sem perrengue, e ama passar o dia na piscina.</p></div>
         <div class="story-card"><span class="sc-ico">✨</span><h3>Jeitinho carinhoso</h3><p>Meiga, carinhosa e cheia de imaginação, ela faz o simples virar brincadeira.</p></div>
         <div class="story-card"><span class="sc-ico">⚽</span><h3>Coração em decisão</h3><p>Ela ainda está decidindo se é corintiana ou são-paulina. A família acompanha a novela.</p></div>
         <div class="story-card"><span class="sc-ico">🍼</span><h3>Irmã mais velha</h3><p>Agora a Luiza também vai ganhar uma missão especial: cuidar de uma nova magia chegando.</p></div>
@@ -1391,9 +1391,7 @@ body{
       </div>
       <div class="capsule-form">
         <input id="cap-name" type="text" maxlength="40" placeholder="Seu nome para a Luiza lembrar">
-        <textarea id="cap-know" maxlength="360" placeholder="Luiza, quando você ler isso, quero que saiba que..."></textarea>
-        <textarea id="cap-beauty" maxlength="360" placeholder="Uma coisa linda sobre você hoje é..."></textarea>
-        <textarea id="cap-wish" maxlength="360" placeholder="Meu desejo para sua vida é..."></textarea>
+        <textarea id="cap-message" maxlength="700" placeholder="Luiza, quando você ler isso, quero que saiba que... Meu desejo para sua vida é..."></textarea>
         <div class="mini-actions">
           <button class="mini-btn" type="button" onclick="saveCapsule()">Enviar mensagem para a cápsula do tempo</button>
         </div>
@@ -2291,13 +2289,13 @@ const WISH_KEY='luizaWishesV1';
 const CAPSULE_KEY='luizaCapsulesV1';
 const MISSIONS_KEY='luizaMissionsV1';
 const MISSIONS=[
-  ['📸','Tire uma foto com a Luiza. Se puder, chame a Amanda para registrar.'],
-  ['🍫','Coma um brigadeiro em homenagem à aniversariante.'],
-  ['💃','Dance com a Luiza quando a música começar.'],
-  ['💌','Deixe uma mensagem na Cápsula do Tempo.'],
   ['💛','Dê um abraço bem gostoso na Luiza.'],
+  ['📸','Tire uma foto com a Luiza. Se puder, chame a Amanda para registrar.'],
+  ['💌','Deixe uma mensagem na Cápsula do Tempo.'],
+  ['🍫','Coma um brigadeiro em homenagem à aniversariante.'],
   ['🥞','Experimente o crepe doce Suzete.'],
   ['🎠','Leve as crianças para a recreação e curta a festa com calma.'],
+  ['💃','Dance com a Luiza quando a música começar.'],
   ['✨','Depois do parabéns, prepare-se para a revelação: vem irmãozinho ou irmãzinha?'],
   ['🎁','Pegue a lembrancinha antes de ir embora.']
 ];
@@ -2411,16 +2409,12 @@ function deleteWish(id){
 
 function saveCapsule(){
   const name=document.getElementById('cap-name').value.trim();
-  const know=document.getElementById('cap-know').value.trim();
-  const beauty=document.getElementById('cap-beauty').value.trim();
-  const wish=document.getElementById('cap-wish').value.trim();
+  const message=document.getElementById('cap-message').value.trim();
   if(!name){ alert('Escreva seu nome para identificar a cápsula.'); return; }
-  if(!know && !beauty && !wish){ alert('Escreva pelo menos uma mensagem para a cápsula.'); return; }
-  const payload={name,know,beauty,wish,date:new Date().toLocaleDateString('pt-BR'),createdAt:Date.now()};
+  if(!message){ alert('Escreva uma mensagem para a cápsula.'); return; }
+  const payload={name,message,date:new Date().toLocaleDateString('pt-BR'),createdAt:Date.now()};
   document.getElementById('cap-name').value='';
-  document.getElementById('cap-know').value='';
-  document.getElementById('cap-beauty').value='';
-  document.getElementById('cap-wish').value='';
+  document.getElementById('cap-message').value='';
   if(firebaseReady && db){
     db.ref(CAPSULES_PATH).push(payload).then(()=>{
       showMagicToast('Cápsula guardada para o futuro 💌');
@@ -2446,6 +2440,7 @@ function renderCapsules(){
     return `
     <div class="wish-item">
       <strong>💌 ${escapeHtml(c.name||'Convidado')} deixou uma cápsula</strong>
+      ${c.message?`<p>${escapeHtml(c.message)}</p>`:''}
       ${c.know?`<p>${escapeHtml(c.know)}</p>`:''}
       ${c.beauty?`<p>${escapeHtml(c.beauty)}</p>`:''}
       ${c.wish?`<p><em>${escapeHtml(c.wish)}</em></p>`:''}
@@ -2455,7 +2450,7 @@ function renderCapsules(){
 
 function exportCapsules(){
   const capsules=listForKey(CAPSULE_KEY,globalCapsules);
-  const text=capsules.map((c,i)=>`Cápsula ${i+1}\nNome: ${c.name||'Convidado'}\n${c.know||''}\n${c.beauty||''}\nDesejo: ${c.wish||'-'}\n`).join('\n---\n') || 'Ainda não há cápsulas.';
+  const text=capsules.map((c,i)=>`Cápsula ${i+1}\nNome: ${c.name||'Convidado'}\n${c.message||c.know||''}\n${c.beauty||''}\n${c.wish?`Desejo: ${c.wish}`:''}\n`).join('\n---\n') || 'Ainda não há cápsulas.';
   copyText(text,'Cápsulas copiadas.');
 }
 
@@ -2469,15 +2464,12 @@ function editCapsule(id){
   if(!item) return;
   const name=prompt('Nome:', item.name||'');
   if(name===null) return;
-  const know=prompt('Luiza, quando você ler isso...', item.know||'');
-  if(know===null) return;
-  const beauty=prompt('Uma coisa linda sobre você hoje é...', item.beauty||'');
-  if(beauty===null) return;
-  const wish=prompt('Meu desejo para sua vida é...', item.wish||'');
-  if(wish===null) return;
-  const patch={name:name.trim(),know:know.trim(),beauty:beauty.trim(),wish:wish.trim(),updatedAt:Date.now()};
+  const currentMessage=item.message || [item.know,item.beauty,item.wish].filter(Boolean).join('\n');
+  const message=prompt('Mensagem da cápsula:', currentMessage);
+  if(message===null) return;
+  const patch={name:name.trim(),message:message.trim(),updatedAt:Date.now()};
   if(!patch.name){ alert('Nome não pode ficar vazio.'); return; }
-  if(!patch.know && !patch.beauty && !patch.wish){ alert('A cápsula precisa ter algum texto.'); return; }
+  if(!patch.message){ alert('A cápsula precisa ter algum texto.'); return; }
   if(firebaseReady && db && item.id){
     db.ref(`${CAPSULES_PATH}/${item.id}`).update(patch).catch(()=>alert('Não consegui editar no Firebase agora.'));
   } else {
