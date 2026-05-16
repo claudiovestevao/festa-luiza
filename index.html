@@ -510,6 +510,7 @@ body{
   padding:5.5rem 1.35rem 2.2rem;
   position:relative;
 }
+.home-inner > *{position:relative;z-index:1;}
 .home-hero{
   width:118px;height:118px;
   background:
@@ -662,6 +663,30 @@ body{
   animation:twinkle 2.8s ease-in-out infinite;
 }
 @keyframes twinkle{0%,100%{opacity:.55;transform:translateX(-50%) translateY(0);}50%{opacity:1;transform:translateX(-50%) translateY(4px);}}
+.home-inner::before{
+  content:'\1F3F0';
+  position:absolute;
+  top:3.15rem;
+  right:1.15rem;
+  z-index:0;
+  font-size:clamp(2.8rem,13vw,5.2rem);
+  opacity:.78;
+  filter:drop-shadow(0 0 18px rgba(245,200,66,.35)) drop-shadow(0 14px 24px rgba(0,0,0,.38));
+  transform:rotate(3deg);
+  pointer-events:none;
+}
+.home-inner::after{
+  content:'';
+  position:absolute;
+  top:5.1rem;
+  right:.55rem;
+  width:min(15rem,42vw);
+  height:min(15rem,42vw);
+  z-index:0;
+  border-radius:999px;
+  background:radial-gradient(circle,rgba(245,200,66,.24),rgba(181,123,238,.12) 42%,transparent 70%);
+  pointer-events:none;
+}
 .magic-kicker{
   display:inline-flex;
   align-items:center;
@@ -683,24 +708,26 @@ body{
 .home-hero{
   position:relative;
   isolation:isolate;
+  border-radius:28px;
+  border:3px solid rgba(255,255,255,.9);
+  box-shadow:0 0 0 1px rgba(245,200,66,.52),0 16px 46px rgba(0,0,0,.45),0 0 28px rgba(245,200,66,.25);
 }
 .home-hero::before{
   content:'';
   position:absolute;
-  top:-20px;left:14px;
-  width:42px;height:42px;
-  border-radius:50%;
-  background:#19121e;
-  box-shadow:66px 0 0 #19121e,0 4px 0 rgba(255,255,255,.22),66px 4px 0 rgba(255,255,255,.22);
-  z-index:-1;
+  inset:-8px;
+  border-radius:34px;
+  border:1px solid rgba(245,200,66,.48);
+  box-shadow:inset 0 0 18px rgba(255,255,255,.18);
+  pointer-events:none;
 }
 .home-hero::after{
-  content:'🎀';
+  content:'\2727';
   position:absolute;
-  top:-33px;left:50%;
-  transform:translateX(-50%) rotate(-5deg);
-  font-size:2.15rem;
-  filter:drop-shadow(0 8px 10px rgba(0,0,0,.28));
+  top:-18px;right:-12px;
+  font-size:1.45rem;
+  color:#ffe47a;
+  text-shadow:0 0 16px rgba(245,200,66,.85);
 }
 .home-title{
   position:relative;
@@ -708,11 +735,11 @@ body{
 .home-title::after{
   content:'';
   display:block;
-  width:128px;height:8px;
+  width:132px;height:3px;
   margin:.55rem auto 0;
   border-radius:999px;
-  background:repeating-linear-gradient(90deg,#fff 0 9px,var(--magic-red) 9px 18px);
-  box-shadow:0 5px 18px rgba(232,63,95,.22);
+  background:linear-gradient(90deg,transparent,#ffe47a,#ffd1e2,#ffe47a,transparent);
+  box-shadow:0 0 18px rgba(245,200,66,.36);
 }
 .event-pill,.tp,.jtb{
   position:relative;
@@ -785,16 +812,7 @@ body{
 .join-avatar{
   position:relative;
 }
-.join-avatar::before{
-  content:'';
-  position:absolute;
-  top:-14px;left:7px;
-  width:27px;height:27px;
-  border-radius:50%;
-  background:#19121e;
-  box-shadow:31px 0 0 #19121e;
-  z-index:-1;
-}
+.join-avatar::before{display:none;}
 .story-lead{
   color:rgba(255,255,255,.92);
   font-size:clamp(1.02rem,3.8vw,1.3rem);
@@ -902,9 +920,10 @@ body{
   align-items:center;
   justify-content:center;
   border-radius:12px;
-  background:linear-gradient(135deg,#fff0f5,#ffe8b6);
+  background:linear-gradient(135deg,#fff9e8,#ffe8b6 58%,#ffd1e2);
   margin-bottom:.62rem;
   font-size:1.2rem;
+  box-shadow:inset 0 0 0 1px rgba(245,200,66,.32),0 8px 18px rgba(245,200,66,.13);
 }
 .story-card h3{
   font-family:'Fredoka One',cursive;
@@ -1244,9 +1263,9 @@ body{
 <div class="page active" id="pg-home">
   <div class="home-inner">
     <div class="home-hero">👧</div>
-    <div class="magic-kicker">O Mundo Encantado da Luiza</div>
+    <div class="magic-kicker">Portal Encantado da Luiza</div>
     <div class="home-title"><span class="pink">Luiza</span> faz 3!</div>
-    <p class="story-lead">Era uma vez uma menina chamada Luiza... <strong>que está completando 3 anos de amor, imaginação, bonecas, brigadeiros e muita magia.</strong></p>
+    <p class="story-lead">Era uma vez uma menina chamada Luiza... <strong>que está completando 3 anos de amor, imaginação, bonecas, brigadeiros e uma pitada de pó de estrelas.</strong></p>
     <button class="btn-magic" type="button" onclick="scrollToHomeMain()">✦ Entrar no Mundo da Luiza</button>
     <div class="home-date">Maio/26</div>
 
@@ -1304,10 +1323,10 @@ body{
       <p class="story-copy">Luiza Bonomi Estevão nasceu em São Paulo-SP, filha de Nathalie e Claudio Vitor. Agora, aos 3 anos, transforma cada cantinho da festa num pequeno mundo de imaginação, carinho e descobertas.</p>
       <p class="story-copy">Meiga, carinhosa e cheia de imaginação, a Luiza adora imitar as pessoas e arrancar risadas de quem convive bem de pertinho com ela. À primeira vista, parece tímida e observadora, pois demora um pouquinho para ganhar confiança. Mas, quando se sente à vontade, revela seu lado mais divertido, espontâneo e encantador.</p>
       <div class="luiza-grid">
-        <div class="story-card"><span class="sc-ico">🎂</span><h3>3 anos de magia</h3><p>Uma fase cheia de alegria, palavras novas, histórias e jeitinho próprio.</p></div>
+        <div class="story-card"><span class="sc-ico">👑</span><h3>3 anos de magia</h3><p>Uma fase cheia de alegria, palavras novas, histórias e jeitinho próprio.</p></div>
         <div class="story-card"><span class="sc-ico">🧸</span><h3>Menina das bonecas</h3><p>Ela ama brincar de bonecas e colocar todas para nanar com muito cuidado.</p></div>
         <div class="story-card"><span class="sc-ico">🍫</span><h3>Rainha do brigadeiro</h3><p>Brigadeiro combina com festa, com infância e com a Luiza sendo Luiza.</p></div>
-        <div class="story-card"><span class="sc-ico">💛</span><h3>Jeitinho carinhoso</h3><p>Meiga, carinhosa e cheia de imaginação, ela faz o simples virar brincadeira.</p></div>
+        <div class="story-card"><span class="sc-ico">✨</span><h3>Jeitinho carinhoso</h3><p>Meiga, carinhosa e cheia de imaginação, ela faz o simples virar brincadeira.</p></div>
         <div class="story-card"><span class="sc-ico">⚽</span><h3>Coração em decisão</h3><p>Ela ainda está decidindo se é corintiana ou são-paulina. A família acompanha a novela.</p></div>
         <div class="story-card"><span class="sc-ico">🍼</span><h3>Irmã mais velha</h3><p>Agora a Luiza também vai ganhar uma missão especial: cuidar de uma nova magia chegando.</p></div>
       </div>
