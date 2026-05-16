@@ -590,6 +590,63 @@ body{
   border-color:rgba(255,255,255,.18);
   background:rgba(0,0,0,.18);
 }
+.castle-intro{
+  position:fixed;
+  inset:0;
+  z-index:1200;
+  display:grid;
+  place-items:end center;
+  padding:0 1.4rem 8.5rem;
+  background:
+    linear-gradient(180deg,rgba(24,10,42,.1),rgba(24,10,42,.68)),
+    url('fotos/hero-castelo-luiza.jpg') center 42%/cover no-repeat;
+  overflow:hidden;
+  animation:castleIntroOut 2.2s ease forwards;
+}
+.castle-intro::before{
+  content:'';
+  position:absolute;
+  inset:-12%;
+  background:
+    radial-gradient(circle at 50% 58%,rgba(255,247,205,.6),transparent 18rem),
+    radial-gradient(circle at 50% 18%,rgba(255,255,255,.22),transparent 12rem);
+  transform:scale(1.18);
+  animation:castleDrift 2.2s ease forwards;
+}
+.castle-intro-card{
+  position:relative;
+  z-index:1;
+  text-align:center;
+  color:#fff7df;
+  text-shadow:0 3px 20px rgba(35,10,55,.48);
+  opacity:0;
+  transform:translateY(12px);
+  animation:introTextIn .7s .25s ease forwards,introTextOut .45s 1.55s ease forwards;
+}
+.castle-intro-card strong{
+  display:block;
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(1.7rem,7vw,3rem);
+  line-height:1;
+}
+.castle-intro-card span{
+  display:block;
+  margin-top:.45rem;
+  font-weight:900;
+  color:#ffe47a;
+}
+body.intro-lock{overflow:hidden;}
+body.intro-done .castle-intro{display:none;}
+@keyframes castleDrift{
+  from{transform:scale(1.26) translateY(34px);}
+  to{transform:scale(1) translateY(0);}
+}
+@keyframes castleIntroOut{
+  0%,72%{opacity:1;visibility:visible;}
+  100%{opacity:0;visibility:hidden;}
+}
+@keyframes introTextIn{to{opacity:1;transform:translateY(0);}}
+@keyframes introTextOut{to{opacity:0;transform:translateY(-8px);}}
 .menu-inner,.album-inner{max-width:680px;}
 .menu-hero{
   margin:0 -1rem 1.2rem;
@@ -1259,11 +1316,18 @@ body{
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important;}
+  .castle-intro{display:none!important;}
 }
 
 </style>
 </head>
-<body>
+<body class="intro-lock">
+<div class="castle-intro" id="castle-intro" aria-hidden="true">
+  <div class="castle-intro-card">
+    <strong>Bem-vindos ao Mundo da Luiza</strong>
+    <span>3 anos de magia</span>
+  </div>
+</div>
 <div class="polka"></div>
 <div class="magic-progress" id="magic-progress"></div>
 <div class="magic-toast" id="magic-toast" role="status" aria-live="polite"></div>
@@ -1759,6 +1823,7 @@ const FIREBASE_CONFIG = {
 const SCOREBOARD_PATH = 'festaLuiza2026/players';
 const WISHES_PATH = 'festaLuiza2026/wishes';
 const CAPSULES_PATH = 'festaLuiza2026/capsules';
+const QUIZ_VERSION = 'quiz10-2026-05-16';
 let db = null;
 let firebaseReady = false;
 let firebaseListening = false;
@@ -1773,7 +1838,7 @@ function loadS(){
     const d=JSON.parse(sessionStorage.getItem('luizaFesta')||'{}');
     if(d.g)        S.gender=_dec(d.g);
     if(d.babyName) S.babyName=d.babyName;
-    if(d.players)  S.players=d.players;
+    if(d.players)  S.players=d.players.filter(p=>p && p.quizVersion===QUIZ_VERSION);
   }catch(e){}
 }
 function saveS(){
@@ -1807,7 +1872,7 @@ function playersFromFirebase(value){
   if(!value) return [];
   const list=Array.isArray(value)?value:Object.keys(value).map(k=>({id:k,...value[k]}));
   return list
-    .filter(p=>p && p.name && p.team)
+    .filter(p=>p && p.name && p.team && p.quizVersion===QUIZ_VERSION)
     .sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
 }
 
@@ -2089,10 +2154,8 @@ const QUESTIONS=[
   {round:'luiza',emoji:'🎵',q:'Qual música a Luiza sabe cantar inteirinha?',opts:['Parabéns pra você','Let It Go','Baby Shark','Hino do São Paulo'],ans:3,fun:'Hino do São Paulo! Tricolor de coração desde pequenininha! 🔴⚫🎶'},
   {round:'luiza',emoji:'🍼',q:'A Luiza está prestes a ganhar uma nova missão muito especial. Qual é?',opts:['Virar bailarina','Ser irmã mais velha','Aprender a lutar judô'],ans:1,fun:'Ser irmã mais velha! Uma missão cheia de carinho, cuidado e descobertas. 🍼✨'},
   {round:'luiza',emoji:'💃',q:'Se a Luiza pudesse escolher uma missão mágica na festa, qual provavelmente seria?',opts:['Organizar um gol a gol','Comer um brigadeiro e dançar','Fazer imposto de renda','Dormir cedo sem negociar'],ans:1,fun:'Comer um brigadeiro e dançar! Essa resposta tem a cara da Luiza. 🍫💃'},
-  {round:'bebe',emoji:'🐭',q:'Em que ano o Mickey Mouse apareceu pela primeira vez nas telas?',opts:['1920','1924','1928','1932'],ans:2,fun:'1928, no curta "Steamboat Willie"! Mickey tem quase 100 anos! 🎬'},
   {round:'bebe',emoji:'🎩',q:'Qual é o nome do cachorro do Mickey Mouse?',opts:['Rex','Pluto','Goofy','Bolt'],ans:1,fun:'Pluto! O fiel companheiro de orelhas caídas do Mickey! 🐕'},
   {round:'bebe',emoji:'🌹',q:'Qual é a cor do laço da Minnie Mouse?',opts:['Vermelho com bolinhas brancas','Rosa','Amarelo','Roxo'],ans:0,fun:'Vermelho com bolinhas brancas! Icônico e inconfundível! 🔴⚪'},
-  {round:'bebe',emoji:'💛',q:'O que a lenda diz quando o bebê chuta muito à noite?',opts:['Vai ser artista','Sinal de saúde','Bebê agitado (a)','Vai ser artilheiro (a)'],ans:3,fun:'Vai ser artilheiro (a)! Mas o que importa é a saúde e o amor! ⚽💕'},
   {round:'bebe',emoji:'🇧🇷',q:'Quando a Luiza abrir a Cápsula do Tempo no futuro, será que o Brasil já vai ter ganhado o hexa?',opts:['Sim, rumo ao Hexa em 2026, eu acredito','Sim, com Neymar fazendo gol na final','Ainda não, mas seguimos acreditando'],ans:0,fun:'Rumo ao Hexa em 2026, eu acredito! A cápsula vai cobrar essa profecia no futuro. 🇧🇷🏆'}
 ];
 const SCORED_QUESTIONS=QUESTIONS.filter(q=>!q.noScore);
@@ -2118,7 +2181,7 @@ function startQuiz(){
   const err=document.getElementById('join-err');
   if(!name){ err.textContent='Coloca seu nome! 😄'; return; }
   if(!selTeam){ err.textContent='Escolha seu time!'; return; }
-  qState={player:{name,team:selTeam,guess:selTeam,score:0,luizaScore:0,bebeScore:0,done:false},qIndex:0,score:0,luizaScore:0,bebeScore:0,answered:false};
+  qState={player:{name,team:selTeam,guess:selTeam,quizVersion:QUIZ_VERSION,score:0,luizaScore:0,bebeScore:0,done:false},qIndex:0,score:0,luizaScore:0,bebeScore:0,answered:false};
   setupQuizUI();
   showQScreen('qs-playing');
 }
@@ -2587,6 +2650,22 @@ function setupPortalMagic(){
 // ══════════════════════════════
 // INIT
 // ══════════════════════════════
+function runCastleIntro(){
+  const intro=document.getElementById('castle-intro');
+  if(!intro) return;
+  const reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){
+    document.body.classList.remove('intro-lock');
+    document.body.classList.add('intro-done');
+    return;
+  }
+  window.setTimeout(()=>{
+    document.body.classList.remove('intro-lock');
+    document.body.classList.add('intro-done');
+  },2300);
+}
+
+runCastleIntro();
 loadS();
 buildFixedAlbum();
 setupPortalMagic();
