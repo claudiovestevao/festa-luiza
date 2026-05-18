@@ -1166,6 +1166,39 @@ body.intro-done .castle-intro{display:none;}
   font-family:'Fredoka One',cursive;
   color:#ffe47a;
 }
+.site-quote{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.45rem;
+  max-width:520px;
+  margin:1.35rem auto .9rem;
+  padding:1rem;
+  border-radius:20px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);
+}
+.site-quote span{
+  color:rgba(255,255,255,.76);
+  font-size:.86rem;
+  line-height:1.45;
+}
+.quote-whatsapp{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.45rem;
+  min-height:46px;
+  padding:.78rem 1.05rem;
+  border-radius:999px;
+  background:linear-gradient(135deg,#25d366,#bdf7d2);
+  color:#0f2b1b;
+  text-decoration:none;
+  font-family:'Fredoka One',cursive;
+  font-size:.88rem;
+  box-shadow:0 14px 34px rgba(0,0,0,.22);
+}
+.quote-whatsapp:hover{filter:saturate(1.08) brightness(1.03);}
 .top-button{
   position:fixed;
   right:.9rem;
@@ -1482,6 +1515,10 @@ body.intro-done .castle-intro{display:none;}
     <footer class="emotional-footer">
       <p>Luiza, você transformou nossa vida em uma aventura mais doce, divertida e cheia de amor. Celebrar seus 3 anos é celebrar tudo que você nos ensina todos os dias: alegria, carinho, imaginação e amor.</p>
       <strong>Com amor, papai, mamãe e toda a família.</strong>
+      <div class="site-quote">
+        <span>Quer um site especial para sua festa, com informações antes, durante e depois do evento?</span>
+        <a class="quote-whatsapp" href="https://wa.me/5511998802974?text=Ol%C3%A1%2C%20Claudio%21%20Vi%20o%20site%20da%20festa%20da%20Luiza%20e%20gostaria%20de%20solicitar%20um%20or%C3%A7amento%20para%20um%20site%20personalizado%20para%20uma%20festa." target="_blank" rel="noopener">💬 Solicitar orçamento</a>
+      </div>
       <br>
       <button class="footer-admin" type="button" onclick="openAdmin()" aria-label="Abrir admin">⚙️</button>
     </footer>
