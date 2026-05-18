@@ -1759,7 +1759,7 @@ body.intro-done .castle-intro{display:none;}
         </div>
         <div class="party-score-layout">
           <section class="rank-panel" aria-label="Ranking do quiz">
-            <div class="rank-title">Top 3 do Quiz</div>
+            <div class="rank-title">Top 10 do Quiz</div>
             <div class="rank-subtitle">Os convidados que mais acertaram até agora</div>
             <div class="ps-list" id="ps-list"><div class="rank-empty">ninguém respondeu ainda...</div></div>
           </section>
@@ -2331,10 +2331,11 @@ function updateDash(){
   const list=document.getElementById('ps-list');
   list.innerHTML='';
   if(!S.players.length){ list.innerHTML='<div class="rank-empty">ninguém respondeu ainda...</div>'; return; }
-  sortPlayers(S.players).slice(0,3).forEach((p,idx)=>{
+  sortPlayers(S.players).slice(0,10).forEach((p,idx)=>{
     const c=document.createElement('div');
     c.className=`rank-row r${idx+1}`;
-    c.innerHTML=`<div class="rank-medal">${idx===0?'🏆':idx===1?'🥈':'🥉'}</div><div class="rank-name">${escapeHtml(p.name||'Convidado')}</div><div class="rank-score">${p.score||0}/${MAX_SCORE}</div>`;
+    const medal=idx===0?'🏆':idx===1?'🥈':idx===2?'🥉':`#${idx+1}`;
+    c.innerHTML=`<div class="rank-medal">${medal}</div><div class="rank-name">${escapeHtml(p.name||'Convidado')}</div><div class="rank-score">${p.score||0}/${MAX_SCORE}</div>`;
     list.appendChild(c);
   });
 }
