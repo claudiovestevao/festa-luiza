@@ -1,5 +1,3 @@
-const MASTER_LOGIN_CODE = "1905";
-
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -57,7 +55,7 @@ async function handleApi(request, env, url) {
     const code = String(input.code || "").trim();
     if (!code) return json({ ok: false, error: "Digite o codigo." }, 400);
 
-    if (code === MASTER_LOGIN_CODE || code === env.MASTER_PASSWORD) {
+    if (env.MASTER_PASSWORD && code === env.MASTER_PASSWORD) {
       const sessionName = name || "Convidado master";
       const sessionPhone = phone || "master";
       return grantSession(env, sessionName, sessionPhone, true);

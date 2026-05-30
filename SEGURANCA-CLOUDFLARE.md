@@ -9,7 +9,7 @@ O fluxo configurado no código é:
 3. O codigo e enviado pelo WhatsApp Business Cloud API.
 4. O convidado informa o codigo recebido.
 5. O Worker cria um cookie seguro e libera o site e as fotos.
-6. A senha master `1905` libera a entrada sem depender do WhatsApp.
+6. A senha master configurada no Cloudflare libera a entrada sem depender do WhatsApp.
 
 ## O que ainda precisa ser configurado no Cloudflare
 
@@ -33,7 +33,7 @@ npx wrangler secret put WHATSAPP_PHONE_NUMBER_ID
 Valores:
 
 - `COOKIE_SECRET`: qualquer texto longo e aleatorio.
-- `MASTER_PASSWORD`: `1905`.
+- `MASTER_PASSWORD`: a senha master combinada para entrada manual.
 - `WHATSAPP_TOKEN`: token da Meta WhatsApp Cloud API.
 - `WHATSAPP_PHONE_NUMBER_ID`: ID do numero de telefone no WhatsApp Cloud API.
 
