@@ -8,7 +8,7 @@ routes = [
 
 [[kv_namespaces]]
 binding = "FESTA_LUIZA_KV"
-id = "SUBSTITUA_PELO_ID_DO_KV"
+id = "cb7b0d77e7c24d24b9083fbaa4aecb01"
 
 [vars]
 UPSTREAM_ORIGIN = "https://claudiovestevao.github.io"
