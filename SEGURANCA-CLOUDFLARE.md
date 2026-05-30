@@ -4,12 +4,12 @@ Este repositório agora inclui um Cloudflare Worker para proteger `claudiocode.d
 
 O fluxo configurado no código é:
 
-1. O convidado informa nome e email.
+1. O convidado informa nome e escolhe WhatsApp ou email.
 2. O Worker gera um codigo de 6 digitos.
-3. O codigo e enviado por email via Resend.
+3. O codigo e enviado pelo WhatsApp Business Cloud API ou por email via Resend.
 4. O convidado informa o codigo recebido.
 5. O Worker cria um cookie seguro e libera o site e as fotos.
-6. A senha master configurada no Cloudflare libera a entrada sem depender do email.
+6. A senha master configurada no Cloudflare libera a entrada sem depender de codigo.
 
 ## O que ainda precisa ser configurado no Cloudflare
 
@@ -26,6 +26,8 @@ Configure os segredos:
 ```powershell
 npx wrangler secret put COOKIE_SECRET
 npx wrangler secret put MASTER_PASSWORD
+npx wrangler secret put WHATSAPP_TOKEN
+npx wrangler secret put WHATSAPP_PHONE_NUMBER_ID
 npx wrangler secret put RESEND_API_KEY
 npx wrangler secret put RESEND_FROM_EMAIL
 ```
@@ -34,8 +36,12 @@ Valores:
 
 - `COOKIE_SECRET`: qualquer texto longo e aleatorio.
 - `MASTER_PASSWORD`: a senha master combinada para entrada manual.
+- `WHATSAPP_TOKEN`: token da Meta WhatsApp Cloud API.
+- `WHATSAPP_PHONE_NUMBER_ID`: ID do numero de telefone no WhatsApp Cloud API.
 - `RESEND_API_KEY`: chave de API da Resend.
 - `RESEND_FROM_EMAIL`: email remetente verificado na Resend, por exemplo `convite@seudominio.com`.
+
+Na Meta, crie e aprove um template chamado `festa_luiza_codigo`, idioma `pt_BR`, com um parametro no corpo para o codigo.
 
 Na Resend, verifique o dominio/remetente que sera usado para enviar os codigos.
 
