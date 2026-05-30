@@ -27,68 +27,68 @@ async function handleApi(request, env, url) {
 
   try {
     if (url.pathname.endsWith("/request-code")) {
-    const input = await readJson(request);
-    const name = cleanName(input.name);
-    const phone = normalizePhone(input.phone);
-    if (!name) return json({ ok: false, error: "Digite seu nome." }, 400);
-    if (!phone) return json({ ok: false, error: "Digite um WhatsApp valido com DDD." }, 400);
+      const input = await readJson(request);
+      const name = cleanName(input.name);
+      const email = normalizeEmail(input.email);
+      if (!name) return json({ ok: false, error: "Digite seu nome." }, 400);
+      if (!email) return json({ ok: false, error: "Digite um email valido." }, 400);
 
-    const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, "0");
-    const codeHash = await digest(`${phone}:${code}:${env.COOKIE_SECRET}`);
-    const ttl = Number(env.OTP_TTL_SECONDS || 600);
-    await env.FESTA_LUIZA_KV.put(`otp:${phone}`, JSON.stringify({
-      name,
-      phone,
-      codeHash,
-      createdAt: Date.now(),
-      attempts: 0
-    }), { expirationTtl: ttl });
+      const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, "0");
+      const codeHash = await digest(`${email}:${code}:${env.COOKIE_SECRET}`);
+      const ttl = Number(env.OTP_TTL_SECONDS || 600);
+      await env.FESTA_LUIZA_KV.put(`otp:${email}`, JSON.stringify({
+        name,
+        email,
+        codeHash,
+        createdAt: Date.now(),
+        attempts: 0
+      }), { expirationTtl: ttl });
 
-    await sendWhatsAppCode(env, phone, code);
-    return json({ ok: true, message: "Codigo enviado pelo WhatsApp." });
+      await sendEmailCode(env, email, name, code);
+      return json({ ok: true, message: "Codigo enviado por email." });
     }
 
     if (url.pathname.endsWith("/verify-code")) {
-    const input = await readJson(request);
-    const name = cleanName(input.name);
-    const phone = normalizePhone(input.phone);
-    const code = String(input.code || "").trim();
-    if (!code) return json({ ok: false, error: "Digite o codigo." }, 400);
+      const input = await readJson(request);
+      const name = cleanName(input.name);
+      const email = normalizeEmail(input.email);
+      const code = String(input.code || "").trim();
+      if (!code) return json({ ok: false, error: "Digite o codigo." }, 400);
 
-    if (env.MASTER_PASSWORD && code === env.MASTER_PASSWORD) {
-      const sessionName = name || "Convidado master";
-      const sessionPhone = phone || "master";
-      return grantSession(env, sessionName, sessionPhone, true);
-    }
+      if (env.MASTER_PASSWORD && code === env.MASTER_PASSWORD) {
+        const sessionName = name || "Convidado master";
+        const sessionEmail = email || "master";
+        return grantSession(env, sessionName, sessionEmail, true);
+      }
 
-    if (!phone) return json({ ok: false, error: "Digite o WhatsApp usado no cadastro." }, 400);
-    const raw = await env.FESTA_LUIZA_KV.get(`otp:${phone}`);
-    if (!raw) return json({ ok: false, error: "Codigo expirado. Solicite outro." }, 400);
+      if (!email) return json({ ok: false, error: "Digite o email usado no cadastro." }, 400);
+      const raw = await env.FESTA_LUIZA_KV.get(`otp:${email}`);
+      if (!raw) return json({ ok: false, error: "Codigo expirado. Solicite outro." }, 400);
 
-    const record = JSON.parse(raw);
-    if (record.attempts >= 5) {
-      await env.FESTA_LUIZA_KV.delete(`otp:${phone}`);
-      return json({ ok: false, error: "Muitas tentativas. Solicite outro codigo." }, 429);
-    }
+      const record = JSON.parse(raw);
+      if (record.attempts >= 5) {
+        await env.FESTA_LUIZA_KV.delete(`otp:${email}`);
+        return json({ ok: false, error: "Muitas tentativas. Solicite outro codigo." }, 429);
+      }
 
-    const codeHash = await digest(`${phone}:${code}:${env.COOKIE_SECRET}`);
-    if (codeHash !== record.codeHash) {
-      record.attempts += 1;
-      await env.FESTA_LUIZA_KV.put(`otp:${phone}`, JSON.stringify(record), { expirationTtl: Number(env.OTP_TTL_SECONDS || 600) });
-      return json({ ok: false, error: "Codigo incorreto." }, 400);
-    }
+      const codeHash = await digest(`${email}:${code}:${env.COOKIE_SECRET}`);
+      if (codeHash !== record.codeHash) {
+        record.attempts += 1;
+        await env.FESTA_LUIZA_KV.put(`otp:${email}`, JSON.stringify(record), { expirationTtl: Number(env.OTP_TTL_SECONDS || 600) });
+        return json({ ok: false, error: "Codigo incorreto." }, 400);
+      }
 
-    await env.FESTA_LUIZA_KV.delete(`otp:${phone}`);
-    await env.FESTA_LUIZA_KV.put(`guest:${phone}`, JSON.stringify({
-      name: record.name,
-      phone,
-      verifiedAt: Date.now()
-    }));
-    return grantSession(env, record.name, phone, false);
+      await env.FESTA_LUIZA_KV.delete(`otp:${email}`);
+      await env.FESTA_LUIZA_KV.put(`guest:${email}`, JSON.stringify({
+        name: record.name,
+        email,
+        verifiedAt: Date.now()
+      }));
+      return grantSession(env, record.name, email, false);
     }
 
     if (url.pathname.endsWith("/logout")) {
-    return json({ ok: true }, 200, clearSessionCookie());
+      return json({ ok: true }, 200, clearSessionCookie());
     }
   } catch (error) {
     return json({ ok: false, error: error.message || "Erro ao processar solicitacao." }, 500);
@@ -114,11 +114,11 @@ async function proxySite(request, env, url) {
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
 }
 
-async function grantSession(env, name, phone, master) {
+async function grantSession(env, name, email, master) {
   const ttl = Number(env.SESSION_TTL_SECONDS || 604800);
   const payload = {
     name,
-    phone,
+    email,
     master: Boolean(master),
     exp: Math.floor(Date.now() / 1000) + ttl
   };
@@ -162,38 +162,31 @@ async function digest(value) {
   return base64UrlEncodeBytes(hash);
 }
 
-async function sendWhatsAppCode(env, phone, code) {
-  if (!env.WHATSAPP_TOKEN || !env.WHATSAPP_PHONE_NUMBER_ID) {
-    throw new Error("WhatsApp nao configurado no Cloudflare Worker.");
+async function sendEmailCode(env, email, name, code) {
+  if (!env.RESEND_API_KEY || !env.RESEND_FROM_EMAIL) {
+    throw new Error("Email ainda nao configurado. Configure RESEND_API_KEY e RESEND_FROM_EMAIL no Cloudflare.");
   }
 
-  const templateName = env.WHATSAPP_TEMPLATE_NAME || "festa_luiza_codigo";
-  const language = env.WHATSAPP_TEMPLATE_LANGUAGE || "pt_BR";
-  const endpoint = `https://graph.facebook.com/v20.0/${env.WHATSAPP_PHONE_NUMBER_ID}/messages`;
-  const response = await fetch(endpoint, {
+  const fromName = env.RESEND_FROM_NAME || "Festa da Luiza";
+  const from = `${fromName} <${env.RESEND_FROM_EMAIL}>`;
+  const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
-      "authorization": `Bearer ${env.WHATSAPP_TOKEN}`,
+      "authorization": `Bearer ${env.RESEND_API_KEY}`,
       "content-type": "application/json"
     },
     body: JSON.stringify({
-      messaging_product: "whatsapp",
-      to: phone,
-      type: "template",
-      template: {
-        name: templateName,
-        language: { code: language },
-        components: [{
-          type: "body",
-          parameters: [{ type: "text", text: code }]
-        }]
-      }
+      from,
+      to: [email],
+      subject: "Codigo de entrada da festa da Luiza",
+      html: emailHtml(name, code),
+      text: `Oi, ${name || "convidado"}! Seu codigo para entrar na festa da Luiza e ${code}. Ele expira em 10 minutos.`
     })
   });
 
   if (!response.ok) {
     const detail = await response.text();
-    throw new Error(`Falha ao enviar WhatsApp: ${detail}`);
+    throw new Error(`Falha ao enviar email: ${detail}`);
   }
 }
 
@@ -201,11 +194,35 @@ function cleanName(value) {
   return String(value || "").trim().replace(/\s+/g, " ").slice(0, 80);
 }
 
-function normalizePhone(value) {
-  const digits = String(value || "").replace(/\D/g, "");
-  if (!digits) return "";
-  const withCountry = digits.startsWith("55") ? digits : `55${digits}`;
-  return withCountry.length >= 12 && withCountry.length <= 13 ? withCountry : "";
+function normalizeEmail(value) {
+  const email = String(value || "").trim().toLowerCase();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email.slice(0, 160) : "";
+}
+
+function emailHtml(name, code) {
+  const safeName = escapeHtml(name || "convidado");
+  return `<!doctype html>
+<html lang="pt-BR">
+<body style="margin:0;background:#100d16;padding:24px;font-family:Arial,sans-serif;color:#21172a;">
+  <div style="max-width:520px;margin:0 auto;background:#fff8ef;border-radius:18px;padding:28px;text-align:center;">
+    <div style="font-size:40px;margin-bottom:8px;">L</div>
+    <h1 style="margin:0 0 10px;font-size:26px;">Entrada da festa da Luiza</h1>
+    <p style="font-size:16px;line-height:1.45;color:#6f607d;">Oi, ${safeName}! Use o codigo abaixo para entrar no site da festa.</p>
+    <div style="margin:22px auto;padding:16px 22px;background:#21172a;color:#fff;border-radius:14px;font-size:34px;font-weight:800;letter-spacing:6px;">${code}</div>
+    <p style="font-size:13px;color:#7a6b86;">Esse codigo expira em 10 minutos.</p>
+  </div>
+</body>
+</html>`;
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  }[char]));
 }
 
 async function readJson(request) {
@@ -289,13 +306,14 @@ button.secondary{background:#21172a;color:#f3d9ff}
 <main class="gate">
   <div class="avatar">L</div>
   <h1>Entrada da festa</h1>
-  <p>Cadastre seu nome e WhatsApp para receber o codigo de acesso. A senha master tambem libera a entrada.</p>
+  <p>Cadastre seu nome e email para receber o codigo de acesso. A senha master tambem libera a entrada.</p>
   <form id="requestForm">
     <label for="name">Nome do convidado</label>
     <input id="name" name="name" autocomplete="name" maxlength="80" required>
-    <label for="phone">WhatsApp com DDD</label>
-    <input id="phone" name="phone" inputmode="tel" autocomplete="tel" placeholder="11999999999" required>
-    <button type="submit">Receber codigo no WhatsApp</button>
+    <label for="email">Email</label>
+    <input id="email" name="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" required>
+    <button type="submit">Receber codigo por email</button>
+    <button class="secondary" type="button" id="haveCodeBtn">Ja tenho codigo ou senha</button>
   </form>
   <form id="verifyForm" class="hidden">
     <label for="code">Codigo recebido ou senha master</label>
@@ -310,7 +328,8 @@ const requestForm=document.getElementById('requestForm');
 const verifyForm=document.getElementById('verifyForm');
 const msg=document.getElementById('msg');
 const backBtn=document.getElementById('backBtn');
-function data(){return {name:document.getElementById('name').value,phone:document.getElementById('phone').value,code:document.getElementById('code').value};}
+const haveCodeBtn=document.getElementById('haveCodeBtn');
+function data(){return {name:document.getElementById('name').value,email:document.getElementById('email').value,code:document.getElementById('code').value};}
 async function post(path,body){
   const r=await fetch('./api/'+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});
   const j=await r.json().catch(()=>({ok:false,error:'Erro inesperado.'}));
@@ -319,7 +338,7 @@ async function post(path,body){
 }
 requestForm.addEventListener('submit',async e=>{
   e.preventDefault(); msg.textContent='Enviando codigo...';
-  try{ await post('request-code',data()); requestForm.classList.add('hidden'); verifyForm.classList.remove('hidden'); document.getElementById('code').focus(); msg.textContent='Codigo enviado. Confira seu WhatsApp.'; }
+  try{ await post('request-code',data()); requestForm.classList.add('hidden'); verifyForm.classList.remove('hidden'); document.getElementById('code').focus(); msg.textContent='Codigo enviado. Confira seu email.'; }
   catch(err){ msg.textContent=err.message; }
 });
 verifyForm.addEventListener('submit',async e=>{
@@ -328,6 +347,7 @@ verifyForm.addEventListener('submit',async e=>{
   catch(err){ msg.textContent=err.message; }
 });
 backBtn.addEventListener('click',()=>{verifyForm.classList.add('hidden');requestForm.classList.remove('hidden');msg.textContent='';});
+haveCodeBtn.addEventListener('click',()=>{requestForm.classList.add('hidden');verifyForm.classList.remove('hidden');document.getElementById('code').focus();msg.textContent='';});
 </script>
 </body>
 </html>`;
