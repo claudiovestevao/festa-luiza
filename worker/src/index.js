@@ -35,21 +35,28 @@ async function handleApi(request, env, url) {
       if (!contact) return json({ ok: false, error: delivery === "whatsapp" ? "Digite um WhatsApp valido com DDD." : "Digite um email valido." }, 400);
 
       const identity = `${delivery}:${contact}`;
-
-      if (delivery === "whatsapp") {
-        await startTwilioWhatsAppVerification(env, contact);
-        await env.FESTA_LUIZA_KV.put(`pending:${identity}`, JSON.stringify({
-          name,
-          delivery,
-          contact,
-          createdAt: Date.now()
-        }), { expirationTtl: Number(env.OTP_TTL_SECONDS || 600) });
-        return json({ ok: true, message: "Codigo enviado pelo WhatsApp." });
-      }
-
       const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, "0");
       const codeHash = await digest(`${identity}:${code}:${env.COOKIE_SECRET}`);
       const ttl = Number(env.OTP_TTL_SECONDS || 600);
+
+      if (delivery === "whatsapp") {
+        await env.FESTA_LUIZA_KV.put(`otp:${identity}`, JSON.stringify({
+          name,
+          delivery,
+          contact,
+          codeHash,
+          createdAt: Date.now(),
+          attempts: 0
+        }), { expirationTtl: ttl });
+        try {
+          await sendWhatsAppCode(env, contact, name, code);
+        } catch (error) {
+          await env.FESTA_LUIZA_KV.delete(`otp:${identity}`);
+          throw error;
+        }
+        return json({ ok: true, message: "Codigo enviado pelo WhatsApp." });
+      }
+
       await env.FESTA_LUIZA_KV.put(`otp:${identity}`, JSON.stringify({
         name,
         delivery,
@@ -77,20 +84,6 @@ async function handleApi(request, env, url) {
 
       if (!contact) return json({ ok: false, error: delivery === "whatsapp" ? "Digite o WhatsApp usado no cadastro." : "Digite o email usado no cadastro." }, 400);
       const identity = `${delivery}:${contact}`;
-
-      if (delivery === "whatsapp") {
-        const verified = await checkTwilioWhatsAppVerification(env, contact, code);
-        if (!verified) return json({ ok: false, error: "Codigo incorreto ou expirado." }, 400);
-        const pending = await env.FESTA_LUIZA_KV.get(`pending:${identity}`, "json");
-        await env.FESTA_LUIZA_KV.delete(`pending:${identity}`);
-        await env.FESTA_LUIZA_KV.put(`guest:${identity}`, JSON.stringify({
-          name: pending?.name || name || "Convidado",
-          delivery,
-          contact,
-          verifiedAt: Date.now()
-        }));
-        return grantSession(env, pending?.name || name || "Convidado", delivery, contact, false);
-      }
 
       const raw = await env.FESTA_LUIZA_KV.get(`otp:${identity}`);
       if (!raw) return json({ ok: false, error: "Codigo expirado. Solicite outro." }, 400);
@@ -222,53 +215,54 @@ async function sendEmailCode(env, email, name, code) {
   }
 }
 
-async function startTwilioWhatsAppVerification(env, phone) {
-  if (!env.TWILIO_ACCOUNT_SID || !env.TWILIO_AUTH_TOKEN || !env.TWILIO_VERIFY_SERVICE_SID) {
-    throw new Error("WhatsApp ainda nao configurado. Configure TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN e TWILIO_VERIFY_SERVICE_SID no Cloudflare.");
+async function sendWhatsAppCode(env, phone, name, code) {
+  const token = env.WHATSAPP_TOKEN || env.WHATSAPP_ACCESS_TOKEN;
+  const phoneNumberId = env.WHATSAPP_PHONE_NUMBER_ID;
+  if (!token || !phoneNumberId) {
+    throw new Error("WhatsApp oficial ainda nao configurado. Configure WHATSAPP_TOKEN e WHATSAPP_PHONE_NUMBER_ID no Cloudflare.");
   }
 
-  const response = await fetch(`https://verify.twilio.com/v2/Services/${env.TWILIO_VERIFY_SERVICE_SID}/Verifications`, {
+  const graphVersion = env.WHATSAPP_GRAPH_VERSION || "v24.0";
+  const templateName = env.WHATSAPP_TEMPLATE_NAME || "codigo_acesso_festa";
+  const templateLanguage = env.WHATSAPP_TEMPLATE_LANGUAGE || "pt_BR";
+  const components = [
+    {
+      type: "body",
+      parameters: [{ type: "text", text: code }]
+    }
+  ];
+
+  if (String(env.WHATSAPP_TEMPLATE_BUTTON || "true").toLowerCase() !== "false") {
+    components.push({
+      type: "button",
+      sub_type: "url",
+      index: "0",
+      parameters: [{ type: "text", text: code }]
+    });
+  }
+
+  const response = await fetch(`https://graph.facebook.com/${graphVersion}/${phoneNumberId}/messages`, {
     method: "POST",
     headers: {
-      "authorization": twilioAuth(env),
-      "content-type": "application/x-www-form-urlencoded"
+      "authorization": `Bearer ${token}`,
+      "content-type": "application/json"
     },
-    body: new URLSearchParams({
-      To: `+${phone}`,
-      Channel: "whatsapp"
+    body: JSON.stringify({
+      messaging_product: "whatsapp",
+      to: phone,
+      type: "template",
+      template: {
+        name: templateName,
+        language: { code: templateLanguage },
+        components
+      }
     })
   });
 
   if (!response.ok) {
     const detail = await response.text();
-    throw new Error(`Falha ao enviar WhatsApp pela Twilio: ${detail}`);
+    throw new Error(`Falha ao enviar WhatsApp pela Meta Cloud API: ${detail}`);
   }
-}
-
-async function checkTwilioWhatsAppVerification(env, phone, code) {
-  if (!env.TWILIO_ACCOUNT_SID || !env.TWILIO_AUTH_TOKEN || !env.TWILIO_VERIFY_SERVICE_SID) {
-    throw new Error("WhatsApp ainda nao configurado. Configure TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN e TWILIO_VERIFY_SERVICE_SID no Cloudflare.");
-  }
-
-  const response = await fetch(`https://verify.twilio.com/v2/Services/${env.TWILIO_VERIFY_SERVICE_SID}/VerificationCheck`, {
-    method: "POST",
-    headers: {
-      "authorization": twilioAuth(env),
-      "content-type": "application/x-www-form-urlencoded"
-    },
-    body: new URLSearchParams({
-      To: `+${phone}`,
-      Code: code
-    })
-  });
-
-  if (!response.ok) return false;
-  const result = await response.json();
-  return result.status === "approved";
-}
-
-function twilioAuth(env) {
-  return `Basic ${btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`)}`;
 }
 
 function cleanName(value) {

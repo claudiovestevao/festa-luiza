@@ -6,7 +6,7 @@ O fluxo configurado no código é:
 
 1. O convidado informa nome e escolhe WhatsApp ou email.
 2. O Worker gera um codigo de 6 digitos.
-3. O codigo e enviado pelo Twilio Verify WhatsApp ou por email via Resend.
+3. O codigo e enviado pela API oficial da Meta WhatsApp Cloud API ou por email via Resend.
 4. O convidado informa o codigo recebido.
 5. O Worker cria um cookie seguro e libera o site e as fotos.
 6. A senha master configurada no Cloudflare libera a entrada sem depender de codigo.
@@ -26,9 +26,8 @@ Configure os segredos:
 ```powershell
 npx wrangler secret put COOKIE_SECRET
 npx wrangler secret put MASTER_PASSWORD
-npx wrangler secret put TWILIO_ACCOUNT_SID
-npx wrangler secret put TWILIO_AUTH_TOKEN
-npx wrangler secret put TWILIO_VERIFY_SERVICE_SID
+npx wrangler secret put WHATSAPP_TOKEN
+npx wrangler secret put WHATSAPP_PHONE_NUMBER_ID
 npx wrangler secret put RESEND_API_KEY
 npx wrangler secret put RESEND_FROM_EMAIL
 ```
@@ -37,13 +36,15 @@ Valores:
 
 - `COOKIE_SECRET`: qualquer texto longo e aleatorio.
 - `MASTER_PASSWORD`: a senha master combinada para entrada manual.
-- `TWILIO_ACCOUNT_SID`: Account SID da conta Twilio.
-- `TWILIO_AUTH_TOKEN`: Auth Token da conta Twilio.
-- `TWILIO_VERIFY_SERVICE_SID`: Service SID do Twilio Verify.
+- `WHATSAPP_TOKEN`: token da Meta com permissao para enviar mensagens pelo WhatsApp Cloud API. Tambem pode ser configurado como `WHATSAPP_ACCESS_TOKEN`.
+- `WHATSAPP_PHONE_NUMBER_ID`: ID do numero de telefone verificado no WhatsApp Cloud API.
+- `WHATSAPP_TEMPLATE_NAME`: nome do template aprovado na Meta. Default: `codigo_acesso_festa`.
+- `WHATSAPP_TEMPLATE_LANGUAGE`: idioma do template aprovado. Default: `pt_BR`.
+- `WHATSAPP_TEMPLATE_BUTTON`: use `true` se o template tiver botao de copiar codigo. Use `false` se o template tiver apenas variavel no corpo.
 - `RESEND_API_KEY`: chave de API da Resend.
 - `RESEND_FROM_EMAIL`: email remetente verificado na Resend, por exemplo `convite@seudominio.com`.
 
-Na Twilio, crie um Verify Service e habilite/teste o canal WhatsApp.
+Na Meta, use um numero verificado no WhatsApp Cloud API e crie/aprove um template de autenticacao para envio do codigo. O Worker usa o template `codigo_acesso_festa` por padrao, com uma variavel `{{1}}` para o codigo de 6 digitos.
 
 Na Resend, verifique o dominio/remetente que sera usado para enviar os codigos.
 
