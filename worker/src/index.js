@@ -8,7 +8,7 @@ export default {
 
     const session = await readSession(request, env);
     if (!session) {
-      return new Response(loginPage(), {
+      return new Response(loginPage(env), {
         headers: {
           "content-type": "text/html; charset=utf-8",
           "cache-control": "no-store",
@@ -366,7 +366,8 @@ function base64UrlDecode(value) {
   return new TextDecoder().decode(Uint8Array.from(binary, char => char.charCodeAt(0)));
 }
 
-function loginPage() {
+function loginPage(env = {}) {
+  const requestPhone = normalizePhone(env.WHATSAPP_REQUEST_PHONE || env.WHATSAPP_BUSINESS_PHONE || "5511956607921");
   return `<!doctype html>
 <html lang="pt-BR">
 <head>
@@ -397,11 +398,11 @@ button.secondary{background:#21172a;color:#f3d9ff}
 <main class="gate">
   <div class="avatar">L</div>
   <h1>Entrada da festa</h1>
-  <p>Cadastre seu nome e receba o codigo de acesso por WhatsApp ou email. A senha master tambem libera a entrada.</p>
+  <p>Cadastre seu nome. Pelo WhatsApp, voce pede acesso aos responsaveis. Por email, recebe um codigo automatico.</p>
   <form id="requestForm">
     <label for="name">Nome do convidado</label>
     <input id="name" name="name" autocomplete="name" maxlength="80" required>
-    <label>Enviar codigo por</label>
+    <label>Como prefere entrar?</label>
     <div class="delivery">
       <button type="button" class="active" id="deliveryWhatsapp">WhatsApp</button>
       <button type="button" id="deliveryEmail">Email</button>
@@ -414,7 +415,7 @@ button.secondary{background:#21172a;color:#f3d9ff}
       <label for="email">Email</label>
       <input id="email" name="email" inputmode="email" autocomplete="email" placeholder="voce@email.com">
     </div>
-    <button type="submit" id="sendBtn">Receber codigo pelo WhatsApp</button>
+    <button type="submit" id="sendBtn">Pedir acesso pelo WhatsApp</button>
     <button class="secondary" type="button" id="haveCodeBtn">Ja tenho codigo ou senha</button>
   </form>
   <form id="verifyForm" class="hidden">
@@ -436,6 +437,7 @@ const deliveryEmail=document.getElementById('deliveryEmail');
 const phoneField=document.getElementById('phoneField');
 const emailField=document.getElementById('emailField');
 const sendBtn=document.getElementById('sendBtn');
+const requestPhone='${escapeHtml(requestPhone)}';
 let delivery='whatsapp';
 function setDelivery(next){
   delivery=next;
@@ -443,9 +445,29 @@ function setDelivery(next){
   deliveryEmail.classList.toggle('active',delivery==='email');
   phoneField.classList.toggle('hidden',delivery!=='whatsapp');
   emailField.classList.toggle('hidden',delivery!=='email');
-  sendBtn.textContent=delivery==='whatsapp'?'Receber codigo pelo WhatsApp':'Receber codigo por email';
+  sendBtn.textContent=delivery==='whatsapp'?'Pedir acesso pelo WhatsApp':'Receber codigo por email';
 }
 function data(){return {delivery,name:document.getElementById('name').value,phone:document.getElementById('phone').value,email:document.getElementById('email').value,code:document.getElementById('code').value};}
+function digits(value){return String(value||'').replace(/\\D/g,'');}
+function normalizedPhone(value){
+  const raw=digits(value);
+  if(!raw) return '';
+  const withCountry=raw.startsWith('55')?raw:'55'+raw;
+  return withCountry.length>=12&&withCountry.length<=13?withCountry:'';
+}
+function requestAccessByWhatsApp(payload){
+  const name=String(payload.name||'').trim();
+  const phone=normalizedPhone(payload.phone);
+  if(!name) throw new Error('Digite seu nome.');
+  if(!phone) throw new Error('Digite um WhatsApp valido com DDD.');
+  const text=[
+    'Oi! Sou '+name+' e quero acessar o site da festa da Luiza.',
+    'Meu WhatsApp e +'+phone+'.',
+    'Pode me enviar a senha de entrada?'
+  ].join('\\n');
+  const url='https://wa.me/'+requestPhone+'?text='+encodeURIComponent(text);
+  window.open(url,'_blank','noopener');
+}
 async function post(path,body){
   const r=await fetch('./api/'+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});
   const j=await r.json().catch(()=>({ok:false,error:'Erro inesperado.'}));
@@ -453,8 +475,20 @@ async function post(path,body){
   return j;
 }
 requestForm.addEventListener('submit',async e=>{
-  e.preventDefault(); msg.textContent='Enviando codigo...';
-  try{ await post('request-code',data()); requestForm.classList.add('hidden'); verifyForm.classList.remove('hidden'); document.getElementById('code').focus(); msg.textContent=delivery==='whatsapp'?'Codigo enviado. Confira seu WhatsApp.':'Codigo enviado. Confira seu email.'; }
+  e.preventDefault();
+  const payload=data();
+  if(delivery==='whatsapp'){
+    try{
+      requestAccessByWhatsApp(payload);
+      requestForm.classList.add('hidden');
+      verifyForm.classList.remove('hidden');
+      document.getElementById('code').focus();
+      msg.textContent='Envie a mensagem no WhatsApp. Quando receber a senha ou codigo, digite aqui.';
+    }catch(err){ msg.textContent=err.message; }
+    return;
+  }
+  msg.textContent='Enviando codigo...';
+  try{ await post('request-code',payload); requestForm.classList.add('hidden'); verifyForm.classList.remove('hidden'); document.getElementById('code').focus(); msg.textContent='Codigo enviado. Confira seu email.'; }
   catch(err){ msg.textContent=err.message; }
 });
 verifyForm.addEventListener('submit',async e=>{
