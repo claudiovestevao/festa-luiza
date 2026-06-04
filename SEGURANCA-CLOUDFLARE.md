@@ -46,6 +46,45 @@ Valores:
 
 Na Meta, use um numero verificado no WhatsApp Cloud API e crie/aprove um template de autenticacao para envio do codigo. O Worker usa o template `codigo_acesso_festa` por padrao, com uma variavel `{{1}}` para o codigo de 6 digitos.
 
+Template recomendado pela documentacao oficial da Meta para OTP com botao de copiar codigo:
+
+```powershell
+$env:META_TOKEN = "COLE_O_TOKEN_AQUI"
+$wabaId = "SEU_WHATSAPP_BUSINESS_ACCOUNT_ID"
+$body = @{
+  name = "codigo_acesso_festa"
+  languages = @("pt_BR")
+  category = "AUTHENTICATION"
+  components = @(
+    @{
+      type = "BODY"
+      add_security_recommendation = $true
+    },
+    @{
+      type = "FOOTER"
+      code_expiration_minutes = 10
+    },
+    @{
+      type = "BUTTONS"
+      buttons = @(
+        @{
+          type = "OTP"
+          otp_type = "COPY_CODE"
+        }
+      )
+    }
+  )
+} | ConvertTo-Json -Depth 8
+
+Invoke-RestMethod `
+  -Method Post `
+  -Uri "https://graph.facebook.com/v25.0/$wabaId/upsert_message_templates" `
+  -Headers @{ Authorization = "Bearer $env:META_TOKEN"; "Content-Type" = "application/json" } `
+  -Body $body
+```
+
+Importante: no botao `OTP` com `COPY_CODE`, nao envie texto customizado para o botao. A Meta gera o texto do botao conforme o idioma do template.
+
 Na Resend, verifique o dominio/remetente que sera usado para enviar os codigos.
 
 Depois publique:
