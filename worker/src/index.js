@@ -225,12 +225,14 @@ async function sendWhatsAppCode(env, phone, name, code) {
   const graphVersion = env.WHATSAPP_GRAPH_VERSION || "v24.0";
   const templateName = env.WHATSAPP_TEMPLATE_NAME || "codigo_acesso_festa";
   const templateLanguage = env.WHATSAPP_TEMPLATE_LANGUAGE || "pt_BR";
-  const components = [
-    {
+  const components = [];
+
+  if (String(env.WHATSAPP_TEMPLATE_BODY_CODE || "true").toLowerCase() !== "false") {
+    components.push({
       type: "body",
       parameters: [{ type: "text", text: code }]
-    }
-  ];
+    });
+  }
 
   if (String(env.WHATSAPP_TEMPLATE_BUTTON || "true").toLowerCase() !== "false") {
     components.push({
@@ -254,7 +256,7 @@ async function sendWhatsAppCode(env, phone, name, code) {
       template: {
         name: templateName,
         language: { code: templateLanguage },
-        components
+        ...(components.length ? { components } : {})
       }
     })
   });
