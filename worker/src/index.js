@@ -235,9 +235,9 @@ async function sendWhatsAppCode(env, phone, name, code) {
   if (String(env.WHATSAPP_TEMPLATE_BUTTON || "true").toLowerCase() !== "false") {
     components.push({
       type: "button",
-      sub_type: "url",
+      sub_type: "copy_code",
       index: "0",
-      parameters: [{ type: "text", text: code }]
+      parameters: [{ type: "coupon_code", coupon_code: code }]
     });
   }
 
